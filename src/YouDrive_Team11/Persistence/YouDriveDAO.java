@@ -13,6 +13,7 @@ import YouDrive_Team11.Entity.Administrator;
 import YouDrive_Team11.Entity.Comment;
 import YouDrive_Team11.Entity.Customer;
 import YouDrive_Team11.Entity.DriversLicense;
+import YouDrive_Team11.Entity.Vehicle;
 import YouDrive_Team11.Entity.VehicleType;
 
 /**
@@ -57,7 +58,7 @@ public class YouDriveDAO {
 	private PreparedStatement deleteVehicleStatement;
 	private PreparedStatement getAllVehiclesStatement;
 	private PreparedStatement getAllVehiclesAtLocationStatement;
-	private PreparedStatement getallVehiclesOfTypeAtLocationStatement;
+	private PreparedStatement getAllVehiclesOfTypeAtLocationStatement;
 	
 	/**
 	 * Creates an instance of the persistence class
@@ -106,6 +107,17 @@ public class YouDriveDAO {
 			insertCommentStatement = conn.prepareStatement("insert into comments (content, vehicle_id) " +
 					"values (?,?)");
 			getCommentsStatement = conn.prepareStatement("select * from comments where vehicle_id=?");
+			
+			insertVehicleStatement = conn.prepareStatement("insert into vehicles (make,model,year,tag,mileage," +
+					"serviceDate,condition,type_id,location_id) values (?,?,?,?,?,?,?,?,?)");
+			readVehicleStatement = conn.prepareStatement("select * from vehicles where id=?");
+			updateVehicleStatement = conn.prepareStatement("update vehicles set make=?,model=?,year=?,tag=?," +
+					"mileage=?,serviceDate=?,condition=?,type_id=?,location_id=? where id=?");
+			deleteVehicleStatement = conn.prepareStatement("delete from vehicles where id=?");
+			getAllVehiclesStatement = conn.prepareStatement("select * from vehicles");
+			getAllVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=?");
+			getAllVehiclesOfTypeAtLocationStatement = conn.prepareStatement("select * from vehicles" +
+					" where location_id=? and type_id=?");
 			
 			//addCustomerStatement = conn.prepareStatement("insert into Customer (custName,custAddr,imageURL,creditLimit) values (?,?,?,?)");
 			//updateUnpaidBalanceStatement = conn.prepareStatement("update Customer set unpaidBalance = ? where id=?");
@@ -598,6 +610,192 @@ public class YouDriveDAO {
 			while(rs.next()){
 				Comment comment = new Comment(rs.getInt("id"), rs.getString("content"));
 				list.add(comment);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return list;
+	}
+	
+	/**
+	 * Adds a vehicle to the YouDrive system and returns a Vehicle object
+	 * @param make			The make of the car (i.e. "Toyota")
+	 * @param model			The model of the car (i.e. "Camry")
+	 * @param year			The year of the car
+	 * @param tag			The tag of the car
+	 * @param mileage		The current mileage of the car
+	 * @param serviceDate	The date of last service
+	 * @param condition		The condition of the car ("good, excellent, etc")
+	 * @param vehicle_type	The unique identifier of the associated vehicle type
+	 * @param location		The unique identifier of the associated rental location
+	 * @return				A Vehicle object encapsulating this data
+	 */
+	public Vehicle createVehicle(String make, String model,
+			int year, String tag, int mileage, Date serviceDate,
+			String condition, int vehicle_type, int location){
+		Vehicle vehicle = null;
+		int vehicleID = 0;
+		try{
+			insertVehicleStatement.setString(1, make);
+			insertVehicleStatement.setString(2, model);
+			insertVehicleStatement.setInt(3, year);
+			insertVehicleStatement.setString(4, tag);
+			insertVehicleStatement.setInt(5, mileage);
+			insertVehicleStatement.setDate(6, serviceDate);
+			insertVehicleStatement.setString(7, condition);
+			insertVehicleStatement.setInt(8, vehicle_type);
+			insertVehicleStatement.setInt(9, location);
+			insertVehicleStatement.executeUpdate();
+			ResultSet key = insertVehicleStatement.getGeneratedKeys();
+			key.next();
+			vehicleID = key.getInt(1);
+			VehicleType vt = readVehicleType(vehicle_type);
+			vehicle = new Vehicle(vehicleID, new LinkedList<Comment>(), make,
+					model, year, tag, mileage, serviceDate, condition, vt);
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return vehicle;
+	}
+	
+	/**
+	 * Retrieves a Vehicle from the YouDrive database
+	 * @param vehicleID		The unique identifier of the vehicle to retrieve
+	 * @return				A Vehicle object identified by the unique ID
+	 */
+	public Vehicle readVehicle(int vehicleID){
+		Vehicle vehicle = null;
+		try{
+			readVehicleStatement.setInt(1, vehicleID);
+			ResultSet rs = readVehicleStatement.executeQuery();
+			if(rs.next()){
+				LinkedList<Comment> comments = getComments(vehicleID);
+				vehicle = new Vehicle(vehicleID, comments, rs.getString("make"),
+						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"),
+						rs.getString("condition"), readVehicleType(rs.getInt("type_id")));
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return vehicle;
+	}
+	
+	/**
+	 * Updates the vehicle identified by the unique identifier with the new data
+	 * @param vehicleID			The unique identifier of the vehicle to update
+	 * @param make				The new make of the vehicle ("Toyota")
+	 * @param model				The new model of the vehicle ("Camry")
+	 * @param year				The new year
+	 * @param tag				The new tag
+	 * @param mileage			The new mileage
+	 * @param serviceDate		The new last date of service
+	 * @param condition			The new condition of the vehicle
+	 * @param vehicle_type		The new id of the vehicle type
+	 * @param location			The new location of the vehicle type
+	 * @return					A Vehicle object with the updated information
+	 */
+	public Vehicle updateVehicle(int vehicleID, String make, String model,
+			int year, String tag, int mileage, Date serviceDate,
+			String condition, int vehicle_type, int location){
+		Vehicle vehicle = null;
+		try{
+			updateVehicleStatement.setString(1, make);
+			updateVehicleStatement.setString(2, model);
+			updateVehicleStatement.setInt(3, year);
+			updateVehicleStatement.setString(4, tag);
+			updateVehicleStatement.setInt(5, mileage);
+			updateVehicleStatement.setDate(6, serviceDate);
+			updateVehicleStatement.setString(7, condition);
+			updateVehicleStatement.setInt(8, vehicle_type);
+			updateVehicleStatement.setInt(9, location);
+			updateVehicleStatement.setInt(10, vehicleID);
+			updateVehicleStatement.executeUpdate();
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return vehicle;
+	}
+	
+	/**
+	 * Removes the vehicle specified by the unique identifier
+	 * @param vehicleID		The unique identifier of the vehicle to be removed
+	 */
+	public void deleteVehicle(int vehicleID){
+		try{
+			deleteVehicleStatement.setInt(1, vehicleID);
+			deleteVehicleStatement.executeUpdate();
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Retrieves a list of all vehicles in the YouDrive system
+	 * @return	A LinkedList of Vehicles in the YouDrive system
+	 */
+	public LinkedList<Vehicle> getAllVehicles(){
+		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
+		try{
+			ResultSet rs = getAllVehiclesStatement.executeQuery();
+			while(rs.next()){
+				LinkedList<Comment> comments = getComments(rs.getInt("id"));
+				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
+						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("condition"),
+						readVehicleType(rs.getInt("type_id")));
+				list.add(vehicle);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return list;
+	}
+	
+	/**
+	 * Retrieves a list of all vehicles in the YouDrive system at the
+	 * rental location specified by the provided unique identifier.
+	 * @param locationID	The unique identifier of the rental location
+	 * @return	A LinkedList of Vehicles at the specified rental location
+	 */
+	public LinkedList<Vehicle> getAllVehicles(int locationID){
+		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
+		try{
+			getAllVehiclesAtLocationStatement.setInt(1, locationID);
+			ResultSet rs = getAllVehiclesAtLocationStatement.executeQuery();
+			while(rs.next()){
+				LinkedList<Comment> comments = getComments(rs.getInt("id"));
+				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
+						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("condition"),
+						readVehicleType(rs.getInt("type_id")));
+				list.add(vehicle);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return list;
+	}
+	
+	/**
+	 * Retrieves a list of vehicles at the specified location of a certain type
+	 * @param locationID	The unique identifier of the rental location
+	 * @param typeID		The unique identifier of the vehicle type
+	 * @return				A LinkedList of Vehicles at the specified rental location of a certain type
+	 */
+	public LinkedList<Vehicle> getAllVehicles(int locationID, int typeID){
+		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
+		try{
+			getAllVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
+			getAllVehiclesOfTypeAtLocationStatement.setInt(2, typeID);
+			ResultSet rs = getAllVehiclesOfTypeAtLocationStatement.executeQuery();
+			while(rs.next()){
+				LinkedList<Comment> comments = getComments(rs.getInt("id"));
+				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
+						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("condition"),
+						readVehicleType(rs.getInt("type_id")));
+				list.add(vehicle);
 			}
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
