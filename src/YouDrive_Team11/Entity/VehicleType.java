@@ -27,6 +27,13 @@ public class VehicleType {
 	 */
 	private double dailyRate;
 	
+	/**
+	 * Creates a VehicleType object
+	 * @param id			The unique identifier of the vehicle type
+	 * @param description	The description of the vehicle type (i.e. "luxury car, truck, etc.")
+	 * @param hourlyRate	The hourly cost of renting a vehicle of this type
+	 * @param dailyRate		The daily cost of renting a vehicle of this type
+	 */
 	public VehicleType(int id, String description,
 			double hourlyRate, double dailyRate){
 		this.id = id;

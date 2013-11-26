@@ -42,8 +42,18 @@ public class Address {
 	 */
 	private String country;
 	
+	/**
+	 * Creates a new Address object
+	 * @param id				The unique identifier of this Address
+	 * @param streetAddrLine1	The first line of the address
+	 * @param streetAddrLine2	The second line of the address
+	 * @param city				The city of the address
+	 * @param state				The state of the address
+	 * @param zipCode			The zip code of the address
+	 * @param country			The country of the address
+	 */
 	public Address(int id, String streetAddrLine1, String streetAddrLine2,
-			int zipCode, String state, String city, String country){
+			String city, String state, int zipCode, String country){
 		this.id = id;
 		this.streetAddrLine1 = streetAddrLine1;
 		this.streetAddrLine2 = streetAddrLine2;
