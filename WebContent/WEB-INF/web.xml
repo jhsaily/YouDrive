@@ -15,7 +15,7 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-</web-app>
+
  <servlet>
   	<servlet-name>AuthenticationManager</servlet-name>
   	<servlet-class>YouDrive_Team11.Servlets.CustomerCtrl.AuthenticationManager</servlet-class>
@@ -42,3 +42,4 @@
   		<servlet-name>ReservationManager</servlet-name>
   		<url-pattern>/ReservationManager</url-pattern>
   	</servlet-mapping>
+</web-app>
