@@ -1,7 +1,11 @@
 package YouDrive_Team11.Servlets.CustomerCtrl;
 
+import java.io.IOException;
 import java.sql.Date;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,8 +43,24 @@ public class UserManager extends HttpServlet {
 		
 	}
 	
-	public void doPost(HttpServletRequest req, HttpServletResponse res){
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
 		
+		//Get Servlet Context and dispatcher
+		ServletContext ctx=this.getServletContext();
+		RequestDispatcher dispatcher;
+		
+		//If the user clicks register, create a new user.
+		if(req.getParameter("register")!=null){
+			
+			createUser(req.getParameter("username"), req.getParameter("password"), req.getParameter("email"), req.getParameter("firstname"),
+					req.getParameter("lastname"), new Date(12, 12, 12), req.getParameter("addressline1"), req.getParameter("addressline2"), 
+					"Chicago", req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"), req.getParameter("licensenum"), req.getParameter("licensestate"));
+			
+			
+			//Forward to login screen
+			dispatcher=ctx.getRequestDispatcher("/index.jsp");
+			dispatcher.forward(req, res);
+		}
 	}
 	
 	public Customer createUser(String username, String password, String emailAddress, String firstName, String lastName, Date membershipExpiration, String addrLine1, String addrLine2, String city, String state, int ZIP, String country, String DLNumber, String DLState){

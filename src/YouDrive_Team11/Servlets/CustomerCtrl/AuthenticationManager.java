@@ -62,8 +62,8 @@ public class AuthenticationManager extends HttpServlet {
 		
 		//Collect user information and try to log in
 		String un, pw;
-		un=req.getParameter("un");
-		pw=req.getParameter("pw");
+		un=req.getParameter("username");
+		pw=req.getParameter("password");
 		System.out.println("The user, " + un + ", is trying to log in.");
 		
 		//If login is successful, direct user to dashboard
@@ -74,7 +74,12 @@ public class AuthenticationManager extends HttpServlet {
 			session.setAttribute("currentUserName", un);
 			
 			
-			dispatcher=ctx.getRequestDispatcher("/success.jsp");
+			dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+			dispatcher.forward(req, res);
+		}
+		else{
+			System.out.println("Incorrect user credentials");
+			dispatcher=ctx.getRequestDispatcher("/index.jsp");
 			dispatcher.forward(req, res);
 		}
 		
@@ -90,6 +95,10 @@ public class AuthenticationManager extends HttpServlet {
 	
 	public boolean authenticateUser(String un, String pw){
 		
+		//return dao.authenticateUser(un, pw);
+		
+		//Since Randy hasn't made the tables yet, we're going to return true every time. DELETE ME
+		
 		return true;
 	}
 	
@@ -98,6 +107,11 @@ public class AuthenticationManager extends HttpServlet {
 		return true;
 	}
 	
+	/**
+	 * Creates a session and retrieves all relevant user data
+	 * @param un
+	 * @param pw
+	 */
 	public void login(String un, String pw){
 		
 	}
