@@ -1,0 +1,138 @@
+@charset "UTF-8";
+/* CSS Document */
+
+html, body
+{
+	height:100%;
+	min-height:640px;
+	width:100%;
+	margin:0;
+	padding:0;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:.95em;
+	/*background-image:url(../images/bg_color.png);
+	background-attachment:fixed;*/
+}
+h1
+{
+	margin:0;
+	padding:0;
+}
+h4
+{
+	margin:0;
+	padding:0;
+}
+#mainbody
+{
+	width:100%;
+	min-width:750px;
+	height:100%;
+	min-height:640px;
+	position:relative;
+	overflow:hidden;
+}
+#header
+{
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:0;
+	margin-bottom:0;
+	width:100%;
+	height:125px;
+	z-index:10;
+	background-color:#999999;
+}
+#logo
+{
+	height:100px;
+	width:250px;
+	float:left;
+	background-color:#66665e;
+}
+#tagline
+{
+	margin-left:250px;
+	padding-top:20px;
+	padding-left:20px;
+	height:80px;
+}
+#topnav
+{
+	height:25px;
+	margin-top:0px;
+	display:table;
+	margin:auto;
+	width:100%;
+}
+a.topnavlink:link,a.topnavlink:visited
+{
+	display:inline-block;
+	height:20px;
+	margin:0;
+	padding:0;
+	padding-top:5px;
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#e94f31;
+	text-align:center;
+	text-decoration:none;
+	border-right: 1px solid #ba2f14;
+}
+a.topnavlink:hover,a.topnavlink:active
+{
+	background-color:#e84323;
+}
+a.topnavlinkright:link,a.topnavlinkright:visited
+{
+	display:inline-block;
+	height:20px;
+	margin:0;
+	padding:0;
+	padding-top:5px;
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#e94f31;
+	text-align:center;
+	text-decoration:none;
+}
+a.topnavlinkright:hover,a.topnavlinkright:active
+{
+	background-color:#e84323;
+}
+#leftnav
+{
+	width:250px;
+	height:100%;
+	min-height:640px;
+	background-color:#66665e;
+	float:left;
+}
+#leftnavheader
+{
+	width:100%;
+	height:50px;
+	font-size:24px;
+}
+#loginbox
+{
+	width:400px;
+	height:400px;
+	background-color:#FF6600;
+	margin:auto;
+}
+#registerbox
+{
+	width:500px;
+	height:600px;
+	background-color:#FF66FF;
+	margin:auto;
+}
+#dashboardpanel
+{
+	margin-left:250px;
+	width:100%;
+	height:100%;
+	background-color:#FFFFFF;
+	padding:10px;
+}
