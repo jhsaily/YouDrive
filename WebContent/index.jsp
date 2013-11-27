@@ -8,11 +8,10 @@
 	<head>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="resources/css/layout.css" />
-		<link rel="stylesheet" type="text/css" href="resources/css/accordion.css" />
 		<link rel="stylesheet" type="text/css" href="resources/css/form.css" />
 		<script src="resources/jquery/js/jquery-1.9.1.js"></script>
 		<script src="resources/js/format.js"></script>
-		<title>Layout Preview</title>
+		<title>Login to YouDrive</title>
 	</head>
 	<body>
 		<div id="mainbody">
