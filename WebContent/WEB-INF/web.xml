@@ -16,3 +16,29 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
 </web-app>
+ <servlet>
+  	<servlet-name>AuthenticationManager</servlet-name>
+  	<servlet-class>YouDrive_Team11.Servlets.CustomerCtrl.AuthenticationManager</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  		<servlet-name>AuthenticationManager</servlet-name>
+  		<url-pattern>/AuthenticationManager</url-pattern>
+  	</servlet-mapping>
+  	
+  	<servlet>
+  		<servlet-name>UserManager</servlet-name>
+  		<servlet-class>YouDrive_Team11.Servlets.CustomerCtrl.UserManager</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>UserManager</servlet-name>
+  		<url-pattern>/UserManager</url-pattern>
+  	</servlet-mapping>
+  
+  	<servlet>
+  		<servlet-name>ReservationManager</servlet-name>
+  		<servlet-class>YouDrive_Team11.Servlets.ReservationCtrl.ReservationManager</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>ReservationManager</servlet-name>
+  		<url-pattern>/ReservationManager</url-pattern>
+  	</servlet-mapping>
