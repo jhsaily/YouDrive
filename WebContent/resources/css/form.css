@@ -1,0 +1,307 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.formmain
+{
+	/* Size and position */
+	width: 300px;
+	margin: 60px auto 60px;
+	position: relative;
+
+	/* Font styles */
+	color: white;
+	text-shadow: 0 2px 1px rgba(0,0,0,0.3);
+}
+
+.formmain h1
+{
+	font-size: 22px;
+	padding-bottom: 20px;
+}
+.formmain a:link, .formmain a:visited
+{
+	text-decoration:none;
+	color:#FFFFFF;
+	font-size:12px;
+}
+
+.formmain a:hover, .formmain a:active
+{
+	text-decoration:underline;
+}
+
+.formmain input[type=text],
+.formmain input[type=password]
+{
+	/* Size and position */
+	width: 300px;
+	padding: 8px 4px 8px 10px;
+	margin-bottom: 15px;
+	margin-left:-8px;
+
+	/* Styles */
+	border: 1px solid #4e3043; /* Fallback */
+	border: 1px solid rgba(78,48,67, 0.8);
+	background: rgba(0,0,0,0.15);
+	border-radius: 2px;
+	box-shadow: 
+		0 1px 0 rgba(255,255,255,0.2), 
+		inset 0 1px 1px rgba(0,0,0,0.1);
+
+	/* Font styles */
+	color: #fff;
+	font-size: 13px;
+}
+
+/* Placeholder style (from http://stackoverflow.com/questions/2610497/change-an-inputs-html5-placeholder-color-with-css) */
+
+.formmain input::-webkit-input-placeholder
+{
+	color: rgba(37,21,26,0.5);
+	text-shadow: 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.formmain input:-moz-placeholder
+{
+	color: rgba(37,21,26,0.5);
+	text-shadow: 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.formmain input:-ms-input-placeholder
+{
+	color: rgba(37,21,26,0.5);
+	text-shadow: 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.formmain input[type=text]:hover,
+.formmain input[type=password]:hover
+{
+	border-color: #333;
+}
+
+.formmain input[type=text]:focus,
+.formmain input[type=password]:focus,
+.formmain input[type=submit]:focus
+{
+	box-shadow: 
+		0 1px 0 rgba(255,255,255,0.2), 
+		inset 0 1px 1px rgba(0,0,0,0.1),
+		0 0 0 3px rgba(255,255,255,0.15);
+	outline: none;
+}
+
+/* Fallback */
+.no-boxshadow .formmain input[type=text]:focus,
+.no-boxshadow .formmain input[type=password]:focus
+{
+	outline: 1px solid white;
+}
+
+.formmain input[type=submit]
+{
+	/* Size and position */
+	width: 316px;
+	padding: 8px 5px;
+	margin-left:-8px;
+	
+	/* Styles */
+	background: #634056;
+	background: -moz-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
+	background: -ms-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
+	background: -o-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(rgba(99,64,86,0.5)), to(rgba(76,49,65,0.7)));
+	background: -webkit-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
+	background: linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));	
+	border-radius: 5px;
+	border: 1px solid #4e3043;
+	box-shadow: inset 0 1px rgba(255,255,255,0.4), 0 2px 1px rgba(0,0,0,0.1);
+	cursor: pointer;
+
+	/* Font styles */
+	color: white;
+	text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.formmain input[type=submit]:hover
+{
+	box-shadow: 
+		inset 0 1px rgba(255,255,255,0.2), 
+		inset 0 20px 30px rgba(99,64,86,0.5);
+}
+
+/* Fallback */
+.no-boxshadow .formmain input[type=submit]:hover
+{
+	background: #594642;
+}
+
+.formmain label
+{
+	display: none;
+	padding: 0 0 5px 2px;
+	cursor: pointer;
+}
+
+.formmain label:hover ~ input
+{
+	border-color: #333;
+}
+
+.no-placeholder .formmain label
+{
+	display: block;
+}
+
+.formregister
+{
+	/* Size and position */
+	width: 500px;
+	margin: 60px auto 60px;
+	position: relative;
+
+	/* Font styles */
+	color: white;
+	text-shadow: 0 2px 1px rgba(0,0,0,0.3);
+}
+
+.formregister h1
+{
+	font-size: 22px;
+	padding-bottom: 20px;
+}
+.formregister a:link, .formregister a:visited
+{
+	text-decoration:none;
+	color:#FFFFFF;
+	font-size:12px;
+}
+
+.formregister a:hover, .formregister a:active
+{
+	text-decoration:underline;
+}
+
+.formregister input[type=text],
+.formregister input[type=password]
+{
+	/* Size and position */
+	width: 200px;
+	padding: 8px 4px 8px 10px;
+	display:inline-block;
+
+	/* Styles */
+	border: 1px solid #4e3043; /* Fallback */
+	border: 1px solid rgba(78,48,67, 0.8);
+	background: rgba(0,0,0,0.15);
+	border-radius: 2px;
+	box-shadow: 
+		0 1px 0 rgba(255,255,255,0.2), 
+		inset 0 1px 1px rgba(0,0,0,0.1);
+
+	/* Font styles */
+	color: #fff;
+	font-size: 13px;
+}
+
+/* Placeholder style (from http://stackoverflow.com/questions/2610497/change-an-inputs-html5-placeholder-color-with-css) */
+
+.formregister input::-webkit-input-placeholder
+{
+	color: rgba(37,21,26,0.5);
+	text-shadow: 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.formregister input:-moz-placeholder
+{
+	color: rgba(37,21,26,0.5);
+	text-shadow: 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.formregister input:-ms-input-placeholder
+{
+	color: rgba(37,21,26,0.5);
+	text-shadow: 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.formregister input[type=text]:hover,
+.formregister input[type=password]:hover
+{
+	border-color: #333;
+}
+
+.formregister input[type=text]:focus,
+.formregister input[type=password]:focus,
+.formregister input[type=submit]:focus
+{
+	box-shadow: 
+		0 1px 0 rgba(255,255,255,0.2), 
+		inset 0 1px 1px rgba(0,0,0,0.1),
+		0 0 0 3px rgba(255,255,255,0.15);
+	outline: none;
+}
+
+/* Fallback */
+.no-boxshadow .formregister input[type=text]:focus,
+.no-boxshadow .formregister input[type=password]:focus
+{
+	outline: 1px solid white;
+}
+
+.formregister input[type=submit]
+{
+	/* Size and position */
+	width: 316px;
+	padding: 8px 5px;
+	margin-left:-8px;
+	
+	/* Styles */
+	background: #634056;
+	background: -moz-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
+	background: -ms-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
+	background: -o-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(rgba(99,64,86,0.5)), to(rgba(76,49,65,0.7)));
+	background: -webkit-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
+	background: linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));	
+	border-radius: 5px;
+	border: 1px solid #4e3043;
+	box-shadow: inset 0 1px rgba(255,255,255,0.4), 0 2px 1px rgba(0,0,0,0.1);
+	cursor: pointer;
+
+	/* Font styles */
+	color: white;
+	text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.formregister input[type=submit]:hover
+{
+	box-shadow: 
+		inset 0 1px rgba(255,255,255,0.2), 
+		inset 0 20px 30px rgba(99,64,86,0.5);
+}
+
+/* Fallback */
+.no-boxshadow .formregister input[type=submit]:hover
+{
+	background: #594642;
+}
+
+.formregister label
+{
+	display: none;
+	padding: 0 0 5px 2px;
+	cursor: pointer;
+}
+
+.formregister label:hover ~ input
+{
+	border-color: #333;
+}
+
+.no-placeholder .formregister label
+{
+	/*display: block;*/
+}
