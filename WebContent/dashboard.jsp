@@ -11,7 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="resources/css/accordion.css" />
 		<script src="resources/jquery/js/jquery-1.9.1.js"></script>
 		<script src="resources/js/format.js"></script>
-		<title>Layout Preview</title>
+		<title>YouDrive Dashboard</title>
 	</head>
 	<body>
 		<div id="mainbody">

@@ -105,8 +105,8 @@ a.topnavlinkright:hover,a.topnavlinkright:active
 {
 	width:250px;
 	height:100%;
-	min-height:640px;
-	background-color:#66665e;
+	min-height:300px;
+	background-color:#665f5f;
 	float:left;
 }
 #leftnavheader
@@ -118,7 +118,6 @@ a.topnavlinkright:hover,a.topnavlinkright:active
 #dashboardpanel
 {
 	margin-left:250px;
-	width:100%;
 	height:100%;
 	background-color:#FFFFFF;
 	padding:10px;

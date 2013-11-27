@@ -21,10 +21,10 @@
 }
 #cssmenu {
 	width: 250px;
-	border-bottom: 4px solid #656659;
+	border-bottom: 4px solid #665f5f;
 }
 #cssmenu > ul > li:first-child {
-	background: #66665e;
+	background: #665f5f;
 }
 #cssmenu > ul > li:first-child > a {
 	padding: 15px 10px;
@@ -32,15 +32,17 @@
 	text-align: center;
 	font-size: 1.2em;
 	font-weight: 300;
+	text-shadow: 0 2px 1px rgba(0,0,0,0.3);
 }
 #cssmenu > ul > li:first-child > a > span {
 	padding: 0;
 }
 #cssmenu > ul > li:first-child:hover {
-	background: #66665e;
+	background: #665f5f;
 }
 #cssmenu > ul > li {
 	background: #e94f31;
+	text-shadow: 0 2px 1px rgba(0,0,0,0.3);
 }
 #cssmenu > ul > li:hover {
 	background: #e84323;
@@ -66,6 +68,7 @@
 #cssmenu ul ul {
 	display: none;
 	background: #fff;
+	text-shadow: none;
 }
 #cssmenu ul ul li {
 	padding: 0;
