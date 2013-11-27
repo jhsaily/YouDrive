@@ -10,9 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import YouDrive_Team11.Entity.Customer;
 import YouDrive_Team11.Persistence.*;
 
 
+/**
+ * Authenticates and logs in an existing user
+ * @author Tanya Siclait
+ */
 public class AuthenticationManager extends HttpServlet {
 	
 	/**
@@ -71,7 +76,7 @@ public class AuthenticationManager extends HttpServlet {
 			System.out.println("Successful Authentication!");
 			
 			//Bind objects to the user's session, e.g. Customer, Reservation objects
-			session.setAttribute("currentUserName", un);
+			session.setAttribute("currentCustomer", login(un, pw));
 			
 			
 			dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
@@ -108,12 +113,19 @@ public class AuthenticationManager extends HttpServlet {
 	}
 	
 	/**
-	 * Creates a session and retrieves all relevant user data
+	 * Retrieves a customer object with all relevant user data
 	 * @param un
 	 * @param pw
 	 */
-	public void login(String un, String pw){
+	public Customer login(String un, String pw){
+		//Dummy customer created DELETE ME
+		Customer one=new Customer(0, pw, pw, pw, pw, pw, null, null, null);
+		return one;
 		
+		/**
+		 * Need a way to find customer by username not id
+		 */
+		//return dao.readCustomer(123);
 	}
 	
 	public void logout(){

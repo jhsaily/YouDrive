@@ -24,6 +24,9 @@ public class ReservationManager extends HttpServlet {
 	//Declare DAO
 	YouDriveDAO dao;
 	
+	//Temporary Customer object
+	Customer customer=null;
+	
 	
 	/**
 	 * Constructor
@@ -40,23 +43,26 @@ public class ReservationManager extends HttpServlet {
 	}
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
+		System.out.println("POST!");
+		
+		//Get the servlet context and the dispatcher
 		ServletContext ctx=this.getServletContext();
-		RequestDispatcher dispatcher=ctx.getRequestDispatcher("/success.jsp");
+		RequestDispatcher dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
 		
 		//Get the current session attributes
-		String un=(String)req.getSession().getAttribute("currentUserName");
-		Character one=(Character)req.getSession().getAttribute("firstChar");
+		customer=(Customer)req.getSession().getAttribute("currentCustomer");
 		
-		System.out.println("POST!");
-		String currentRes = req.getParameter("res");
-		if(un!=null){
-			currentRes="The current user is: " + un + " and the first char is: " + one;
+		
+		
+		
+		if(customer!=null){
+			System.out.println("The current user is: " + customer.getUsername());
 			
 		}
 		else{
-			currentRes="Please log in to make a reservation";
+			System.out.println("Please log in to make a reservation");
 		}
-		req.setAttribute("res", currentRes);
+		
 		
 		dispatcher.forward(req, res);
 	}

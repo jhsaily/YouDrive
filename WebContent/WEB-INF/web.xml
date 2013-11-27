@@ -42,4 +42,13 @@
   		<servlet-name>ReservationManager</servlet-name>
   		<url-pattern>/ReservationManager</url-pattern>
   	</servlet-mapping>
+  	
+   	<servlet>
+  		<servlet-name>MembershipManager</servlet-name>
+  		<servlet-class>YouDrive_Team11.Servlets.ReservationCtrl.MembershipManager</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>MembershipManager</servlet-name>
+  		<url-pattern>/MembershipManager</url-pattern>
+  	</servlet-mapping>
 </web-app>
