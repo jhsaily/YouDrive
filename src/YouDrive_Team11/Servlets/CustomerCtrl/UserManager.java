@@ -50,11 +50,11 @@ public class UserManager extends HttpServlet {
 	}
 	
 	public void updateEmailAddress(String un, String pw, String email){
-		dao.updateCustomer(customer.getId(), un, pw, email, customer.getFirstName(), customer.getLastName(), customer.getMembershipExpiration());
+		
 	}
 	
 	public void updateName(String un, String pw, String fName, String lName){
-		dao.updateCustomer(customer.getId(), un, pw, customer.getEmailAddress(), fName, lName, customer.getMembershipExpiration());
+		dao.updateCustomer(customer.getId(), fName, lName, customer.getMembershipExpiration());
 
 	}
 	

@@ -13,6 +13,7 @@ import YouDrive_Team11.Entity.Administrator;
 import YouDrive_Team11.Entity.Comment;
 import YouDrive_Team11.Entity.Customer;
 import YouDrive_Team11.Entity.DriversLicense;
+import YouDrive_Team11.Entity.RentalLocation;
 import YouDrive_Team11.Entity.Vehicle;
 import YouDrive_Team11.Entity.VehicleType;
 
@@ -28,6 +29,12 @@ public class YouDriveDAO {
 	private PreparedStatement updateCustomerStatement;
 	private PreparedStatement deleteCustomerStatement;
 	private PreparedStatement getAllCustomersStatement;
+	
+	private PreparedStatement changeUsernameStatement;
+	private PreparedStatement changePasswordStatement;
+	private PreparedStatement changeEmailAddressStatement;
+	
+	private PreparedStatement authenticateUserStatement;
 	
 	private PreparedStatement readAddressStatement;
 	private PreparedStatement updateAddressStatement;
@@ -60,6 +67,12 @@ public class YouDriveDAO {
 	private PreparedStatement getAllVehiclesAtLocationStatement;
 	private PreparedStatement getAllVehiclesOfTypeAtLocationStatement;
 	
+	private PreparedStatement insertRentalLocationStatement;
+	private PreparedStatement readRentalLocationStatement;
+	private PreparedStatement updateRentalLocationStatement;
+	private PreparedStatement deleteRentalLocationStatement;
+	private PreparedStatement getAllRentalLocationsStatement;
+	
 	/**
 	 * Creates an instance of the persistence class
 	 */
@@ -72,10 +85,16 @@ public class YouDriveDAO {
 			insertCustomerStatement = conn.prepareStatement("insert into users (username,password,isAdmin,emailAddress,firstName,lastName,membershipExpiration)" +
 					"values (?,?,0,?,?,?,?");
 			readCustomerStatement = conn.prepareStatement("select * from users where id=? and isAdmin=0");
-			updateCustomerStatement = conn.prepareStatement("update users set username=?,password=?,emailAddress=?,firstName=?," +
+			updateCustomerStatement = conn.prepareStatement("update users set firstName=?," +
 					"lastName=?,membershipExpiration=? where id=? and isAdmin=0");
 			deleteCustomerStatement = conn.prepareStatement("delete from users where id=? and isAdmin=0");
 			getAllCustomersStatement = conn.prepareStatement("select * from users where isAdmin=0");
+			
+			changeUsernameStatement = conn.prepareStatement("update users set username=? where isAdmin=0 and id=?");
+			changePasswordStatement = conn.prepareStatement("update users set password=? where isAdmin=0 and id=?");
+			changeEmailAddressStatement = conn.prepareStatement("update users set emailAddress=? where isAdmin=0 and id=?");
+			
+			authenticateUserStatement = conn.prepareStatement("select * from users where username=? and password=?");
 			
 			readAddressStatement = conn.prepareStatement("select * from addresses where link_id=? and type=?");
 			updateAddressStatement = conn.prepareStatement("update addresses set addrLine1=?,addrLine2=?,city=?,state=?,ZIP=?," +
@@ -118,6 +137,14 @@ public class YouDriveDAO {
 			getAllVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=?");
 			getAllVehiclesOfTypeAtLocationStatement = conn.prepareStatement("select * from vehicles" +
 					" where location_id=? and type_id=?");
+			
+			insertRentalLocationStatement = conn.prepareStatement("insert into locations (name,capacity) values " +
+					"(?,?)");
+			readRentalLocationStatement = conn.prepareStatement("select * from locations where id=?");
+			updateRentalLocationStatement = conn.prepareStatement("update locations set name=?,capacity=?" +
+					" where id=?");
+			deleteRentalLocationStatement = conn.prepareStatement("delete from locations where id=?");
+			getAllRentalLocationsStatement = conn.prepareStatement("select * from locations");
 			
 			//addCustomerStatement = conn.prepareStatement("insert into Customer (custName,custAddr,imageURL,creditLimit) values (?,?,?,?)");
 			//updateUnpaidBalanceStatement = conn.prepareStatement("update Customer set unpaidBalance = ? where id=?");
@@ -196,23 +223,17 @@ public class YouDriveDAO {
 	/**
 	 * Updates the info for a customer identified by the supplied unique identifier.
 	 * @param custID				The unique identifier of the customer to update
-	 * @param username				The new username
-	 * @param password				The new password
-	 * @param emailAddress			The new email address
 	 * @param firstName				The new first name
 	 * @param lastName				The new last name
 	 * @param membershipExpiration	The new membership expiration date
 	 */
-	public void updateCustomer(int custID, String username, String password, String emailAddress,
-			String firstName, String lastName, Date membershipExpiration){
+	public void updateCustomer(int custID, String firstName,
+			String lastName, Date membershipExpiration){
 		try{
-			updateCustomerStatement.setString(1, username);
-			updateCustomerStatement.setString(2, password);
-			updateCustomerStatement.setString(3, emailAddress);
-			updateCustomerStatement.setString(4, firstName);
-			updateCustomerStatement.setString(5, lastName);
-			updateCustomerStatement.setDate(6, membershipExpiration);
-			updateCustomerStatement.setInt(7, custID);
+			updateCustomerStatement.setString(1, firstName);
+			updateCustomerStatement.setString(2, lastName);
+			updateCustomerStatement.setDate(3, membershipExpiration);
+			updateCustomerStatement.setInt(4, custID);
 			updateCustomerStatement.executeUpdate();
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -259,6 +280,82 @@ public class YouDriveDAO {
 	}
 	
 	/**
+	 * Changes the username for the specfied user. Returns false if change is unsuccessful.
+	 * @param userID		The unique identifier of the user who's username we're changing
+	 * @param newUsername	The username we are changing to
+	 * @return				True if successful, false if unsuccessful (username is taken)
+	 */
+	public boolean changeUsername(int userID, String newUsername){
+		boolean success = false;
+		try{
+			changeUsernameStatement.setString(1, newUsername);
+			changeUsernameStatement.setInt(2, userID);
+			changeUsernameStatement.executeUpdate();
+			success = true;
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return success;
+	}
+	
+	/**
+	 * Changes the password for the specified customer. Returns false if change is unsuccessful.
+	 * @param userID		The unique identifier of the user who's password we're changing
+	 * @param newPassword	The password we are changing to
+	 * @return				True if successful, false if not.
+	 */
+	public boolean changePassword(int userID, String newPassword){
+		boolean success = false;
+		try{
+			changePasswordStatement.setString(1, newPassword);
+			changePasswordStatement.setInt(2, userID);
+			changePasswordStatement.executeUpdate();
+			success = true;
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return success;
+	}
+	
+	/**
+	 * Changes the email address for the specified user. Returns false if change is unsuccessful
+	 * @param userID			The unique identifier of the user who's email address we're changing
+	 * @param newEmailAddress	The email address we are changing to
+	 * @return					True if successful, false if unsuccessful (email address is taken)
+	 */
+	public boolean changeEmailAddress(int userID, String newEmailAddress){
+		boolean success = false;
+		try{
+			changeEmailAddressStatement.setString(1, newEmailAddress);
+			changeEmailAddressStatement.setInt(2, userID);
+			changeEmailAddressStatement.executeUpdate();
+			success = true;
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return success;
+	}
+	
+	/**
+	 * Checks to see if a username/password combo exists in the database
+	 * @param username	The username for the user
+	 * @param password	The password for the user
+	 * @return			True if a match is found, false if not found
+	 */
+	public boolean authenticateUser(String username, String password){
+		boolean success = false;
+		try{
+			authenticateUserStatement.setString(1, username);
+			authenticateUserStatement.setString(2, password);
+			ResultSet rs = authenticateUserStatement.executeQuery();
+			success = rs.next();
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return success;
+	}
+	
+	/**
 	 * If an address exists for a customer, it is updated with the new information.
 	 * If there isn't an address for a customer, one is added to the database.
 	 * @param id			The unique identifier of the customer to assign this address to
@@ -270,7 +367,7 @@ public class YouDriveDAO {
 	 * @param country		The country of the address
 	 * @return				An address object with the updated information.
 	 */
-	private Address updateAddressForCustomer(int id, String addrLine1, String addrLine2,
+	public Address updateAddressForCustomer(int id, String addrLine1, String addrLine2,
 			String city, String state, int ZIP, String country){
 		Address address = getAddressForCustomer(id);
 		int modifiedID = 0;
@@ -339,7 +436,7 @@ public class YouDriveDAO {
 	 * @param DLState		The driver's license state of issue
 	 * @return				The updated driver's license
 	 */
-	private DriversLicense updateDLForCustomer(int custID, String DLNumber, String DLState){
+	public DriversLicense updateDLForCustomer(int custID, String DLNumber, String DLState){
 		DriversLicense license = getDLForCustomer(custID);
 		int modifiedID = 0;
 		try{
@@ -801,5 +898,33 @@ public class YouDriveDAO {
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		return list;
+	}
+	
+	public RentalLocation createRentalLocation(String name, int capacity, String addrLine1,
+			String addrLine2, String city, String state, int ZIP, String country){
+		RentalLocation location = null;
+		int locationID = 0;
+		try{
+			insertRentalLocationStatement.setString(1, name);
+			insertRentalLocationStatement.setInt(2, capacity);
+			insertRentalLocationStatement.executeUpdate();
+			ResultSet key = insertRentalLocationStatement.getGeneratedKeys();
+			key.next();
+			locationID = key.getInt(1);
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return location;
+	}
+	
+	public void updateAddressForRentalLocation(int locationID, String addrLine1, 
+			String addrLine2, String city, String state, int ZIP, String country){
+		
+	}
+	
+	private Address getAddressForRentalLocation(int locationID){
+		Address address = null;
+		
+		return address;
 	}
 }
