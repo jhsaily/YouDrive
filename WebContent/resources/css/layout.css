@@ -50,6 +50,7 @@ h4
 	float:left;
 	background-color:#66665e;
 }
+
 #tagline
 {
 	margin-left:250px;
@@ -131,6 +132,13 @@ a.topnavlinkright:hover,a.topnavlinkright:active
 #dashboardpanel
 {
 	margin-left:250px;
+	width:100%;
+	height:100%;
+	background-color:#FFFFFF;
+	padding:10px;
+}
+#infopanel
+{
 	width:100%;
 	height:100%;
 	background-color:#FFFFFF;
