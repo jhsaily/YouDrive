@@ -21,11 +21,15 @@
 				<span class="dbpaneltitle">Reservation History.</span>
 				<br /><br />
 				<div class="returnlist">
-					<c:forEach var="i" begin="1" end="2">
-						<form action="cancel.jsp" method="POST">
-							Reservation Number: <c:out value="${i}"/>
+					<!-- Tanya Hey Jan, this is how a I'm going to pass in the linked list of reservations for a particular customer. 
+					Anywhere you want to display an attribute just do reservation.WhateverTheAttributeFromReservationClass
+					I'm currently using a dummy linked list that has 2 reservations with like no info in them. Change the format/whatever
+					as you want, but that's how I'm giving you the info.-->
+					<c:forEach items="${listOfReservations}" var="reservation">
+						<form action="ReservationManager" method="POST">
+							Reservation Number: ${reservation.id}
 							<br />
-							Reservation start date: XX/XX/XXXX at XX:XX pm.
+							Reservation start date: ${reservation.pickupTime}.
 							<br />
 							Reservation end date: XX/XX/XXXX at XX:XX pm.
 							<br />
@@ -33,15 +37,17 @@
 							<br />
 							Total: $XX.XX
 							<br /><br />
-							<input type="hidden" name="reservationnumber" value="${i}">
-							<input type="submit" value="Cancel Reservation?">
+							<input type="hidden" name="reservationnumber" value="${reservation.id}">
+							<input type="submit" name="cancel" value="Cancel Reservation?">
 						</form>
 						<br />
 						<hr /><br />
 					</c:forEach>
+					
 				</div>
 			</div>
 		</div>
+
 		<script type="text/javascript">
 			$(window).load(setWidth());
 			$(window).resize(function() {setWidth();});

@@ -46,7 +46,7 @@ public class AuthenticationManager extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
 
-		System.out.println("Get!");
+		System.out.println("GET!");
 		
 		//Set session
 		session=req.getSession();

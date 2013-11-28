@@ -47,9 +47,28 @@ public class ReservationManager extends HttpServlet {
 	
 	/**
 	 * Manages get requests and responses
+	 * @throws IOException 
+	 * @throws ServletException 
 	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse res){
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
+		System.out.println("Get!");
 		
+		//Set session
+		session=req.getSession();
+		customer=(Customer)session.getAttribute("currentUser");
+		
+		//Get the servlet context & the dispatcher for later use
+		ServletContext ctx=this.getServletContext();
+		RequestDispatcher dispatcher;
+		
+		//If the user clicks view history, return a list of the past reservations.
+		if(req.getParameter("clicked").equals("history")){
+			req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
+			
+			//Forward to homepage
+			dispatcher=ctx.getRequestDispatcher("/history.jsp");
+			dispatcher.forward(req, res);
+		}
 	}
 	
 	/**
@@ -68,8 +87,27 @@ public class ReservationManager extends HttpServlet {
 		//If user clicks submit on place reservation page, place a reservation
 		if(req.getParameter("placeReservation")!=null){
 			System.out.println("Placing Reservation!");
+			
+			//Update Reservation Page
+			req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
+			
+			//Forward to Reservation History page
+			dispatcher=ctx.getRequestDispatcher("/history.jsp");
 		}
 		
+		//If the user clicks cancel reservation, remove reservation from linked list
+		if(req.getParameter("cancel")!=null){
+			System.out.println("Cancelling reservation " + req.getParameter("reservationnumber") + " for " + customer.getUsername());
+			
+			//Remove the reservation
+			cancelReservation(Integer.valueOf(req.getParameter("reservationnumber")));
+			
+			//Update Reservation Page
+			req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
+			
+			//Forward to Reservation History page
+			dispatcher=ctx.getRequestDispatcher("/history.jsp");
+		}
 		
 		if(customer!=null){
 			System.out.println("The current user is: " + customer.getUsername());
@@ -77,6 +115,10 @@ public class ReservationManager extends HttpServlet {
 		}
 		else{
 			System.out.println("Please log in to make a reservation");
+			
+			//Forward to login screen
+			dispatcher=ctx.getRequestDispatcher("/index.jsp");
+			
 		}
 		
 		
@@ -101,7 +143,7 @@ public class ReservationManager extends HttpServlet {
 	 * @param reservationId
 	 */
 	public void cancelReservation(int reservationId){
-		
+		System.out.println("Reservation with number: " + reservationId + " has been removed");
 	}
 
 	/**
@@ -138,9 +180,16 @@ public class ReservationManager extends HttpServlet {
 	 * @param un		Username
 	 * @return			Returns a linked list of the reservations
 	 */
-	public LinkedList getAllReservations(String un){
-		LinkedList list=null;
-		
+	public LinkedList<Reservation> getAllReservations(String un){
+		LinkedList<Reservation> list=new LinkedList<Reservation>();
+		Reservation res1=new Reservation(5, new Date(12,3, 5), 5.7, false, null, null, null, null, customer);
+		Reservation res2=new Reservation(54, new Date(12,3, 5), 4.5, false, null, null, null, null, customer);
+		list.add(res1);
+		list.add(res2);
 		return list;
+	}
+	
+	public void loadSession(HttpServletRequest req){
+		
 	}
 }
