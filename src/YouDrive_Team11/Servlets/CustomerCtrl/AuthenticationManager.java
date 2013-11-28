@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import YouDrive_Team11.Entity.Customer;
-import YouDrive_Team11.Entity.User;
+import YouDrive_Team11.Entity.*;
 import YouDrive_Team11.Persistence.*;
 
 
@@ -30,6 +29,10 @@ public class AuthenticationManager extends HttpServlet {
 	
 	//Declare DAO
 	YouDriveDAO dao;
+	
+	//Temporary customer and admin
+	Customer customer;
+	Administrator admin;
 	
 	/**
 	 * Constructor
@@ -70,15 +73,12 @@ public class AuthenticationManager extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
 		
-		System.out.println("Post!");
+		System.out.println("POST!");
 		
 		//Get the servlet context & the dispatcher for later use
 		ServletContext ctx=this.getServletContext();
 		RequestDispatcher dispatcher;
 		
-		//DELETE ME LATER
-		boolean admin=true;
-		boolean cust=true;
 		
 		//Set session
 		session=req.getSession();
@@ -95,14 +95,17 @@ public class AuthenticationManager extends HttpServlet {
 			System.out.println("Successful Authentication!");
 			
 			//Set the session user
-			session.setAttribute("currentUser", login(un, pw));
+			//session.setAttribute("currentUser", login(un, pw));
 			
 			//If the user is an administrator, take them to the admin dashboard
 			if(un.equals("admin")){
 				//UNCOMMENT ME if(authenticateUser(un, pw).isAdmin()){ 
 				
 				//Bind objects to the user's session, e.g. Customer, Reservation objects
+				session.setAttribute("currentUser", admin);
 				
+				//If the user is an admin, set the user type to admin
+				session.setAttribute("userType", "admin");
 				
 				dispatcher=ctx.getRequestDispatcher("/admindashboard.jsp");
 				dispatcher.forward(req, res);
@@ -110,7 +113,10 @@ public class AuthenticationManager extends HttpServlet {
 			else{
 				
 				//Bind objects to the user's session, e.g. Customer, Reservation objects
+				session.setAttribute("currentUser", login(un, pw));
 				
+				//If the user is a customer, set the user type to customer
+				session.setAttribute("userType", "customer");
 				
 				dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
 				dispatcher.forward(req, res);

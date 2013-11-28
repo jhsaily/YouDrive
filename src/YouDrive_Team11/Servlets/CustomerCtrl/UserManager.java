@@ -80,7 +80,21 @@ public class UserManager extends HttpServlet {
 			dispatcher=ctx.getRequestDispatcher("/index.jsp");
 			dispatcher.forward(req, res);
 		}
-		
+		//If the user clicks update profile
+		if(req.getParameter("updateprofile")!=null){
+			/*UNCOMMENT ME
+			updatePassword(customer.getUsername(), req.getParameter("currentpassword"), req.getParameter("newpassword"));
+			updateName(customer.getUsername(), req.getParameter("firstname"), req.getParameter("lastname"));
+			updateEmailAddress(customer.getUsername(), req.getParameter("email"));
+			updateResidenceAddress(customer.getUsername(), req.getParameter("addressline1"), req.getParameter("addressline2"), Integer.valueOf(req.getParameter("zip")), req.getParameter("city"), req.getParameter("state"), req.getParameter("country"));
+			updateDriversLicense(customer.getUsername(), req.getParameter("licensenum"), req.getParameter("licensestate"));
+			*/
+			System.out.println("User Information Updated!");
+			
+			//Forward to dashboard
+			dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+			dispatcher.forward(req, res);
+		}
 	}
 	
 	/**
