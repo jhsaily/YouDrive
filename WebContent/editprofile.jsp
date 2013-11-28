@@ -26,27 +26,27 @@
 					<br />
 					<input type="password" name="newpassword" placeholder="New Password">
 					<br />
-					<input type="text" name="firstname" placeholder="First Name" required>
+					<input type="text" name="firstname" value="${firstName}" placeholder="First Name" required>
 					<br />
-					<input type="text" name="lastname" placeholder="Last Name" required>
+					<input type="text" name="lastname" value="${lastName}" placeholder="Last Name" required>
 					<br />
-					<input type="text" name="email" placeholder="Email Address" required>
+					<input type="text" name="email" value="${emailAddress}" placeholder="Email Address" required>
 					<br />
-					<input type="text" name="addressline1" placeholder="Address Line 1" required>
+					<input type="text" name="addressline1" value="${addrLine1}" placeholder="Address Line 1" required>
 					<br />
-					<input type="text" name="addressline2" placeholder="Address Line 2">
+					<input type="text" name="addressline2" value="${addrLine2}" placeholder="Address Line 2">
 					<br />
-					<input type="text" name="city" placeholder="City" required>
+					<input type="text" name="city" value="${city}" placeholder="City" required>
 					<br />
-					<input type="text" name="zip" placeholder="Zip Code" required>
+					<input type="text" name="zip" value="${zip}" placeholder="Zip Code" required>
 					<br />
-					<input type="text" name="state" placeholder="State" required
+					<input type="text" name="state" value="${state}" placeholder="State" required
 					><br />
-					<input type="text" name="country" placeholder="Country" required>
+					<input type="text" name="country" value="${country}" placeholder="Country" required>
 					<br />
-					<input type="text" name="licensenum" placeholder="Driver's License #" required>
+					<input type="text" name="licensenum" value="${licenseNumber}" placeholder="Driver's License #" required>
 					<br />
-					<input type="text" name="licensestate" placeholder="Driver's License State" required>
+					<input type="text" name="licensestate" value="${licenseState}" placeholder="Driver's License State" required>
 					<br /><br />
 					<input type="submit" name="updateprofile" value="Submit">
 				</form>

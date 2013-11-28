@@ -28,21 +28,21 @@
 					<br />
 					<input type="text" name="cardverification" placeholder="Card Security Code" required>
 					<br />
-					<input type="text" name="firstname" placeholder="First Name" required>
+					<input type="text" name="cardexpmonth" placeholder="Card Expiration Month" value="${cardExpirationMonth}" required>
+					 / 
+					<input type="text" name="cardexpyear" placeholder="Card Expiration Year" value="${cardExpirationYear}" required>
 					<br />
-					<input type="text" name="lastname" placeholder="Last Name" required>
+					<input type="text" name="addressline1" placeholder="Billing Address Line 1" value="${billingAddress.streetAddrLine1}" required>
 					<br />
-					<input type="text" name="addressline1" placeholder="Billing Address Line 1" required>
+					<input type="text" name="addressline2" placeholder="Billing Address Line 2" value="${billingAddress.streetAddrLine2}">
 					<br />
-					<input type="text" name="addressline2" placeholder="Billing Address Line 2">
+					<input type="text" name="city" placeholder="Billing City" value="${billingAddress.city}" required>
 					<br />
-					<input type="text" name="city" placeholder="Billing City" required>
+					<input type="text" name="zip" placeholder="Billing Zip Code" value="${billingAddress.zipCode}" required>
 					<br />
-					<input type="text" name="zip" placeholder="Billing Zip Code" required>
-					<br />
-					<input type="text" name="state" placeholder="Billing State" required
+					<input type="text" name="state" placeholder="Billing State" value="${billingAddress.state}" required
 					><br />
-					<input type="text" name="country" placeholder="Billing Country" required>
+					<input type="text" name="country" placeholder="Billing Country" value="${billingAddress.country}" required>
 					<br /><br />
 					<input type="submit" name="updatepayment" value="Submit">
 				</form>
