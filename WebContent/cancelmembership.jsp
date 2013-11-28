@@ -18,24 +18,14 @@
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav.html" %>
 			<div id="dashboardpanel">
-			<!-- TODO: script to automatically calculate cost based on aquired price per month values -->
-				<span class="dbpaneltitle">Extend your Membership.</span>
+			<!-- TODO: script to automatically get # of months left in membership -->
+				<span class="dbpaneltitle">Cancel your Membership.</span>
 				<br /><br />
-				Here you can extend your membership for YouDrive.
+				You currently have <span id="numofmonths">X</span> months left in your membership.
 				<br /><br />
-				Just enter the number of months to renew by and we'll handle the rest.
+				Canceling is non-refundable. Would you like to continue?
 				<br /><br />
-				<form action="renew" method="POST">
-					Renew your membership for
-					<input type="number" name="months" value="0">
-					, and then you pay $<span id="ppm">X</span> per month.
-					<br /><br />
-					That comes to a total of $<span id="ptotal">X</span>.
-					<br /><br />
-					Is this okay?
-					<br /><br />
-					<input type="submit" style="float:left;" value="Yes"> <input type="submit" style="float:right;" value="No" formaction="index.jsp">
-				</form>
+				<a name="cancel" href="MembershipManager?clicked=cancel">Yes, cancel my membership.</a>
 			</div>
 		</div>
 		<script type="text/javascript">
