@@ -27,7 +27,7 @@
 					<br />A series of questions will follow to finalize the process.
 					<br /><br />
 					<c:forEach items="${listOfActiveReservations}" var="reservation">
-						<form action="returnform.jsp" method="POST">
+						<form action="ReservationManager" method="POST">
 							Reservation Number: ${reservation.id}
 							<br />
 							Vehicle Type: ${reservation.vehicle.vehicleType.description}
@@ -35,7 +35,7 @@
 							Reservation start date: ${reservation.pickupTime}
 							<br />
 							<input type="hidden" name="reservationnumber" value="${reservation.id}">
-							<input type="submit" value="Return?">
+							<input type="submit" name="gotoreturnform" value="Return?">
 						</form>
 						<br />
 						<hr /><br />

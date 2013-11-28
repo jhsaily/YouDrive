@@ -21,7 +21,7 @@
 				<span class="dbpaneltitle">Return a Vehicle.</span>
 				<br /><br />
 				<form action="returnvehicle" method="POST">
-					If you would like to return the vehicle, please fill out the following information before continuing.
+					If you would like to return the vehicle, with reservation number, ${reservationNum}, please fill out the following information before continuing.
 					<br /><br />
 					To reasonable standards, when you received the vehicle it was in a
 					<select name="prevstate">

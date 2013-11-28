@@ -95,6 +95,14 @@ public class ReservationManager extends HttpServlet {
 						dispatcher=ctx.getRequestDispatcher("/history.jsp");
 						dispatcher.forward(req, res);
 					}
+					
+					if(req.getParameter("clicked").equals("return")){
+						req.setAttribute("listOfActiveReservations", getAllReservations(customer.getUsername()));
+
+						//Forward to Reservation History page
+						dispatcher=ctx.getRequestDispatcher("/return.jsp");
+						dispatcher.forward(req, res);
+					}
 
 				}//END CUSTOMER LOGIC
 
@@ -182,20 +190,18 @@ public class ReservationManager extends HttpServlet {
 						dispatcher=ctx.getRequestDispatcher("/history.jsp");
 						dispatcher.forward(req, res);
 					}
+					
+					//If the user clicks return on one of his/her reservations, send them to the return form with a res#
+					if(req.getParameter("gotoreturnform")!=null){
+						req.setAttribute("reservationNum", req.getParameter("reservationnumber"));
+						
+						//Forward to Return form page
+						dispatcher=ctx.getRequestDispatcher("/returnform.jsp");
+						dispatcher.forward(req, res);
+					}
+					
 				}//END CUSTOMER LOGIC
-				/*	
-				if(customer!=null){
-					System.out.println("The current user is: " + customer.getUsername());
-
-				}
-				else{
-					System.out.println("Please log in to make a reservation");
-
-					//Forward to login screen
-					dispatcher=ctx.getRequestDispatcher("/index.jsp");
-					dispatcher.forward(req, res);
-				}
-				 */
+		
 			}
 		}
 
