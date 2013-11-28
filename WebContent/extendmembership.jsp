@@ -25,7 +25,7 @@
 				<br /><br />
 				Just enter the number of months to renew by and we'll handle the rest.
 				<br /><br />
-				<form action="renew" method="POST">
+				<form action="MembershipManager" method="POST">
 					Renew your membership for
 					<input type="number" name="months" value="0">
 					, and then you pay $<span id="ppm">${membershipMonthlyPrice}</span> per month.
@@ -34,7 +34,7 @@
 					<br /><br />
 					Is this okay?
 					<br /><br />
-					<input type="submit" style="float:left;" value="Yes"> <input type="submit" style="float:right;" value="No" formaction="index.jsp">
+					<input type="submit" name="extend" style="float:left;" value="Yes"> <input type="submit" style="float:right;" value="No" formaction="dashboard.jsp">
 				</form>
 			</div>
 		</div>

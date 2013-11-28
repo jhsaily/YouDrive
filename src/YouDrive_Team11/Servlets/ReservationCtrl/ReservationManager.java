@@ -180,7 +180,7 @@ public class ReservationManager extends HttpServlet {
 						//Remove the reservation
 						cancelReservation(Integer.valueOf(req.getParameter("reservationnumber")));
 
-						//Update Reservation Page
+						//Update Reservation History Page
 						LinkedList<Reservation> updated=new LinkedList<Reservation>(); //DELETE ME
 						updated=getAllReservations(customer.getUsername()); //DELETE ME
 						updated.remove(); //DELETE ME
@@ -197,6 +197,18 @@ public class ReservationManager extends HttpServlet {
 						
 						//Forward to Return form page
 						dispatcher=ctx.getRequestDispatcher("/returnform.jsp");
+						dispatcher.forward(req, res);
+					}
+					
+					//If the user submits the return form, add that reservation to their history, remove from active reservations
+					if(req.getParameter("submitReturn")!=null){
+						System.out.println("Rental successfully returned!");
+						
+						//Update Reservation History
+						req.setAttribute("listOfReservations", getAllReservations(customer.getUsername())); //UPDATE ME to pass in the correct linked list
+						
+						//Forward to Reservation History page
+						dispatcher=ctx.getRequestDispatcher("/history.jsp");
 						dispatcher.forward(req, res);
 					}
 					

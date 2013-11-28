@@ -20,7 +20,7 @@
 			<div id="dashboardpanel">
 				<span class="dbpaneltitle">Return a Vehicle.</span>
 				<br /><br />
-				<form action="returnvehicle" method="POST">
+				<form action="ReservationManager" method="POST">
 					If you would like to return the vehicle, with reservation number, ${reservationNum}, please fill out the following information before continuing.
 					<br /><br />
 					To reasonable standards, when you received the vehicle it was in a
@@ -42,7 +42,7 @@
 					state.
 					<br /><br />
 					<textarea name="comments" style="width:100%;" rows="20" placeholder="Further comments go in here."></textarea>
-					<input type="submit" value="Return!">
+					<input type="submit" name="submitReturn" value="Return!">
 				</form>
 			</div>
 		</div>
