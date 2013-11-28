@@ -106,6 +106,25 @@ public class UserManager extends HttpServlet {
 						dispatcher=ctx.getRequestDispatcher("/editprofile.jsp");
 						dispatcher.forward(req, res);
 					}
+					
+					//If the user clicks edit payment information, send already existent info to form
+					if(req.getParameter("clicked").equals("payment")){
+						
+						//Send in already existent user information to jsp vars
+						
+						//req.setAttribute("cardExpirationMonth", customer.getPaymentInfo().getCardExpirationMonth());
+						//req.setAttribute("cardExpirationYear", customer.getPaymentInfo().getCardExpirationYear());
+						req.setAttribute("addrLine1", customer.getMailingAddress().getStreetAddrLine1());
+						req.setAttribute("addrLine2", customer.getMailingAddress().getStreetAddrLine2());
+						req.setAttribute("city", customer.getMailingAddress().getCity());
+						req.setAttribute("zip", customer.getMailingAddress().getZipCode());
+						req.setAttribute("state", customer.getMailingAddress().getState());
+						req.setAttribute("country", customer.getMailingAddress().getCountry());
+						
+						//Forward to dashboard
+						dispatcher=ctx.getRequestDispatcher("/editpayment.jsp");
+						dispatcher.forward(req, res);
+					}
 				}//END CUSTOMER LOGIC
 
 				//ADMIN LOGIC
@@ -206,6 +225,19 @@ public class UserManager extends HttpServlet {
 						dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
 						dispatcher.forward(req, res);
 					}
+					
+					//When the user submits his/her updated payment information, make the changes in the db
+					if(req.getParameter("updatepayment")!=null){
+						/*UNCOMMENT ME
+						updatePaymentInfo(customer.getUsername(), customer.getParameter("currentpassword"), customer.getParameter("cardnumber"), customer.getParameter("addressline1"), customer.getParameter("addressline2"), customer.getParameter("zip"));
+						*/
+						System.out.println("Payment Information Updated!");
+						
+						//Forward to dashboard
+						dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+						dispatcher.forward(req, res);
+					}
+					
 				}//END CUSTOMER LOGIC
 
 				//ADMIN LOGIC
