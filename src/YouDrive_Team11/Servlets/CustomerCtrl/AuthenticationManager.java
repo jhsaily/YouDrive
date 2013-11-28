@@ -60,8 +60,19 @@ public class AuthenticationManager extends HttpServlet {
 		
 		//If the user clicks logout, end the session.
 		if(req.getParameter("clicked").equals("logout")){
-			logout();
 			
+			//If the user logging out is a customer
+			if(session.getAttribute("userType").equals("customer")){
+				System.out.println("User: " + ((Customer)session.getAttribute("currentUser")).getUsername() +  " is logging out.");	
+			}
+			
+			//If the user logging out is an admin
+			else{
+				System.out.println("User: " + ((Administrator)session.getAttribute("currentUser")).getUsername() +  " is logging out.");	
+			}
+			
+			logout();
+
 			//Forward to homepage
 			dispatcher=ctx.getRequestDispatcher("/index.jsp");
 			dispatcher.forward(req, res);
@@ -102,6 +113,7 @@ public class AuthenticationManager extends HttpServlet {
 				//UNCOMMENT ME if(authenticateUser(un, pw).isAdmin()){ 
 				
 				//Bind objects to the user's session, e.g. Customer, Reservation objects
+				admin=new Administrator(5, "Adamistrator", "pw"); //DELETE ME LATER
 				session.setAttribute("currentUser", admin);
 				
 				//If the user is an admin, set the user type to admin
