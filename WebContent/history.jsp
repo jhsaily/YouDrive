@@ -29,11 +29,11 @@
 						<form action="ReservationManager" method="POST">
 							Reservation Number: ${reservation.id}
 							<br />
-							Reservation start date: ${reservation.pickupTime}.
+							Reservation start date: ${reservation.pickupTime}
 							<br />
-							Reservation end date: XX/XX/XXXX at XX:XX pm.
+							Reservation end date: ${reservation.timeDue}
 							<br />
-							Vehicle Type: X
+							Vehicle Type: ${reservation.vehicle.vehicleType.description}
 							<br />
 							Total: $XX.XX
 							<br /><br />

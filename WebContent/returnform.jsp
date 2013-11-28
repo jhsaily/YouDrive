@@ -23,7 +23,7 @@
 				<form action="returnvehicle" method="POST">
 					If you would like to return the vehicle, please fill out the following information before continuing.
 					<br /><br />
-					To reasonable standards, when you recieved the vehicle it was in a
+					To reasonable standards, when you received the vehicle it was in a
 					<select name="prevstate">
 						<option value="awesome">Awesome</option>
 						<option value="good">Good</option>

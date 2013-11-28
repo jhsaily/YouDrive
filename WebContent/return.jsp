@@ -26,15 +26,15 @@
 					To return a vehicle, please click on it in the list below.
 					<br />A series of questions will follow to finalize the process.
 					<br /><br />
-					<c:forEach var="i" begin="1" end="2">
+					<c:forEach items="${listOfActiveReservations}" var="reservation">
 						<form action="returnform.jsp" method="POST">
-							Reservation Number: <c:out value="${i}"/>
+							Reservation Number: ${reservation.id}
 							<br />
-							Vehicle Type: X
+							Vehicle Type: ${reservation.vehicle.vehicleType.description}
 							<br />
-							Reservation start date: XX/XX/XXXX at XX:XX pm.
+							Reservation start date: ${reservation.pickupTime}
 							<br />
-							<input type="hidden" name="reservationnumber" value="${i}">
+							<input type="hidden" name="reservationnumber" value="${reservation.id}">
 							<input type="submit" value="Return?">
 						</form>
 						<br />

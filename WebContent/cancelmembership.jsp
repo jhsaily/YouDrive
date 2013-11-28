@@ -18,14 +18,13 @@
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav.html" %>
 			<div id="dashboardpanel">
-			<!-- TODO: script to automatically get # of months left in membership -->
 				<span class="dbpaneltitle">Cancel your Membership.</span>
 				<br /><br />
-				You currently have <span id="numofmonths">X</span> months left in your membership.
+				You currently have <span id="numofmonths">${memTimeRemaining}</span> months left in your membership.
 				<br /><br />
 				Canceling is non-refundable. Would you like to continue?
 				<br /><br />
-				<a name="cancel" href="MembershipManager?clicked=cancel">Yes, cancel my membership.</a>
+				<a href="MembershipManager?clicked=cancel">Yes, cancel my membership.</a>
 			</div>
 		</div>
 		<script type="text/javascript">
