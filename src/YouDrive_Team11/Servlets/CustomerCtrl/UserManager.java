@@ -75,6 +75,10 @@ public class UserManager extends HttpServlet {
 		//If the user clicks Forgot Password, send an email with a new one to them
 		if(req.getParameter("forgotPassword")!=null){
 			resetPassword(req.getParameter("email"));
+			
+			//Forward to login screen
+			dispatcher=ctx.getRequestDispatcher("/index.jsp");
+			dispatcher.forward(req, res);
 		}
 		
 	}

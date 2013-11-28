@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import YouDrive_Team11.Entity.Customer;
+import YouDrive_Team11.Entity.User;
 import YouDrive_Team11.Persistence.*;
 
 
@@ -47,6 +48,21 @@ public class AuthenticationManager extends HttpServlet {
 
 		System.out.println("Get!");
 		
+		//Set session
+		session=req.getSession();
+				
+		//Get the servlet context & the dispatcher for later use
+		ServletContext ctx=this.getServletContext();
+		RequestDispatcher dispatcher;
+		
+		//If the user clicks logout, end the session.
+		if(req.getParameter("clicked").equals("logout")){
+			logout();
+			
+			//Forward to homepage
+			dispatcher=ctx.getRequestDispatcher("/index.jsp");
+			dispatcher.forward(req, res);
+		}
 	}
 	
 	/**
@@ -60,6 +76,10 @@ public class AuthenticationManager extends HttpServlet {
 		ServletContext ctx=this.getServletContext();
 		RequestDispatcher dispatcher;
 		
+		//DELETE ME LATER
+		boolean admin=true;
+		boolean cust=true;
+		
 		//Set session
 		session=req.getSession();
 		
@@ -70,15 +90,31 @@ public class AuthenticationManager extends HttpServlet {
 		System.out.println("The user, " + un + ", is trying to log in.");
 		
 		//If login is successful, direct user to dashboard
-		if(authenticateUser(un, pw)){
+		if(admin){
+		//UNCOMMENT ME if(authenticateUser(un, pw)!=null){
 			System.out.println("Successful Authentication!");
 			
-			//Bind objects to the user's session, e.g. Customer, Reservation objects
-			session.setAttribute("currentCustomer", login(un, pw));
+			//Set the session user
+			session.setAttribute("currentUser", login(un, pw));
 			
-			
-			dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
-			dispatcher.forward(req, res);
+			//If the user is an administrator, take them to the admin dashboard
+			if(admin){
+				//UNCOMMENT ME if(authenticateUser(un, pw).isAdmin()){ 
+				
+				//Bind objects to the user's session, e.g. Customer, Reservation objects
+				
+				
+				dispatcher=ctx.getRequestDispatcher("/admindashboard.jsp");
+				dispatcher.forward(req, res);
+			}
+			else{
+				
+				//Bind objects to the user's session, e.g. Customer, Reservation objects
+				
+				
+				dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+				dispatcher.forward(req, res);
+			}
 		}
 		else{
 			System.out.println("Incorrect user credentials");
@@ -105,13 +141,10 @@ public class AuthenticationManager extends HttpServlet {
 	 * @param pw		The password
 	 * @return			True if the user can be verified, false otherwise
 	 */
-	public boolean authenticateUser(String un, String pw){
+	public User authenticateUser(String un, String pw){
 		
-		//return dao.authenticateUser(un, pw);
-		
-		//Since Randy hasn't made the tables yet, we're going to return true every time. DELETE ME
-		
-		return true;
+		User user= dao.authenticateUser(un, pw);
+		return user;
 	}
 	
 	/**
