@@ -14,6 +14,7 @@ import YouDrive_Team11.Entity.Comment;
 import YouDrive_Team11.Entity.Customer;
 import YouDrive_Team11.Entity.DriversLicense;
 import YouDrive_Team11.Entity.RentalLocation;
+import YouDrive_Team11.Entity.User;
 import YouDrive_Team11.Entity.Vehicle;
 import YouDrive_Team11.Entity.VehicleType;
 
@@ -337,22 +338,29 @@ public class YouDriveDAO {
 	}
 	
 	/**
-	 * Checks to see if a username/password combo exists in the database
+	 * Authenticates a user to the YouDrive system
 	 * @param username	The username for the user
 	 * @param password	The password for the user
-	 * @return			True if a match is found, false if not found
+	 * @return			A user object upon successful login. Null if unsuccessful.
 	 */
-	public boolean authenticateUser(String username, String password){
-		boolean success = false;
+	public User authenticateUser(String username, String password){
+		User user = null;
 		try{
 			authenticateUserStatement.setString(1, username);
 			authenticateUserStatement.setString(2, password);
 			ResultSet rs = authenticateUserStatement.executeQuery();
-			success = rs.next();
+			if(rs.next()){
+				boolean isAdmin = rs.getBoolean("isAdmin");
+				if(isAdmin){
+					user = readAdministrator(rs.getInt("id"));
+				}else{
+					user = readCustomer(rs.getInt("id"));
+				}
+			}
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
-		return success;
+		return user;
 	}
 	
 	/**
@@ -900,6 +908,18 @@ public class YouDriveDAO {
 		return list;
 	}
 	
+	/**
+	 * Creates a rental location in the YouDrive system
+	 * @param name			The name of the location (ex. Southside)
+	 * @param capacity		The maximum number of vehicles this location can hold
+	 * @param addrLine1		Line 1 of the address
+	 * @param addrLine2		Line 2 of the address
+	 * @param city			Rental location address city
+	 * @param state			Rental location address state
+	 * @param ZIP			Rental location zip code
+	 * @param country		Rental location country
+	 * @return				A RentalLocation object encapsulating this new data
+	 */
 	public RentalLocation createRentalLocation(String name, int capacity, String addrLine1,
 			String addrLine2, String city, String state, int ZIP, String country){
 		RentalLocation location = null;
@@ -911,20 +931,159 @@ public class YouDriveDAO {
 			ResultSet key = insertRentalLocationStatement.getGeneratedKeys();
 			key.next();
 			locationID = key.getInt(1);
+			Address address = getAddressForRentalLocation(locationID);
+			LinkedList<Vehicle> vehicles = getAllVehicles(locationID);
+			location = new RentalLocation(locationID, name, capacity, address, vehicles);
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		return location;
 	}
 	
-	public void updateAddressForRentalLocation(int locationID, String addrLine1, 
-			String addrLine2, String city, String state, int ZIP, String country){
-		
+	/**
+	 * Retrieves the rental location from the YouDrive system associated with
+	 * the given unique identifier
+	 * @param locationID	The unique identifier of the rental location for which we are searching
+	 * @return				A RentalLocation object given by the unique ID.
+	 */
+	public RentalLocation readRentalLocation(int locationID){
+		RentalLocation location = null;
+		try{
+			readRentalLocationStatement.setInt(1, locationID);
+			ResultSet rs = readRentalLocationStatement.executeQuery();
+			if(rs.next()){
+				Address address = getAddressForRentalLocation(locationID);
+				LinkedList<Vehicle> vehicles = getAllVehicles(locationID);
+				location = new RentalLocation(rs.getInt("id"), rs.getString("name"),
+						rs.getInt("capacity"), address, vehicles);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return location;
 	}
 	
+	/**
+	 * Updates the name and capacity of a rental location
+	 * @param locationID	The unique identifier of the rental location
+	 * @param name			The new name of the location
+	 * @param capacity		The new capacity of the location
+	 */
+	public void updateRentalLocation(int locationID, String name, int capacity){
+		try{
+			updateRentalLocationStatement.setString(1, name);
+			updateRentalLocationStatement.setInt(2, capacity);
+			updateRentalLocationStatement.setInt(3, locationID);
+			updateRentalLocationStatement.executeUpdate();
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Removes a rental location from the YouDrive system
+	 * @param locationID	The unique identifier of the rental location to be removed
+	 */
+	public void deleteRentalLocation(int locationID){
+		try{
+			deleteRentalLocationStatement.setInt(1, locationID);
+			deleteRentalLocationStatement.executeUpdate();
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Returns a list of rental locations in the YouDrive system.
+	 * Each RentalLocation object contains a list of Vehicle objects
+	 * located at that location.
+	 * @return	A LinkedList of Vehicle objects at a location
+	 */
+	public LinkedList<RentalLocation> getAllRentalLocations(){
+		LinkedList<RentalLocation> list = new LinkedList<RentalLocation>();
+		try{
+			ResultSet rs = getAllRentalLocationsStatement.executeQuery();
+			while(rs.next()){
+				int id = rs.getInt("id");
+				Address address = getAddressForRentalLocation(id);
+				LinkedList<Vehicle> vehicles = getAllVehicles(id);
+				RentalLocation location = new RentalLocation(id, rs.getString("name"),
+						rs.getInt("capacity"), address, vehicles);
+				list.add(location);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return list;
+	}
+	
+	/**
+	 * Updates the address in the YouDrive system for a given location
+	 * @param locationID	The unique identifier of the rental location to update
+	 * @param addrLine1		The new address line 1
+	 * @param addrLine2		The new address line 2
+	 * @param city			The new address city
+	 * @param state			The new address state
+	 * @param ZIP			The new address zip code
+	 * @param country		The new address country
+	 */
+	public void updateAddressForRentalLocation(int locationID, String addrLine1, 
+			String addrLine2, String city, String state, int ZIP, String country){
+		Address address = getAddressForRentalLocation(locationID);
+		int modifiedID = 0;
+		try{
+			if(address != null){
+				// This customer already has an address. Let's update it.
+				updateAddressStatement.setString(1, addrLine1);
+				updateAddressStatement.setString(2, addrLine2);
+				updateAddressStatement.setString(3, city);
+				updateAddressStatement.setString(4, state);
+				updateAddressStatement.setInt(5, ZIP);
+				updateAddressStatement.setString(6, country);
+				updateAddressStatement.setInt(7, address.getId());
+				updateAddressStatement.executeUpdate();
+			}else{
+				// This customer does not have an address. Let's make one.
+				insertAddressStatement.setString(1, addrLine1);
+				insertAddressStatement.setString(2, addrLine2);
+				insertAddressStatement.setString(3, city);
+				insertAddressStatement.setString(4, state);
+				insertAddressStatement.setInt(5, ZIP);
+				insertAddressStatement.setString(6, country);
+				insertAddressStatement.setInt(7, locationID);
+				insertAddressStatement.setString(8, "rental_location");
+				insertAddressStatement.executeUpdate();
+				ResultSet key = insertAddressStatement.getGeneratedKeys();
+				key.next();
+				modifiedID = key.getInt(1);
+			}
+			address = new Address(modifiedID, addrLine1, addrLine2, city, state, ZIP, country);
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Retrieves the address for a given rental location
+	 * @param locationID	The unique identifier of the rental location
+	 * @return				An Address object representing the address of the rental location
+	 */
 	private Address getAddressForRentalLocation(int locationID){
 		Address address = null;
-		
+		int id = 0;
+		try{
+			readAddressStatement.setInt(1, locationID);
+			readAddressStatement.setString(2, "rental_location");
+			ResultSet rs = readAddressStatement.executeQuery();
+			if(rs.next()){
+				id = rs.getInt("id");
+				address = new Address(id, rs.getString("addrLine1"), rs.getString("addrLine2"),
+						rs.getString("city"), rs.getString("state"),
+						rs.getInt("ZIP"), rs.getString("country"));
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
 		return address;
 	}
 }

@@ -17,5 +17,6 @@ public class Administrator extends User {
 		this.id = id;
 		this.username = username;
 		this.password = password;
+		this.isAdmin = true;
 	}
 }

@@ -21,6 +21,11 @@ public abstract class User {
 	 * The password for the user to log in.
 	 */
 	protected String password;
+	
+	/**
+	 * Whether the user is an admin or not
+	 */
+	protected boolean isAdmin;
 
 	/**
 	 * @return the id
@@ -34,6 +39,14 @@ public abstract class User {
 	 */
 	public String getUsername() {
 		return username;
+	}
+	
+	/**
+	 * Returns whether or not a user is an admin
+	 * @return True if the user is an admin. False if not.
+	 */
+	public boolean isAdmin(){
+		return isAdmin;
 	}
 	
 }

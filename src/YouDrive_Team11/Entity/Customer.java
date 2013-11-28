@@ -65,6 +65,7 @@ public class Customer extends User {
 		this.membershipExpiration = membershipExpiration;
 		this.driversLicense = dl;
 		this.mailingAddress = mailingAddress;
+		this.isAdmin = false;
 	}
 	
 	/**
