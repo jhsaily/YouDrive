@@ -98,7 +98,7 @@ public class AuthenticationManager extends HttpServlet {
 			session.setAttribute("currentUser", login(un, pw));
 			
 			//If the user is an administrator, take them to the admin dashboard
-			if(admin){
+			if(admin==false){
 				//UNCOMMENT ME if(authenticateUser(un, pw).isAdmin()){ 
 				
 				//Bind objects to the user's session, e.g. Customer, Reservation objects

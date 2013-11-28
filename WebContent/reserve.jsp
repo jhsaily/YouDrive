@@ -20,7 +20,7 @@
 			<div id="dashboardpanel">
 				<span class="dbpaneltitle">Reserve a Vehicle.</span>
 				<br /><br />
-				<form action="reservationmanager" class="formreserve" method="POST">
+				<form action="ReservationManager" class="formreserve" method="POST">
 					<select class="reserveselect" name="location" size="15">
 						<c:forEach var="i" begin="1" end="20">
 							<option value="location${i}">Location <c:out value="${i}"/></option>
@@ -33,7 +33,7 @@
 						</c:forEach>
 					</select>
 					<br /><br />
-					<input type="submit" value="Submit">
+					<input type="submit" name="placeReservation" value="Submit">
 				</form>
 			</div>
 		</div>

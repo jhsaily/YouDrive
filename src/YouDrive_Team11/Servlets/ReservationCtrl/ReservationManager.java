@@ -63,9 +63,12 @@ public class ReservationManager extends HttpServlet {
 		RequestDispatcher dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
 		
 		//Get the current session attributes
-		customer=(Customer)req.getSession().getAttribute("currentCustomer");
+		customer=(Customer)req.getSession().getAttribute("currentUser");
 		
-		
+		//If user clicks submit on place reservation page, place a reservation
+		if(req.getParameter("placeReservation")!=null){
+			System.out.println("Placing Reservation!");
+		}
 		
 		
 		if(customer!=null){
