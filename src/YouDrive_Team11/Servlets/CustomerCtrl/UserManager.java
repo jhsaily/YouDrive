@@ -31,8 +31,9 @@ public class UserManager extends HttpServlet {
 	//Declare DAO
 	YouDriveDAO dao;
 	
-	//Declare temporary customer object
+	//Declare temporary customer and admin objects
 	Customer customer;
+	Administrator admin;
 	
 	/**
 	 * Constructor
@@ -46,8 +47,81 @@ public class UserManager extends HttpServlet {
 	
 	/**
 	 * Manages all get requests and responses
+	 * @throws IOException 
+	 * @throws ServletException 
 	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse res){
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
+		
+		//Get Servlet Context and dispatcher
+		ServletContext ctx=this.getServletContext();
+		RequestDispatcher dispatcher;
+		
+		//If a session exists, then do everything, if not direct to log in : this prevents a user from going to a page without logging in.
+		if(req.getSession().getAttribute("userType")!=null){
+
+			//Get the session
+			session=req.getSession();
+
+			//Check if user is admin or customer and get appropriate session data
+			if(session.getAttribute("userType").equals("customer")){
+				//Get the current session attributes
+				customer=(Customer)req.getSession().getAttribute("currentUser");
+			}
+			else{
+				//Get the current session attributes
+				admin=(Administrator)req.getSession().getAttribute("currentUser");
+			}
+
+			//Double Check if session exists, if not go to login screen MIGHT BE REDUNDANT DELETE IF SO
+			if(customer==null && admin==null){
+				System.out.println("No session");
+				dispatcher=ctx.getRequestDispatcher("/index.jsp");
+				dispatcher.forward(req, res);
+			}//end if
+
+			//If session exists (one of the objects are filled), do either Customer or Admin logic
+			else{
+
+				//CUSTOMER LOGIC
+				if(customer!=null){
+					System.out.println(customer.getUsername() + " is currently logged in.");
+
+					//If the user clicks update profile
+					if(req.getParameter("clicked").equals("update")){
+						
+						//Send in already existent user information to jsp vars
+						req.setAttribute("firstName", customer.getFirstName());
+						req.setAttribute("lastName", customer.getLastName());
+						req.setAttribute("emailAddress", customer.getEmailAddress());
+						req.setAttribute("addrLine1", customer.getMailingAddress().getStreetAddrLine1());
+						req.setAttribute("addrLine2", customer.getMailingAddress().getStreetAddrLine2());
+						req.setAttribute("city", customer.getMailingAddress().getCity());
+						req.setAttribute("zip", customer.getMailingAddress().getZipCode());
+						req.setAttribute("state", customer.getMailingAddress().getState());
+						req.setAttribute("country", customer.getMailingAddress().getCountry());
+						//req.setAttribute("licenseNumber", customer.getDriversLicense().getLicenseNumber());
+						//req.setAttribute("licenseState", customer.getDriversLicense().getLicenseState());
+						
+						//Forward to dashboard
+						dispatcher=ctx.getRequestDispatcher("/editprofile.jsp");
+						dispatcher.forward(req, res);
+					}
+				}//END CUSTOMER LOGIC
+
+				//ADMIN LOGIC
+				else if(admin!=null){
+
+				}//END ADMIN LOGIC
+			}//end else
+		}//end if
+
+		//If the session doesn't exist, go back to log in screen.
+		else{
+
+			//Forward to login screen
+			dispatcher=ctx.getRequestDispatcher("/index.jsp");
+			dispatcher.forward(req, res);
+		}//end else
 	}
 	
 	/**
@@ -59,6 +133,9 @@ public class UserManager extends HttpServlet {
 		ServletContext ctx=this.getServletContext();
 		RequestDispatcher dispatcher;
 		
+		/**
+		 * IF THE USER CANNOT LOG IN
+		 */
 		//If the user clicks register, create a new user.
 		if(req.getParameter("register")!=null){
 			
@@ -80,21 +157,73 @@ public class UserManager extends HttpServlet {
 			dispatcher=ctx.getRequestDispatcher("/index.jsp");
 			dispatcher.forward(req, res);
 		}
-		//If the user clicks update profile
-		if(req.getParameter("updateprofile")!=null){
-			/*UNCOMMENT ME
-			updatePassword(customer.getUsername(), req.getParameter("currentpassword"), req.getParameter("newpassword"));
-			updateName(customer.getUsername(), req.getParameter("firstname"), req.getParameter("lastname"));
-			updateEmailAddress(customer.getUsername(), req.getParameter("email"));
-			updateResidenceAddress(customer.getUsername(), req.getParameter("addressline1"), req.getParameter("addressline2"), Integer.valueOf(req.getParameter("zip")), req.getParameter("city"), req.getParameter("state"), req.getParameter("country"));
-			updateDriversLicense(customer.getUsername(), req.getParameter("licensenum"), req.getParameter("licensestate"));
-			*/
-			System.out.println("User Information Updated!");
-			
-			//Forward to dashboard
-			dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+		
+		/**
+		 * IF THE USER CAN LOG IN
+		 */
+		//If a session exists, then do everything, if not direct to log in : this prevents a user from going to a page without logging in.
+		if(req.getSession().getAttribute("userType")!=null){
+
+			//Get the session
+			session=req.getSession();
+
+			//Check if user is admin or customer and get appropriate session data
+			if(session.getAttribute("userType").equals("customer")){
+				//Get the current session attributes
+				customer=(Customer)req.getSession().getAttribute("currentUser");
+			}
+			else{
+				//Get the current session attributes
+				admin=(Administrator)req.getSession().getAttribute("currentUser");
+			}
+
+			//Double Check if session exists, if not go to login screen MIGHT BE REDUNDANT DELETE IF SO
+			if(customer==null && admin==null){
+				System.out.println("No session");
+				dispatcher=ctx.getRequestDispatcher("/index.jsp");
+				dispatcher.forward(req, res);
+			}//end if
+
+			//If session exists (one of the objects are filled), do either Customer or Admin logic
+			else{
+
+				//CUSTOMER LOGIC
+				if(customer!=null){
+					System.out.println(customer.getUsername() + " is currently logged in.");
+
+					//If the user clicks update profile
+					if(req.getParameter("updateprofile")!=null){
+						/*UNCOMMENT ME
+						updatePassword(customer.getUsername(), req.getParameter("currentpassword"), req.getParameter("newpassword"));
+						updateName(customer.getUsername(), req.getParameter("firstname"), req.getParameter("lastname"));
+						updateEmailAddress(customer.getUsername(), req.getParameter("email"));
+						updateResidenceAddress(customer.getUsername(), req.getParameter("addressline1"), req.getParameter("addressline2"), Integer.valueOf(req.getParameter("zip")), req.getParameter("city"), req.getParameter("state"), req.getParameter("country"));
+						updateDriversLicense(customer.getUsername(), req.getParameter("licensenum"), req.getParameter("licensestate"));
+						*/
+						System.out.println("User Information Updated!");
+						
+						//Forward to dashboard
+						dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+						dispatcher.forward(req, res);
+					}
+				}//END CUSTOMER LOGIC
+
+				//ADMIN LOGIC
+				else if(admin!=null){
+
+				}//END ADMIN LOGIC
+			}//end else
+		}//end if
+
+		//If the session doesn't exist, go back to log in screen.
+		else{
+
+			//Forward to login screen
+			dispatcher=ctx.getRequestDispatcher("/index.jsp");
 			dispatcher.forward(req, res);
-		}
+		}//end else
+		
+		
 	}
 	
 	/**

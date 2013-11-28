@@ -105,9 +105,6 @@ public class AuthenticationManager extends HttpServlet {
 		//UNCOMMENT ME if(authenticateUser(un, pw)!=null){
 			System.out.println("Successful Authentication!");
 			
-			//Set the session user
-			//session.setAttribute("currentUser", login(un, pw));
-			
 			//If the user is an administrator, take them to the admin dashboard
 			if(un.equals("admin")){
 				//UNCOMMENT ME if(authenticateUser(un, pw).isAdmin()){ 
@@ -176,7 +173,8 @@ public class AuthenticationManager extends HttpServlet {
 	 */
 	public Customer login(String un, String pw){
 		//Dummy customer created DELETE ME
-		Customer one=new Customer(0, un, pw, pw, pw, pw, null, null, null);
+		Address add=new Address(0, "123", "Example", "Kennesaw", "GA", 21202, "Zimbabwe");
+		Customer one=new Customer(0, un, pw, pw, pw, pw, null, null, add);
 		return one;
 		
 		/**
