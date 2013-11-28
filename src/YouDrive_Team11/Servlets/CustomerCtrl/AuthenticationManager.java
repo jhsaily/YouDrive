@@ -40,20 +40,18 @@ public class AuthenticationManager extends HttpServlet {
 		dao=new YouDriveDAO();
 	}
 	
+	/**
+	 * Handles get requests and responses
+	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
 
 		System.out.println("Get!");
 		
-		//Get the servlet context & the dispatcher for later use
-		ServletContext ctx=this.getServletContext();
-		RequestDispatcher dispatcher;
-		
-		//Ends the session and returns the user to the homepage
-		logout();
-		dispatcher=ctx.getRequestDispatcher("/index.jsp");
-		dispatcher.forward(req, res);
 	}
 	
+	/**
+	 * Handles post requests and responses
+	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
 		
 		System.out.println("Post!");
@@ -89,15 +87,24 @@ public class AuthenticationManager extends HttpServlet {
 		}
 		
 		
-		
-		
-
-		
-		
+		//If the user clicks logout, end the session
+		if(req.getParameter("logout")!=null){
+			
+			//Ends the session and returns the user to the homepage
+			logout();
+			dispatcher=ctx.getRequestDispatcher("/index.jsp");
+			dispatcher.forward(req, res);
+		}
 		
 		
 	}
-	
+
+	/**
+	 * Verifies the user's username and password
+	 * @param un		The username
+	 * @param pw		The password
+	 * @return			True if the user can be verified, false otherwise
+	 */
 	public boolean authenticateUser(String un, String pw){
 		
 		//return dao.authenticateUser(un, pw);
@@ -107,6 +114,12 @@ public class AuthenticationManager extends HttpServlet {
 		return true;
 	}
 	
+	/**
+	 * Tells us if a password is correct or not
+	 * @param un		The username
+	 * @param pw		The password
+	 * @return			True if the password corresponds to the user
+	 */
 	public boolean doesPasswordMatch(String un, String pw){
 		
 		return true;
@@ -128,6 +141,9 @@ public class AuthenticationManager extends HttpServlet {
 		//return dao.readCustomer(123);
 	}
 	
+	/**
+	 * Logs the user out
+	 */
 	public void logout(){
 		session.invalidate();
 	}

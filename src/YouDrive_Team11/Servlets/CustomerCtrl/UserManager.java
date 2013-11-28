@@ -14,6 +14,11 @@ import javax.servlet.http.HttpSession;
 import YouDrive_Team11.Entity.*;
 import YouDrive_Team11.Persistence.*;
 
+/**
+ * Class to allow management of all user info 
+ * @author Tanya
+ *
+ */
 public class UserManager extends HttpServlet {
 	
 	/**
@@ -39,10 +44,15 @@ public class UserManager extends HttpServlet {
 		dao=new YouDriveDAO();
 	}
 	
+	/**
+	 * Manages all get requests and responses
+	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res){
-		
 	}
 	
+	/**
+	 * Manages all post requests and responses
+	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
 		
 		//Get Servlet Context and dispatcher
@@ -61,6 +71,12 @@ public class UserManager extends HttpServlet {
 			dispatcher=ctx.getRequestDispatcher("/index.jsp");
 			dispatcher.forward(req, res);
 		}
+		
+		//If the user clicks Forgot Password, send an email with a new one to them
+		if(req.getParameter("forgotPassword")!=null){
+			resetPassword(req.getParameter("email"));
+		}
+		
 	}
 	
 	/**
@@ -88,56 +104,111 @@ public class UserManager extends HttpServlet {
 		return customer;
 	}
 	
-	
+	/**
+	 * Updates email address
+	 * @param un		Username
+	 * @param email		User email address
+	 */
 	public void updateEmailAddress(String un, String email){
 		dao.changeEmailAddress(customer.getId(), email);
 	}
 	
+	/**
+	 * Updates user's first and last name
+	 * @param un			Username
+	 * @param fName			First name
+	 * @param lName			Last name
+	 */
 	public void updateName(String un, String fName, String lName){
 		dao.updateCustomer(customer.getId(), fName, lName, customer.getMembershipExpiration());
 
 	}
 	
+	/**
+	 * Updates address of the user
+	 * @param un			Username
+	 * @param street1		Address of user
+	 * @param street2		Address of user
+	 * @param zip			Zip code of user
+	 * @param city			City of user
+	 * @param state			State where user lives
+	 * @param country		Country where user lives
+	 */
 	public void updateResidenceAddress(String un, String street1, String street2, int zip, String city, String state, String country){
 		dao.updateAddressForCustomer(customer.getId(), street1, street2, city, state, zip, country);
 	}
 	
+	/**
+	 * Update driver's license information
+	 * @param un				Username
+	 * @param licenseNum		License number
+	 * @param licenseState		License state
+	 */
 	public void updateDriversLicense(String un, String licenseNum, String licenseState){
 		dao.updateDLForCustomer(customer.getId(), licenseNum, licenseState);
 	}
 	
+	/**
+	 * Updates a user's password
+	 * @param un		Username
+	 * @param oldPw		Old password
+	 * @param newPw		New password
+	 */
 	public void updatePassword(String un, String oldPw, String newPw){
 		dao.changePassword(customer.getId(), newPw);
 		
 	}
 	
-	public void resetPassword(String un, String email){
+	/**
+	 * Resets the user's password by sending an email with a random one
+	 * @param email		Email address
+	 */
+	public void resetPassword(String email){
 		
 	}
 	
+	/**
+	 * Updates the user's payment information
+	 * @param un			Username
+	 * @param pw			Password
+	 * @param ccNum			Credit card number
+	 * @param street1		User's billing address
+	 * @param street2		User's billing address
+	 * @param zip			User's zip code
+	 */
 	public void updatePaymentInfo(String un, String pw, int ccNum, String street1, String street2, int zip){
 		
 	}
 
+	/**
+	 * Tells whether or not a user exists
+	 * @return		Returns true if user exists, false otherwise
+	 */
 	public boolean doesUserExist(){
 		return true;
 	}
 	
+	/**
+	 * Generates a random password
+	 * @return		Returns a random password
+	 */
 	public String generateRandomPassword(){
 		String randomPassword="Random";
 		return randomPassword;
 	}
 	
+	/**
+	 * Sends a confirmation email to the user upon registration
+	 * @param un		Username
+	 */
 	public void sendConfirmEmail(String un){
 		
 	}
 	
-	public Customer findCustomer(String un){
-		Customer customer=null;
-		
-		return customer;
-	}
-	
+	/**
+	 * Returns payment information
+	 * @return		Returns a PaymentInfo object
+	 */
 	public PaymentInfo getCreditInfo(){
 		
 		PaymentInfo info=null;

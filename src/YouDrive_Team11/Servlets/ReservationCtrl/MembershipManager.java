@@ -11,7 +11,11 @@ import javax.servlet.http.HttpSession;
 import YouDrive_Team11.Entity.Customer;
 import YouDrive_Team11.Persistence.YouDriveDAO;
 
-
+/**
+ * Class that manages the membership details for YouDrive
+ * @author Tanya
+ *
+ */
 public class MembershipManager extends HttpServlet{
 	/**
 	 * Variables
@@ -34,24 +38,43 @@ public class MembershipManager extends HttpServlet{
 		dao=new YouDriveDAO();
 	}
 	
+	/**
+	 * Responds to get requests and responses
+	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res){
 		
 	}
 	
+	/**
+	 * Responds to post requests and responses
+	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse res){
 		//Passing in our customer object as long as we are still in session
 		customer= (Customer)req.getSession().getAttribute("currentCustomer");
 		
 	}
 	
+	/**
+	 * Changes the membership price
+	 * @param price		Price of membership
+	 */
 	public void changePrice(Currency price){
 		
 	}
 	
+	/**
+	 * Extends the membership of a user
+	 * @param un		Username
+	 * @param newDate	The new expiration date
+	 */
 	public void extendMembership(String un, Date newDate){
 		dao.updateCustomer(customer.getId(), customer.getFirstName(), customer.getLastName(), newDate);
 	}
 	
+	/**
+	 * Cancels a user's membership
+	 * @param un		Username
+	 */
 	public void cancelMembership(String un){
 		
 	}

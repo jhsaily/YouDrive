@@ -8,6 +8,11 @@ import javax.servlet.http.HttpSession;
 import YouDrive_Team11.Persistence.*;
 import YouDrive_Team11.Entity.*;
 
+/**
+ * Class that manages administrator accessibility
+ * @author Tanya
+ *
+ */
 public class UserAdminManager extends HttpServlet{
 	/**
 	 * Variables
@@ -29,19 +34,34 @@ public class UserAdminManager extends HttpServlet{
 		super();
 	}
 	
+	/**
+	 * Manages get requests and responses
+	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res){
 		
 	}
 	
+	/**
+	 * Manages post requests and responses
+	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse res){
 		
 	}
 	
+	/**
+	 * Allows the admin to edit a customer's profile
+	 * @param un		Customer's username
+	 * @return			Returns a Customer object
+	 */
 	public Customer manageProfile(String un){
 		return dao.readCustomer(123);
 		
 	}
 	
+	/**
+	 * Removes a user from the database
+	 * @param un		The customer's username
+	 */
 	public void removeUser(String un){
 		dao.deleteCustomer(123);
 	}
