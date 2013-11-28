@@ -27,7 +27,7 @@
 					<br />A series of questions will follow to finalize the process.
 					<br /><br />
 					<c:forEach var="i" begin="1" end="2">
-						<form action="returnpage2" method="POST">
+						<form action="returnform.jsp" method="POST">
 							Reservation Number: <c:out value="${i}"/>
 							<br />
 							Vehicle Type: X

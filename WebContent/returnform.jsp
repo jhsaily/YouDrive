@@ -18,22 +18,31 @@
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav.html" %>
 			<div id="dashboardpanel">
-				<span class="dbpaneltitle">Reserve a Vehicle.</span>
+				<span class="dbpaneltitle">Return a Vehicle.</span>
 				<br /><br />
-				<form action="reservationmanager" class="formreserve" method="POST">
-					<select class="reserveselect" name="location" size="15">
-						<c:forEach var="i" begin="1" end="20">
-							<option value="location${i}">Location <c:out value="${i}"/></option>
-						</c:forEach>
-					</select>
-					<select class="reserveselect right" name="vehicle" size="15">
-						<c:forEach var="i" begin="1" end="20">
-							<!-- TODO: Some magic to filter out this list based on selection in previous list -->
-							<option value="type${i}">Vehicle Type <c:out value="${i}"/></option>
-						</c:forEach>
-					</select>
+				<form action="returnvehicle" method="POST">
+					If you would like to return the vehicle, please fill out the following information before continuing.
 					<br /><br />
-					<input type="submit" value="Submit">
+					To reasonable standards, when you recieved the vehicle it was in a
+					<select name="prevstate">
+						<option value="awesome">Awesome</option>
+						<option value="good">Good</option>
+						<option value="bad">Bad</option>
+						<option value="shit">Shit</option>
+					</select> 
+					state.
+					<br /><br />
+					Now that you are returning it, it is in a
+					<select name="currentstate">
+						<option value="awesome">Awesome</option>
+						<option value="good">Good</option>
+						<option value="bad">Bad</option>
+						<option value="shit">Shit</option>
+					</select> 
+					state.
+					<br /><br />
+					<textarea name="comments" style="width:100%;" rows="20" placeholder="Further comments go in here."></textarea>
+					<input type="submit" value="Return!">
 				</form>
 			</div>
 		</div>

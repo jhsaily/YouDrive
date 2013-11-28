@@ -3,6 +3,9 @@ function setWidth()
 {
 	var winW = $('#header').width();
 	var winH = $(window).height();
+	if ($('#dashboardpanel').height() > winH - 125) {
+		winH = $('#dashboardpanel').height() + 135;
+	}
 	var SmWinW = winW/3;
 	SmWinW = Math.floor(SmWinW);
 	$('.topnavlink').width(SmWinW);
@@ -12,7 +15,7 @@ function setWidth()
 	$('#forgotpasspanel').css("margin-left", (temp - $('#forgotpasspanel').width()/2));
 	$('#loginpanel').css("margin-left", (temp - $('#loginpanel').width()/2));
 	$('#registerpanel').css("margin-left", (temp - $('#registerpanel').width()/2));
-	$('#leftnav').height(winH - 125);
+	$('#leftnav').css("min-height", winH - 125);
 }
 $(document).ready(function(){
 	$('#cssmenu > ul > li:has(ul)').addClass("has-sub");
