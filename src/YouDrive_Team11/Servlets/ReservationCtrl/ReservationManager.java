@@ -65,7 +65,7 @@ public class ReservationManager extends HttpServlet {
 		if(req.getParameter("clicked").equals("history")){
 			req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
 			
-			//Forward to homepage
+			//Forward to Reservation History page
 			dispatcher=ctx.getRequestDispatcher("/history.jsp");
 			dispatcher.forward(req, res);
 		}
@@ -79,50 +79,64 @@ public class ReservationManager extends HttpServlet {
 		
 		//Get the servlet context and the dispatcher
 		ServletContext ctx=this.getServletContext();
-		RequestDispatcher dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+		RequestDispatcher dispatcher;
 		
-		//Get the current session attributes
-		customer=(Customer)req.getSession().getAttribute("currentUser");
-		
-		//If user clicks submit on place reservation page, place a reservation
-		if(req.getParameter("placeReservation")!=null){
-			System.out.println("Placing Reservation!");
-			
-			//Update Reservation Page
-			req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
-			
-			//Forward to Reservation History page
-			dispatcher=ctx.getRequestDispatcher("/history.jsp");
-		}
-		
-		//If the user clicks cancel reservation, remove reservation from linked list
-		if(req.getParameter("cancel")!=null){
-			System.out.println("Cancelling reservation " + req.getParameter("reservationnumber") + " for " + customer.getUsername());
-			
-			//Remove the reservation
-			cancelReservation(Integer.valueOf(req.getParameter("reservationnumber")));
-			
-			//Update Reservation Page
-			req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
-			
-			//Forward to Reservation History page
-			dispatcher=ctx.getRequestDispatcher("/history.jsp");
-		}
-		
-		if(customer!=null){
-			System.out.println("The current user is: " + customer.getUsername());
-			
+		//Check if session exists, if not go to login screen
+		if(req.getSession(false)==null){
+			System.out.println("No session");
+			dispatcher=ctx.getRequestDispatcher("/index.jsp");
+			dispatcher.forward(req, res);
 		}
 		else{
-			System.out.println("Please log in to make a reservation");
 			
-			//Forward to login screen
-			dispatcher=ctx.getRequestDispatcher("/index.jsp");
+			//Get the current session attributes
+			customer=(Customer)req.getSession().getAttribute("currentUser");
+			System.out.println(customer.getUsername() + " is currently logged in.");
 			
+			//If user clicks submit on place reservation page, place a reservation
+			if(req.getParameter("placeReservation")!=null){
+				System.out.println("Placing Reservation!");
+				
+				//Update Reservation Page
+				req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
+				
+				//Forward to Reservation History page
+				dispatcher=ctx.getRequestDispatcher("/history.jsp");
+				dispatcher.forward(req, res);
+			}
+			
+			//If the user clicks cancel reservation, remove reservation from linked list
+			if(req.getParameter("cancel")!=null){
+				System.out.println("Cancelling reservation " + req.getParameter("reservationnumber") + " for " + customer.getUsername());
+				
+				//Remove the reservation
+				cancelReservation(Integer.valueOf(req.getParameter("reservationnumber")));
+				
+				//Update Reservation Page
+				LinkedList<Reservation> updated=new LinkedList<Reservation>(); //DELETE ME
+				updated=getAllReservations(customer.getUsername()); //DELETE ME
+				updated.remove(); //DELETE ME
+				req.setAttribute("listOfReservations", updated); //UPDATE ME to pass in the correct linked list
+				
+				//Forward to Reservation History page
+				dispatcher=ctx.getRequestDispatcher("/history.jsp");
+				dispatcher.forward(req, res);
+			}
+			
+			if(customer!=null){
+				System.out.println("The current user is: " + customer.getUsername());
+				
+			}
+			else{
+				System.out.println("Please log in to make a reservation");
+				
+				//Forward to login screen
+				dispatcher=ctx.getRequestDispatcher("/index.jsp");
+				dispatcher.forward(req, res);
+			}
+		
 		}
 		
-		
-		dispatcher.forward(req, res);
 	}
 	
 	/**

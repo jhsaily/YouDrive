@@ -90,7 +90,7 @@ public class AuthenticationManager extends HttpServlet {
 		System.out.println("The user, " + un + ", is trying to log in.");
 		
 		//If login is successful, direct user to dashboard
-		if(admin){
+		if(un.equals("admin")||un.equals("cust")){
 		//UNCOMMENT ME if(authenticateUser(un, pw)!=null){
 			System.out.println("Successful Authentication!");
 			
@@ -98,7 +98,7 @@ public class AuthenticationManager extends HttpServlet {
 			session.setAttribute("currentUser", login(un, pw));
 			
 			//If the user is an administrator, take them to the admin dashboard
-			if(admin==false){
+			if(un.equals("admin")){
 				//UNCOMMENT ME if(authenticateUser(un, pw).isAdmin()){ 
 				
 				//Bind objects to the user's session, e.g. Customer, Reservation objects
@@ -123,14 +123,7 @@ public class AuthenticationManager extends HttpServlet {
 		}
 		
 		
-		//If the user clicks logout, end the session
-		if(req.getParameter("logout")!=null){
-			
-			//Ends the session and returns the user to the homepage
-			logout();
-			dispatcher=ctx.getRequestDispatcher("/index.jsp");
-			dispatcher.forward(req, res);
-		}
+	
 		
 		
 	}
@@ -165,7 +158,7 @@ public class AuthenticationManager extends HttpServlet {
 	 */
 	public Customer login(String un, String pw){
 		//Dummy customer created DELETE ME
-		Customer one=new Customer(0, pw, pw, pw, pw, pw, null, null, null);
+		Customer one=new Customer(0, un, pw, pw, pw, pw, null, null, null);
 		return one;
 		
 		/**
