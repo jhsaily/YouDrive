@@ -51,4 +51,40 @@
   		<servlet-name>MembershipManager</servlet-name>
   		<url-pattern>/MembershipManager</url-pattern>
   	</servlet-mapping>
+  	
+  	 <servlet>
+  		<servlet-name>PaymentManager</servlet-name>
+  		<servlet-class>YouDrive_Team11.Servlets.ReservationCtrl.PaymentManager</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>PaymentManager</servlet-name>
+  		<url-pattern>/PaymentManager</url-pattern>
+  	</servlet-mapping>
+
+  	 <servlet>
+  		<servlet-name>LocationAdminManager</servlet-name>
+  		<servlet-class>YouDrive_Team11.Servlets.AdminCtrl.LocationAdminManager</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>LocationAdminManager</servlet-name>
+  		<url-pattern>/LocationAdminManager</url-pattern>
+  	</servlet-mapping>
+  	
+  	 <servlet>
+  		<servlet-name>UserAdminManager</servlet-name>
+  		<servlet-class>YouDrive_Team11.Servlets.AdminCtrl.UserAdminManager</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>UserAdminManager</servlet-name>
+  		<url-pattern>/UserAdminManager</url-pattern>
+  	</servlet-mapping>
+
+  	 <servlet>
+  		<servlet-name>VehicleAdminManager</servlet-name>
+  		<servlet-class>YouDrive_Team11.Servlets.AdminCtrl.VehicleAdminManager</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>VehicleAdminManager</servlet-name>
+  		<url-pattern>/VehicleAdminManager</url-pattern>
+  	</servlet-mapping>
 </web-app>
