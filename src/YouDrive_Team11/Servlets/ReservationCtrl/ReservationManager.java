@@ -98,6 +98,7 @@ public class ReservationManager extends HttpServlet {
 						dispatcher.forward(req, res);
 					}
 					
+					//If the user clicks return a rental, take them to the return page populated with their reservations
 					if(req.getParameter("clicked").equals("return")){
 						req.setAttribute("listOfActiveReservations", getAllReservations(customer.getUsername()));
 
@@ -287,14 +288,14 @@ public class ReservationManager extends HttpServlet {
 	 * @return			Returns a linked list of the reservations
 	 * @throws ParseException 
 	 */
-	public LinkedList<Reservation> getAllReservations(String un){
+	public LinkedList<Reservation> getAllReservations(String pw){
 		LinkedList<Reservation> list=new LinkedList<Reservation>();
 		try{
-		//DELETE ME dummy values
-		Reservation res1=new Reservation(1, returnDate("09", "29", "2013"), 10.0, false, null, null, null, null, customer);
-		Reservation res2=new Reservation(2, returnDate("12", "27", "2013"), 4.5, false, null, null, null, null, customer);
-		list.add(res1);
-		list.add(res2);
+				//DELETE ME dummy values
+				Reservation res1=new Reservation(1, returnDate("09", "29", "2013"), 10.0, false, null, null, null, null, customer);
+				Reservation res2=new Reservation(2, returnDate("12", "27", "2013"), 4.5, false, null, null, null, null, customer);
+				list.add(res1);
+				list.add(res2);	
 		}
 		catch(Exception e){
 			System.out.println("Failure in getAllReservations method");

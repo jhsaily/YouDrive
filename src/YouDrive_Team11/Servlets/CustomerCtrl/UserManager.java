@@ -114,8 +114,8 @@ public class UserManager extends HttpServlet {
 						
 						//Send in already existent user information to jsp vars
 						
-						//req.setAttribute("cardExpirationMonth", customer.getPaymentInfo().getCardExpirationMonth());
-						//req.setAttribute("cardExpirationYear", customer.getPaymentInfo().getCardExpirationYear());
+						req.setAttribute("cardExpirationMonth", customer.getPaymentInfo().getCardExpirationMonth());
+						req.setAttribute("cardExpirationYear", customer.getPaymentInfo().getCardExpirationYear());
 						req.setAttribute("addrLine1", customer.getMailingAddress().getStreetAddrLine1());
 						req.setAttribute("addrLine2", customer.getMailingAddress().getStreetAddrLine2());
 						req.setAttribute("city", customer.getMailingAddress().getCity());
@@ -238,7 +238,7 @@ public class UserManager extends HttpServlet {
 					//When the user submits his/her updated payment information, make the changes in the db
 					if(req.getParameter("updatepayment")!=null){
 						/*UNCOMMENT ME
-						updatePaymentInfo(customer.getUsername(), customer.getParameter("currentpassword"), customer.getParameter("cardnumber"), customer.getParameter("addressline1"), customer.getParameter("addressline2"), customer.getParameter("zip"));
+						updatePaymentInfo(customer.getParameter("cardnumber"), customer.getParameter("cardexpmonth"), customer.getParameter("cardexpyear"), customer.getParameter("addressline1"), customer.getParameter("addressline2"), customer.getParameter("city"), customer.getParameter("state"), customer.getParameter("zip"), customer.getParameter("country"));
 						*/
 						System.out.println("Payment Information Updated!");
 						
@@ -364,8 +364,9 @@ public class UserManager extends HttpServlet {
 	 * @param street2		User's billing address
 	 * @param zip			User's zip code
 	 */
-	public void updatePaymentInfo(String un, String pw, int ccNum, String street1, String street2, int zip){
-		
+	public void updatePaymentInfo(String ccNum, int ccExpMonth, int ccExpYear, String street1, String street2, String city, String state, int zip, String country){
+		dao.updatePaymentInfoForCustomer(customer.getId(), ccNum, ccExpMonth, ccExpYear);
+		dao.updateAddressForPaymentInfo(customer.getPaymentInfo().getId(), street1, street2, city, state, zip, country);
 	}
 
 	/**

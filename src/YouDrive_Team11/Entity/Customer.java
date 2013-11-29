@@ -128,4 +128,5 @@ public class Customer extends User {
 	public PaymentInfo getPaymentInfo() {
 		return paymentInfo;
 	}
+
 }
