@@ -258,7 +258,7 @@ public class ReservationManager extends HttpServlet {
 	}
 
 	/**
-	 * Returns a vehicle rental and terminates registration
+	 * Returns a vehicle rental and changes reservation from active to past
 	 * @param reservationId		Unique reservation identifier
 	 * @param timeReturned		Time vehicle was returned
 	 */
