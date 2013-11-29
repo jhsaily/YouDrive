@@ -2,6 +2,8 @@ package YouDrive_Team11.Servlets.CustomerCtrl;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -158,10 +160,17 @@ public class UserManager extends HttpServlet {
 		//If the user clicks register, create a new user.
 		if(req.getParameter("register")!=null){
 			
-			createUser(req.getParameter("username"), req.getParameter("password"), req.getParameter("email"), req.getParameter("firstname"),
-					req.getParameter("lastname"), new Date(12, 12, 12), req.getParameter("addressline1"), req.getParameter("addressline2"), 
-					"Chicago", req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"), req.getParameter("licensenum"), req.getParameter("licensestate"));
+			//Make sure they entered numbers in the number places
 			
+			try{
+			createUser(req.getParameter("username"), req.getParameter("password"), req.getParameter("email"), req.getParameter("firstname"),
+					req.getParameter("lastname"), returnDate("06","30", "2014"), req.getParameter("addressline1"), req.getParameter("addressline2"), 
+					"Chicago", req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"), req.getParameter("licensenum"), req.getParameter("licensestate"));
+			}
+			catch(Exception e){
+				System.out.println("Invalid input");
+				//TODO: TAKE BACK TO REGISTRATION SCREEN
+			}
 			
 			//Forward to login screen
 			dispatcher=ctx.getRequestDispatcher("/index.jsp");
@@ -169,7 +178,7 @@ public class UserManager extends HttpServlet {
 		}
 		
 		//If the user clicks Forgot Password, send an email with a new one to them
-		if(req.getParameter("forgotPassword")!=null){
+		else if(req.getParameter("forgotPassword")!=null){
 			resetPassword(req.getParameter("email"));
 			
 			//Forward to login screen
@@ -181,7 +190,7 @@ public class UserManager extends HttpServlet {
 		 * IF THE USER CAN LOG IN
 		 */
 		//If a session exists, then do everything, if not direct to log in : this prevents a user from going to a page without logging in.
-		if(req.getSession().getAttribute("userType")!=null){
+		else if(req.getSession().getAttribute("userType")!=null){
 
 			//Get the session
 			session=req.getSession();
@@ -343,7 +352,7 @@ public class UserManager extends HttpServlet {
 	 * @param email		Email address
 	 */
 	public void resetPassword(String email){
-		
+		generateRandomPassword();
 	}
 	
 	/**
@@ -372,7 +381,13 @@ public class UserManager extends HttpServlet {
 	 * @return		Returns a random password
 	 */
 	public String generateRandomPassword(){
-		String randomPassword="Random";
+		String randomPassword="";
+		String allPossibleChars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		for(int i=0; i<8; i++){
+			int r=(int)(Math.random()*37);
+			randomPassword=randomPassword + allPossibleChars.charAt(r);
+		}
+		System.out.println("Random Password: " + randomPassword);
 		return randomPassword;
 	}
 	
@@ -393,5 +408,13 @@ public class UserManager extends HttpServlet {
 		PaymentInfo info=null;
 		
 		return info;
+	}
+	
+	public Date returnDate(String mm, String dd, String yyyy) throws ParseException{
+		
+		java.util.Date utilDate=new SimpleDateFormat("MM/dd/yyyy").parse(mm+"/"+dd+"/"+yyyy);
+		java.sql.Date date=new java.sql.Date(utilDate.getTime());
+		
+		return date;
 	}
 }
