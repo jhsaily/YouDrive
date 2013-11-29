@@ -2,6 +2,8 @@ package YouDrive_Team11.Servlets.ReservationCtrl;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 
 import javax.servlet.RequestDispatcher;
@@ -164,7 +166,10 @@ public class ReservationManager extends HttpServlet {
 					//If user clicks submit on place reservation page, place a reservation
 					if(req.getParameter("placeReservation")!=null){
 						System.out.println("Placing Reservation!");
-
+						
+						//Create a new reservation
+						//placeReservation(null, 0, 0, 0);
+						
 						//Update Reservation Page
 						req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
 
@@ -280,17 +285,29 @@ public class ReservationManager extends HttpServlet {
 	 * Returns all the reservations under a particular user
 	 * @param un		Username
 	 * @return			Returns a linked list of the reservations
+	 * @throws ParseException 
 	 */
 	public LinkedList<Reservation> getAllReservations(String un){
 		LinkedList<Reservation> list=new LinkedList<Reservation>();
-		Reservation res1=new Reservation(5, new Date(12,3, 5), 5.7, false, null, null, null, null, customer);
-		Reservation res2=new Reservation(54, new Date(12,3, 5), 4.5, false, null, null, null, null, customer);
+		try{
+		//DELETE ME dummy values
+		Reservation res1=new Reservation(1, returnDate("09", "29", "2013"), 10.0, false, null, null, null, null, customer);
+		Reservation res2=new Reservation(2, returnDate("12", "27", "2013"), 4.5, false, null, null, null, null, customer);
 		list.add(res1);
 		list.add(res2);
+		}
+		catch(Exception e){
+			System.out.println("Failure in getAllReservations method");
+		}
+		
 		return list;
 	}
-
-	public void loadSession(HttpServletRequest req){
-
+	
+	public Date returnDate(String mm, String dd, String yyyy) throws ParseException{
+		
+		java.util.Date utilDate=new SimpleDateFormat("MM/dd/yyyy").parse(mm+"/"+dd+"/"+yyyy);
+		java.sql.Date date=new java.sql.Date(utilDate.getTime());
+		
+		return date;
 	}
 }

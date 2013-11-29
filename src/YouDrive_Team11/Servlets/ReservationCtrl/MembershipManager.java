@@ -2,6 +2,9 @@ package YouDrive_Team11.Servlets.ReservationCtrl;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Currency;
 
 import javax.servlet.RequestDispatcher;
@@ -159,9 +162,19 @@ public class MembershipManager extends HttpServlet{
 					if(req.getParameter("extend")!=null){
 						
 						//Update user membership
-						//TODO: Date takes a long in milliseconds. figure out how to do this date stuff
-						//extendMembership(customer.getUsername(), new Date(Integer.valueOf(req.getParameter("months"))));
 						System.out.println("Extending your membership by: " + req.getParameter("months") + " months.");
+						
+						try{
+							//String currentMemExpirationDate=customer.getMembershipExpiration().toString();
+							String currentMemExpirationDate="2013-11-09";//DELETE ME LATER
+							System.out.println("Current Exp Date: " + currentMemExpirationDate);
+							Date newDate=getNewDate(currentMemExpirationDate, Integer.valueOf(req.getParameter("months")));
+							System.out.println("New date is: " + newDate);
+							//extendMembership(customer.getUsername(), newDate);
+						}
+						catch(Exception e){
+							System.out.println("Could not get new date");
+						}
 						
 						//Forward to login screen
 						dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
@@ -211,4 +224,36 @@ public class MembershipManager extends HttpServlet{
 	public void cancelMembership(String un){
 		
 	}
+	
+	public Date returnDate(String mm, String dd, String yyyy) throws ParseException{
+		
+		java.util.Date utilDate=new SimpleDateFormat("MM/dd/yyyy").parse(mm+"/"+dd+"/"+yyyy);
+		java.sql.Date date=new java.sql.Date(utilDate.getTime());
+		
+		return date;
+	}
+	
+	public Date getNewDate(String oldDate, int months) throws ParseException{
+		
+		//Get the year, months, and day from the sql date yyyy-mm-dd
+		String y=oldDate.substring(0,4);
+		System.out.println("Year: " + y);
+		String m=oldDate.substring(5,7);
+		String d=oldDate.substring(8,10);
+		
+		//Get the integer value of months and year (in case months surpass year)
+		Integer newm=Integer.valueOf(m) + months;
+		Integer newy=Integer.valueOf(y);
+		
+		//If the new number of months is more than 12, change to a month number and increase the year
+		while(newm>12){
+			newm=newm-12;
+			newy=newy+1;
+		}
+		
+		//Find the sql date of the new numbers
+		return returnDate(newm.toString(), d, newy.toString());
+		
+	}
 }
+

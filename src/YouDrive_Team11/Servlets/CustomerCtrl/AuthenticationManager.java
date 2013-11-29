@@ -173,8 +173,8 @@ public class AuthenticationManager extends HttpServlet {
 	 */
 	public Customer login(String un, String pw){
 		//Dummy customer created DELETE ME
-		Address add=new Address(0, "123", "Example", "Kennesaw", "GA", 21202, "Zimbabwe");
-		Customer one=new Customer(0, un, pw, pw, pw, pw, null, null, add);
+		Address add=new Address(0, "123 Example Street", "Apt. 101", "Kennesaw", "GA", 21202, "Zimbabwe");
+		Customer one=new Customer(0, un, pw, "silly@fake.com", "Dummy", "User", null, null, add);
 		return one;
 		
 		/**
