@@ -20,12 +20,12 @@ public class PaymentInfo {
 	/**
 	 * The month in which the card expires
 	 */
-	private String cardExpirationMonth;
+	private int cardExpirationMonth;
 	
 	/**
 	 * The year in which the card expires
 	 */
-	private String cardExpirationYear;
+	private int cardExpirationYear;
 	
 	/**
 	 * The billing address associated with this payment info.
@@ -41,7 +41,7 @@ public class PaymentInfo {
 	 * @param billingAddress
 	 */
 	public PaymentInfo(int id, String creditCardNumber,
-			String cardExpirationMonth, String cardExpirationYear,
+			int cardExpirationMonth, int cardExpirationYear,
 			Address billingAddress){
 		this.id = id;
 		this.creditCardNumber = creditCardNumber;
@@ -67,14 +67,14 @@ public class PaymentInfo {
 	/**
 	 * @return the cardExpirationMonth
 	 */
-	public String getCardExpirationMonth() {
+	public int getCardExpirationMonth() {
 		return cardExpirationMonth;
 	}
 
 	/**
 	 * @return the cardExpirationYear
 	 */
-	public String getCardExpirationYear() {
+	public int getCardExpirationYear() {
 		return cardExpirationYear;
 	}
 

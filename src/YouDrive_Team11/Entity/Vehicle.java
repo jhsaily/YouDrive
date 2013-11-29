@@ -72,7 +72,6 @@ public class Vehicle {
 	 * @param serviceDate
 	 * @param condition
 	 * @param vehicleType
-	 * @param rentalLocation
 	 */
 	public Vehicle(int id, LinkedList<Comment> comments, String make,
 			String model, int year, String tag, int mileage,

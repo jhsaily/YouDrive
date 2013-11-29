@@ -13,6 +13,7 @@ import YouDrive_Team11.Entity.Administrator;
 import YouDrive_Team11.Entity.Comment;
 import YouDrive_Team11.Entity.Customer;
 import YouDrive_Team11.Entity.DriversLicense;
+import YouDrive_Team11.Entity.PaymentInfo;
 import YouDrive_Team11.Entity.RentalLocation;
 import YouDrive_Team11.Entity.User;
 import YouDrive_Team11.Entity.Vehicle;
@@ -40,6 +41,10 @@ public class YouDriveDAO {
 	private PreparedStatement readAddressStatement;
 	private PreparedStatement updateAddressStatement;
 	private PreparedStatement insertAddressStatement;
+	
+	private PreparedStatement readPaymentInfoStatement;
+	private PreparedStatement insertPaymentInfoStatement;
+	private PreparedStatement updatePaymentInfoStatement;
 	
 	private PreparedStatement insertDLStatement;
 	private PreparedStatement updateDLStatement;
@@ -102,6 +107,12 @@ public class YouDriveDAO {
 					"country=? where id=?");
 			insertAddressStatement = conn.prepareStatement("insert into addresses (addrLine1,addrLine2,city,state,ZIP,country,link_id,type)" +
 					" values (?,?,?,?,?,?,?,?)");
+			
+			readPaymentInfoStatement = conn.prepareStatement("select * from payment_methods where user_id=?");
+			updatePaymentInfoStatement = conn.prepareStatement("update payment_methods set cardNumber=?,monthExpiration=?," +
+					"yearExpiration=? where user_id=?");
+			insertPaymentInfoStatement = conn.prepareStatement("insert into payment_methods (cardNumber,monthExpiration," +
+					"yearExpiration,user_id) values (?,?,?,?)");
 			
 			readDLStatement = conn.prepareStatement("select * from dl where customer_id=?");
 			updateDLStatement = conn.prepareStatement("update dl set dl_number=?,dl_state=? where customer_id=?");
@@ -191,7 +202,8 @@ public class YouDriveDAO {
 			int id = key.getInt(1);
 			Address address = updateAddressForCustomer(id, addrLine1,addrLine2,city,state,ZIP,country);
 			DriversLicense license = updateDLForCustomer(id, DLNumber, DLState);
-			customer = new Customer(id, username, password, emailAddress, firstName, lastName, membershipExpiration, license,address);//DL & Mailing address!
+			PaymentInfo info = getPaymentInfoForCustomer(id);
+			customer = new Customer(id, username, password, emailAddress, firstName, lastName, membershipExpiration, license,address, info);
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
@@ -211,9 +223,10 @@ public class YouDriveDAO {
 			if(rs.next()){
 				DriversLicense license = getDLForCustomer(custID);
 				Address address = getAddressForCustomer(custID);
+				PaymentInfo info = getPaymentInfoForCustomer(custID);
 				customer = new Customer(custID, rs.getString("username"), rs.getString("password"),
 						rs.getString("emailAddress"), rs.getString("firstName"), rs.getString("lastName"),
-						rs.getDate("membershipExpiration"), license, address);
+						rs.getDate("membershipExpiration"), license, address, info);
 			}
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -267,11 +280,13 @@ public class YouDriveDAO {
 		try{
 			ResultSet rs = getAllCustomersStatement.executeQuery();
 			while(rs.next()){
-				DriversLicense license = getDLForCustomer(rs.getInt("id"));
-				Address address = getAddressForCustomer(rs.getInt("id"));
+				int id = rs.getInt("id");
+				DriversLicense license = getDLForCustomer(id);
+				Address address = getAddressForCustomer(id);
+				PaymentInfo info = getPaymentInfoForCustomer(id);
 				Customer customer = new Customer(rs.getInt("id"), rs.getString("username"), rs.getString("password"),
 						rs.getString("emailAddress"), rs.getString("firstName"), rs.getString("lastName"),
-						rs.getDate("membershipExpiration"), license, address);
+						rs.getDate("membershipExpiration"), license, address, info);
 				list.add(customer);
 			}
 		}catch(SQLException e){
@@ -423,6 +438,163 @@ public class YouDriveDAO {
 		try{
 			readAddressStatement.setInt(1, custID);
 			readAddressStatement.setString(2, "customer");
+			ResultSet rs = readAddressStatement.executeQuery();
+			if(rs.next()){
+				id = rs.getInt("id");
+				address = new Address(id, rs.getString("addrLine1"), rs.getString("addrLine2"),
+						rs.getString("city"), rs.getString("state"),
+						rs.getInt("ZIP"), rs.getString("country"));
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return address;
+	}
+	
+	/**
+	 * Adds payment info for a customer.
+	 * @param customerID		The unique identifier of the customer for which we are adding payment information
+	 * @param cardNumber		The card number
+	 * @param expirationMonth	The card's month of expiry
+	 * @param expirationYear	The card's year of expiry
+	 * @param addrLine1			The first line of the card's billing address
+	 * @param addrLine2			The second line of the card's billing address
+	 * @param city				The city of the card's billing address
+	 * @param state				The state of the card's billing address
+	 * @param ZIP				The ZIP code of the card's billing address
+	 * @param country			The country of the card's billing address
+	 * @return					A PaymentInfo object encapsulating all this new data.
+	 */
+	public PaymentInfo addPaymentInfoForCustomer(int customerID, String cardNumber, int expirationMonth,
+			int expirationYear, String addrLine1, String addrLine2, String city, String state,
+			int ZIP, String country){
+		PaymentInfo info = null;
+		int paymentID = 0;
+		try{
+			insertPaymentInfoStatement.setString(1, cardNumber);
+			insertPaymentInfoStatement.setInt(2, expirationMonth);
+			insertPaymentInfoStatement.setInt(3, expirationYear);
+			insertPaymentInfoStatement.setInt(4, customerID);
+			insertPaymentInfoStatement.executeUpdate();
+			ResultSet key = insertPaymentInfoStatement.getGeneratedKeys();
+			key.next();
+			paymentID = key.getInt(1);
+			Address paymentAddress = updateAddressForPaymentInfo(paymentID, addrLine1,
+					addrLine2, city, state, ZIP, country);
+			info = new PaymentInfo(paymentID, cardNumber,
+					expirationMonth, expirationYear, paymentAddress);
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return info;
+	}
+	
+	/**
+	 * Updates the payment information associated with a YouDrive customer
+	 * @param customerID		The unique identifier of the customer for which we are updating payment info
+	 * @param cardNumber		The new card number
+	 * @param expirationMonth	The new card's month of expiration
+	 * @param expirationYear	The new card's year of expiration
+	 */
+	public void updatePaymentInfoForCustomer(int customerID, String cardNumber, int expirationMonth,
+			int expirationYear){
+		try{
+			updatePaymentInfoStatement.setString(1, cardNumber);
+			updatePaymentInfoStatement.setInt(2, expirationMonth);
+			updatePaymentInfoStatement.setInt(3, expirationYear);
+			updatePaymentInfoStatement.setInt(4, customerID);
+			updatePaymentInfoStatement.executeUpdate();
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Returns the payment info associated with a customer.
+	 * This is a helper method. It is called from readCustomer, so a
+	 * customer object already contains a PaymentInfo object.
+	 * @param customerID	The unique identifier of the customer for which we want payment info
+	 * @return	A PaymentInfo object with data for a given customer
+	 */
+	private PaymentInfo getPaymentInfoForCustomer(int customerID){
+		PaymentInfo info = null;
+		try{
+			readPaymentInfoStatement.setInt(1, customerID);
+			ResultSet rs = readPaymentInfoStatement.executeQuery();
+			if(rs.next()){
+				Address address = getAddressForPaymentInfo(rs.getInt("id"));
+				info = new PaymentInfo(rs.getInt("id"), rs.getString("cardNumber"),
+						rs.getInt("monthExpiration"), rs.getInt("yearExpiration"), address);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return info;
+	}
+	
+	/**
+	 * If an address already exists for given payment info, it is updated.
+	 * If not, a new address is created in the YouDrive system for the payment data.
+	 * @param payment_id	The unique identifier of the payment information for which this address should be linked
+	 * @param addrLine1		The first line of the card's billing address
+	 * @param addrLine2		The second line of the card's billing address
+	 * @param city			The city of the card's billing address
+	 * @param state			The state of the card's billing address
+	 * @param ZIP			The ZIP code of the card's billing address
+	 * @param country		The country of the card's billing address
+	 * @return				An address object containing the address for a given payment info
+	 */
+	public Address updateAddressForPaymentInfo(int payment_id, String addrLine1, String addrLine2,
+			String city, String state, int ZIP, String country){
+		Address address = getAddressForPaymentInfo(payment_id);
+		int modifiedID = 0;
+		try{
+			if(address != null){
+				// This customer already has an address. Let's update it.
+				updateAddressStatement.setString(1, addrLine1);
+				updateAddressStatement.setString(2, addrLine2);
+				updateAddressStatement.setString(3, city);
+				updateAddressStatement.setString(4, state);
+				updateAddressStatement.setInt(5, ZIP);
+				updateAddressStatement.setString(6, country);
+				updateAddressStatement.setInt(7, address.getId());
+				updateAddressStatement.executeUpdate();
+			}else{
+				// This customer does not have an address. Let's make one.
+				insertAddressStatement.setString(1, addrLine1);
+				insertAddressStatement.setString(2, addrLine2);
+				insertAddressStatement.setString(3, city);
+				insertAddressStatement.setString(4, state);
+				insertAddressStatement.setInt(5, ZIP);
+				insertAddressStatement.setString(6, country);
+				insertAddressStatement.setInt(7, payment_id);
+				insertAddressStatement.setString(8, "payment");
+				insertAddressStatement.executeUpdate();
+				ResultSet key = insertAddressStatement.getGeneratedKeys();
+				key.next();
+				modifiedID = key.getInt(1);
+			}
+			address = new Address(modifiedID, addrLine1, addrLine2, city, state, ZIP, country);
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return address;
+	}
+	
+	/**
+	 * Helper method. Returns an address for a given payment info.
+	 * PaymentInfo objects already have the address encapsulated within.
+	 * Instead, use customer.getPaymentInfo().getBillingAddress().getCertainAttribute() or 
+	 * ${customer.paymentInfo.billingAddress.certainAttribute}
+	 * @param paymentID		The unique identifier for the payment info for which we want the billing address
+	 * @return				An address object encapsulating the billing address for a given payment method.
+	 */
+	private Address getAddressForPaymentInfo(int paymentID){
+		Address address = null;
+		int id = 0;
+		try{
+			readAddressStatement.setInt(1, paymentID);
+			readAddressStatement.setString(2, "payment");
 			ResultSet rs = readAddressStatement.executeQuery();
 			if(rs.next()){
 				id = rs.getInt("id");

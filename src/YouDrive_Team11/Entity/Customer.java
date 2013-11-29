@@ -40,6 +40,9 @@ public class Customer extends User {
 	 */
 	private Address mailingAddress;
 	
+	
+	private PaymentInfo paymentInfo;
+	
 	/**
 	 * Creates a customer object from the specified inputs.
 	 * @param id					The unique ID of the customer in the YouDrive system.
@@ -51,11 +54,12 @@ public class Customer extends User {
 	 * @param membershipExpiration	The expiration date of the customer's membership. SQL date.
 	 * @param dl					The driver's license for this customer.
 	 * @param mailingAddress		The mailing address for this user
+	 * @param paymentInfo			The payment information for this user
 	 */
 	public Customer(int id, String username, String password,
 			String emailAddress, String firstName,
 			String lastName, Date membershipExpiration,
-			DriversLicense dl, Address mailingAddress){
+			DriversLicense dl, Address mailingAddress, PaymentInfo paymentInfo){
 		this.id = id;
 		this.username = username;
 		this.password = password;
@@ -66,6 +70,7 @@ public class Customer extends User {
 		this.driversLicense = dl;
 		this.mailingAddress = mailingAddress;
 		this.isAdmin = false;
+		this.paymentInfo = paymentInfo;
 	}
 	
 	/**
@@ -115,5 +120,12 @@ public class Customer extends User {
 	 */
 	public Address getMailingAddress() {
 		return mailingAddress;
+	}
+
+	/**
+	 * @return the paymentInfo
+	 */
+	public PaymentInfo getPaymentInfo() {
+		return paymentInfo;
 	}
 }
