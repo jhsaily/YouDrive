@@ -45,6 +45,8 @@
 					<br />
 					<input type="text" name="licensestate" value="${licenseState}" placeholder="Driver's License State" required>
 					<br />
+					<input type="checkbox" name="revokemembership" value="yes">Revoke user's membership?
+					<br />
 					<input type="checkbox" name="removeprofile" value="yes">Remove Profile from system?
 					<br /><br />
 					<input type="submit" name="updateprofile" value="Submit">
