@@ -1,6 +1,7 @@
 package YouDrive_Team11.Servlets.CustomerCtrl;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -179,7 +180,20 @@ public class UserManager extends HttpServlet {
 		
 		//If the user clicks Forgot Password, send an email with a new one to them
 		else if(req.getParameter("forgotPassword")!=null){
-			resetPassword(req.getParameter("email"));
+			
+			//Need to call method that retrieves a customer object and then retrieves email to send new password to using that object
+			//Fill customer object with retrieved customer
+			customer=findCustomer(req.getParameter("username"));
+			
+			//If customer is found in db, reset their password
+			//UNCOMMENT MEif(customer!=null){
+			
+			//Retrieve email and send new password
+			//UNCOMMENT ME resetPassword(customer.getEmailAddress());
+			
+			resetPassword(req.getParameter("username"));
+			
+			//UNCOMMENT ME}//end if
 			
 			//Forward to login screen
 			dispatcher=ctx.getRequestDispatcher("/index.jsp");
@@ -342,7 +356,7 @@ public class UserManager extends HttpServlet {
 	 * @param oldPw		Old password
 	 * @param newPw		New password
 	 */
-	public void updatePassword(String un, String oldPw, String newPw){
+	public void updatePassword(String un, String newPw){
 		dao.changePassword(customer.getId(), newPw);
 		
 	}
@@ -350,9 +364,20 @@ public class UserManager extends HttpServlet {
 	/**
 	 * Resets the user's password by sending an email with a random one
 	 * @param email		Email address
+	 * @throws UnsupportedEncodingException 
 	 */
-	public void resetPassword(String email){
-		generateRandomPassword();
+	public void resetPassword(String email) throws UnsupportedEncodingException{
+		//Generate and store a new password
+		String newP=generateRandomPassword();
+		
+		//Update customer information in db
+		//UNCOMMENT ME updatePassword(customer.getUsername(), newP);
+		
+		//Send email with new login info
+		SendEmail mail=new SendEmail();
+		mail.send(email, "Forgotten Password", "Greetings YouDrive Member! \n\nYour new password is: " + newP + "\nPlease type this into the login screen exactly as you see it. \n\nThank You \nTeam 11");
+
+		
 	}
 	
 	/**
@@ -385,7 +410,7 @@ public class UserManager extends HttpServlet {
 		String randomPassword="";
 		String allPossibleChars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		for(int i=0; i<8; i++){
-			int r=(int)(Math.random()*37);
+			int r=(int)(Math.random()*36);
 			randomPassword=randomPassword + allPossibleChars.charAt(r);
 		}
 		System.out.println("Random Password: " + randomPassword);
@@ -417,5 +442,11 @@ public class UserManager extends HttpServlet {
 		java.sql.Date date=new java.sql.Date(utilDate.getTime());
 		
 		return date;
+	}
+	
+	public Customer findCustomer(String un){
+		//UNCOMMENT ME Customer cust=dao.findCustomer(un); 
+		Customer cust=null; //DELETE ME
+		return cust;
 	}
 }
