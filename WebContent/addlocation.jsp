@@ -17,8 +17,29 @@
 		<div id="mainbody">
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav_admin.html" %>
-			<div id="dashboardpanel">Welcome to the YouDrive administration page. If you're here by accident...
-			<br />Whoops. Logout please? :)</div>
+			<div id="dashboardpanel">
+				<span class="dbpaneltitle">New Location.</span>
+				<br /><br />
+				<form action="LocationAdminManager" method="POST">
+					<input type="text" name="locationname" placeholder="Location Name" required>
+					<br />
+					<input type="number" name="capacity" placeholder="Capacity" required>
+					<br />
+					<input type="text" name="addressline1" placeholder="Address Line 1" required>
+					<br />
+					<input type="text" name="addressline2" placeholder="Address Line 2">
+					<br />
+					<input type="text" name="city" placeholder="City" required>
+					<br />
+					<input type="text" name="zip" placeholder="Zip Code" required>
+					<br />
+					<input type="text" name="state" placeholder="State" required
+					><br />
+					<input type="text" name="country" placeholder="Country" required>
+					<br /><br />
+					<input type="submit" name="addLocation" value="Submit">
+				</form>
+			</div>
 		</div>
 		<script type="text/javascript">
 			$(window).load(setWidth());

@@ -17,8 +17,21 @@
 		<div id="mainbody">
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav_admin.html" %>
-			<div id="dashboardpanel">Welcome to the YouDrive administration page. If you're here by accident...
-			<br />Whoops. Logout please? :)</div>
+			<div id="dashboardpanel">
+				<span class="dbpaneltitle">Manage Vehicle Types.</span>
+				<br /><br />
+				To edit or remove a vehicle type, select it from the list below.
+				<br /><br />
+				<form action="VehicleAdminManager" class="formreserve" method="POST">
+					<select class="reserveselect" style="width:100%;" name="vehicletype" size="15">
+						<c:forEach items="${VehicleTypes}" var="vehicletype">
+							<option value="${vehicletype.id}">${vehicletype.description}</option>
+						</c:forEach>
+					</select>
+					<br /><br />
+					<input type="submit" name="manageVehicleType" value="Submit">
+				</form>
+			</div>
 		</div>
 		<script type="text/javascript">
 			$(window).load(setWidth());

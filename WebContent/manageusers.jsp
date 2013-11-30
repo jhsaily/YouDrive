@@ -17,8 +17,17 @@
 		<div id="mainbody">
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav_admin.html" %>
-			<div id="dashboardpanel">Welcome to the YouDrive administration page. If you're here by accident...
-			<br />Whoops. Logout please? :)</div>
+			<div id="dashboardpanel">
+				<span class="dbpaneltitle">Manage Users.</span>
+				<br /><br />
+				To edit or remove a user, enter their username in the following search field.
+				<br /><br />
+				<form action="UserAdminManager" method="POST">
+					<input type="text" name="username" placeholder="Username">
+					<br /><br />
+					<input type="submit" name="searchUser" value="Search">
+				</form>
+			</div>
 		</div>
 		<script type="text/javascript">
 			$(window).load(setWidth());

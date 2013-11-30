@@ -17,8 +17,21 @@
 		<div id="mainbody">
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav_admin.html" %>
-			<div id="dashboardpanel">Welcome to the YouDrive administration page. If you're here by accident...
-			<br />Whoops. Logout please? :)</div>
+			<div id="dashboardpanel">
+				<span class="dbpaneltitle">Manage Locations.</span>
+				<br /><br />
+				To edit or remove a location, select it from the list below.
+				<br /><br />
+				<form action="LocationAdminManager" class="formreserve" method="POST">
+					<select class="reserveselect" style="width:100%;" name="location" size="15">
+						<c:forEach items="${locations}" var="location">
+							<option value="${location.id}">${location.name}</option>
+						</c:forEach>
+					</select>
+					<br /><br />
+					<input type="submit" name="manageLocation" value="Submit">
+				</form>
+			</div>
 		</div>
 		<script type="text/javascript">
 			$(window).load(setWidth());

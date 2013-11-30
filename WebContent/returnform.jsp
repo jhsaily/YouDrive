@@ -23,16 +23,7 @@
 				<form action="ReservationManager" method="POST">
 					If you would like to return the vehicle, with reservation number, ${reservationNum}, please fill out the following information before continuing.
 					<br /><br />
-					To reasonable standards, when you received the vehicle it was in a
-					<select name="prevstate">
-						<option value="awesome">Awesome</option>
-						<option value="good">Good</option>
-						<option value="bad">Bad</option>
-						<option value="shit">Shit</option>
-					</select> 
-					state.
-					<br /><br />
-					Now that you are returning it, it is in a
+					To reasonable standards, you are returning the vehicle in a 
 					<select name="currentstate">
 						<option value="awesome">Awesome</option>
 						<option value="good">Good</option>

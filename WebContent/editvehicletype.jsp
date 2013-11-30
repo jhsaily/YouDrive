@@ -17,8 +17,20 @@
 		<div id="mainbody">
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav_admin.html" %>
-			<div id="dashboardpanel">Welcome to the YouDrive administration page. If you're here by accident...
-			<br />Whoops. Logout please? :)</div>
+			<div id="dashboardpanel">
+				<span class="dbpaneltitle">Edit Vehicle Type.</span>
+				<br /><br />
+				<form action="VehicleAdminManager" method="POST">
+					<input type="hidden" name="id" value="${typeID}">
+					<input type="text" name="description" value="${typeDescription}" placeholder="Type Description" required>
+					<br />
+					<input type="number" name="hourlyrate" value="${hourlyRate}" placeholder="Hourly Rate" required>
+					<br />
+					<input type="number" name="dailyRate" value="${dailyRate}" placeholder="Daily Rate" required>
+					<br /><br />
+					<input type="submit" name="editVehicleType" value="Submit">
+				</form>
+			</div>
 		</div>
 		<script type="text/javascript">
 			$(window).load(setWidth());
