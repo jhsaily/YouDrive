@@ -18,23 +18,24 @@
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav.html" %>
 			<div id="dashboardpanel">
-				<span class="dbpaneltitle">Reserve a Vehicle.</span>
+				<span class="dbpaneltitle">Choose a Location.</span>
 				<br /><br />
-				<form action="ReservationManager" class="formreserve" method="POST">
-					<select class="reserveselect" name="location" size="15">
-						<c:forEach var="i" begin="1" end="20">
-							<option value="location${i}">Location <c:out value="${i}"/></option>
-						</c:forEach>
-					</select>
-					<select class="reserveselect right" name="vehicle" size="15">
-						<c:forEach var="i" begin="1" end="20">
-							<!-- TODO: Some magic to filter out this list based on selection in previous list -->
-							<option value="type${i}">Vehicle Type <c:out value="${i}"/></option>
-						</c:forEach>
-					</select>
+				<c:forEach items="${locations}" var="location">
+					Location: ${location.name}
 					<br /><br />
-					<input type="submit" name="placeReservation" value="Submit">
-				</form>
+					Address:
+					<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.streetAddrLine1}
+					<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.streetAddrLine2}
+					<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.city}, ${location.locationAddress.state} ${location.locationAddress.zipCode}
+					<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.country}
+					<br /><br />
+					<a href="ReservationManager?location=${location.id}&vehiclechosen=false">Choose Location?</a>
+					<br /><br /><hr /><br />
+				</c:forEach>
 			</div>
 		</div>
 		<script type="text/javascript">

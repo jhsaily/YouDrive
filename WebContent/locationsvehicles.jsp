@@ -17,7 +17,39 @@
 		<div id="mainbody">
 			<%@ include file="resources/html/header.html" %>
 			<div id="infopanel">
-			{Output a list of locations with sublist items listing vehicles.}
+				<span class="dbpaneltitle">Our Locations and Vehicles.</span>
+				<br /><br />
+				<c:forEach items="${locations}" var="location">
+					Location:
+					<br />
+					${location.name}
+					<br /><br />
+					${location.locationAddress.streetAddrLine1}
+					<br />
+					${location.locationAddress.streetAddrLine2}
+					<br />
+					${location.locationAddress.city}, ${location.locationAddress.state} ${location.locationAddress.zipCode}
+					<br />
+					${location.locationAddress.country}
+					<br /><br />
+					
+					<c:forEach items="${location.vehicles}" var="vehicle">
+						<div class="sublist">
+							Vehicle:
+							<br />
+							${vehicle.vehicleType.description}
+							<br />
+							<br />
+							Make:
+							<br />${vehicle.year}
+							<br />${vehicle.make}
+							<br />${vehicle.model}
+							<br />
+						</div>
+					</c:forEach>
+					
+					<br /><br /><hr /><br />
+				</c:forEach>
 			</div>
 		</div>
 		<script type="text/javascript">
