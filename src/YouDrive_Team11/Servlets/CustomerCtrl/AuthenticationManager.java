@@ -101,16 +101,19 @@ public class AuthenticationManager extends HttpServlet {
 		System.out.println("The user, " + un + ", is trying to log in.");
 		
 		//If login is successful, direct user to dashboard
-		if(un.equals("admin")||un.equals("cust")){
-		//UNCOMMENT ME if(authenticateUser(un, pw)!=null){
+		//TESTif(un.equals("admin")||un.equals("cust")){
+		if(authenticateUser(un, pw)!=null){
 			System.out.println("Successful Authentication!");
 			
 			//If the user is an administrator, take them to the admin dashboard
-			if(un.equals("admin")){
-				//UNCOMMENT ME if(authenticateUser(un, pw).isAdmin()){ 
+			//TESTif(un.equals("admin")){
+				if(authenticateUser(un, pw).isAdmin()){ 
 				
 				//Bind objects to the user's session, e.g. Customer, Reservation objects
-				admin=new Administrator(5, "Adamistrator", "pw"); //DELETE ME LATER
+				//TESTadmin=new Administrator(5, "Adamistrator", "pw"); //DELETE ME LATER
+					
+				//Obtain user object from db and cast to admin
+				admin=(Administrator)authenticateUser(un, pw);
 				session.setAttribute("currentUser", admin);
 				
 				//If the user is an admin, set the user type to admin
@@ -122,7 +125,11 @@ public class AuthenticationManager extends HttpServlet {
 			else{
 				
 				//Bind objects to the user's session, e.g. Customer, Reservation objects
-				session.setAttribute("currentUser", getCustomer(un, pw));
+				//TESTsession.setAttribute("currentUser", getCustomer(un, pw));
+				
+				//Obtain user object from db and cast to admin
+				customer=(Customer)authenticateUser(un, pw);
+				session.setAttribute("currentUser", customer);
 				
 				//If the user is a customer, set the user type to customer
 				session.setAttribute("userType", "customer");

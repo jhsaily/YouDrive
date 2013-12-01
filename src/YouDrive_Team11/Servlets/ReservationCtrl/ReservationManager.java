@@ -89,6 +89,41 @@ public class ReservationManager extends HttpServlet {
 				if(customer!=null){
 					System.out.println(customer.getUsername() + " is currently logged in.");
 
+					//If the user clicks place a reservation, populate the reserve.jsp page with locations
+					if(req.getParameter("clicked").equals("place")){
+						req.setAttribute("locations", getAllLocations());
+						
+						//Forward to reserve page
+						dispatcher=ctx.getRequestDispatcher("/reserve.jsp");
+						dispatcher.forward(req, res);
+					}
+					
+					//After user has chosen a location, set the location and return the list of available vehicles there
+					if(req.getParameter("clicked").equals("chooseLocation")){
+						if(req.getParameter("vehiclechosen").equals("false")){
+							
+							//Create temp location object to obtain info about for later
+							RentalLocation location=findLocation(Integer.valueOf(req.getParameter("location")));
+							
+							//Set all location attributes on reserve vehicle page
+							req.setAttribute("locationName", location.getName());
+							req.setAttribute("locationAddrLine1", location.getLocationAddress().getStreetAddrLine1());
+							req.setAttribute("locationAddrLine2", location.getLocationAddress().getStreetAddrLine2());
+							req.setAttribute("locationCity", location.getLocationAddress().getCity());
+							req.setAttribute("locationState", location.getLocationAddress().getState());
+							req.setAttribute("locationZip", location.getLocationAddress().getZipCode());
+							req.setAttribute("locationCountry", location.getLocationAddress().getCountry());
+
+							//UNCOMMENT MEreq.setAttribute("vehicles", getAllVehicles(locationId));
+							req.setAttribute("vehicles", getAllVehicles());
+							
+							//Forward to page where they choose their vehicle
+							dispatcher=ctx.getRequestDispatcher("/reservevehicle.jsp");
+							dispatcher.forward(req, res);
+						
+						}
+					}
+					
 					//If the user clicks view history, return a list of the past reservations.
 					if(req.getParameter("clicked").equals("history")){
 						req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
@@ -310,5 +345,27 @@ public class ReservationManager extends HttpServlet {
 		java.sql.Date date=new java.sql.Date(utilDate.getTime());
 		
 		return date;
+	}
+	
+	/**
+	 * Gets all the locations in the database
+	 * @return		Returns a linked list of all the locations
+	 */
+	public LinkedList getAllLocations(){
+		return dao.getAllRentalLocations();
+	}
+
+
+	/**
+	 * Gets all of the vehicles in the database
+	 * @return		Returns a linked list of all the vehicles
+	 */
+	//EDIT Eventually must return vehicles AT A PARTICULAR LOCATION
+	public LinkedList<Vehicle> getAllVehicles(){
+		return dao.getAllVehicles();
+	}
+	
+	public RentalLocation findLocation(int id){
+		return dao.readRentalLocation(id);
 	}
 }

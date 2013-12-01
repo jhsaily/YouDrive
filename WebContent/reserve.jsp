@@ -33,7 +33,7 @@
 					<br />
 					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.country}
 					<br /><br />
-					<a href="ReservationManager?location=${location.id}&vehiclechosen=false">Choose Location?</a>
+					<a href="ReservationManager?clicked=chooseLocation&location=${location.id}&vehiclechosen=false">Choose Location?</a>
 					<br /><br /><hr /><br />
 				</c:forEach>
 			</div>

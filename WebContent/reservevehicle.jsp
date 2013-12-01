@@ -20,17 +20,17 @@
 			<div id="dashboardpanel">
 				<span class="dbpaneltitle">Chosen Location.</span>
 				<br /><br />
-				Location: ${location.name}
+				Location: ${locationName}
 				<br /><br />
 				Address:
 				<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.streetAddrLine1}
+				&nbsp;&nbsp;&nbsp;&nbsp;${locationAddrLine1}
 				<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.streetAddrLine2}
+				&nbsp;&nbsp;&nbsp;&nbsp;${locationAddrLine2}
 				<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.city}, ${location.locationAddress.state} ${location.locationAddress.zipCode}
+				&nbsp;&nbsp;&nbsp;&nbsp;${locationCity}, ${locationState} ${locationZip}
 				<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.country}
+				&nbsp;&nbsp;&nbsp;&nbsp;${locationCountry}
 				<br /><br /><hr /><br />
 				<span class="dbpaneltitle" style="font-size:16px;">Choose Vehicle.</span>
 				<br /><br />
@@ -39,7 +39,7 @@
 					<br />
 					Hourly Rate: ${vehicle.vehicleType.hourlyRate}
 					<br />
-					Daily Rate: ${vehicle.vehicleType.dailyyRate}
+					Daily Rate: ${vehicle.vehicleType.dailyRate}
 					<br />
 					Hourly Rate: ${vehicle.vehicleType.hourlyRate}
 					<br />

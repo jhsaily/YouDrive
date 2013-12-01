@@ -1,5 +1,10 @@
 package YouDrive_Team11.Servlets.AdminCtrl;
 
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,8 +29,9 @@ public class UserAdminManager extends HttpServlet{
 	//Declare DAO
 	YouDriveDAO dao;
 	
-	//Declare temporary customer object
-	Customer customer;
+	//Temporary Customer object
+	Customer customer=null;
+	Administrator admin=null;
 	
 	/**
 	 * Constructor
@@ -43,9 +49,71 @@ public class UserAdminManager extends HttpServlet{
 	
 	/**
 	 * Manages post requests and responses
+	 * @throws IOException 
+	 * @throws ServletException 
 	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse res){
-		
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
+		System.out.println("POST!");
+
+		//Get the servlet context & the dispatcher for later use
+		ServletContext ctx=this.getServletContext();
+		RequestDispatcher dispatcher;
+
+		//If a session exists, then do everything, if not direct to log in : this prevents a user from going to a page without logging in.
+		if(req.getSession().getAttribute("userType")!=null){
+
+			//Get the session
+			session=req.getSession();
+
+			//Check if user is admin or customer and get appropriate session data
+			if(session.getAttribute("userType").equals("customer")){
+				//Get the current session attributes
+				customer=(Customer)req.getSession().getAttribute("currentUser");
+			}
+			else{
+				//Get the current session attributes
+				admin=(Administrator)req.getSession().getAttribute("currentUser");
+			}
+
+			//Double Check if session exists, if not go to login screen MIGHT BE REDUNDANT DELETE IF SO
+			if(customer==null && admin==null){
+				System.out.println("No session");
+				dispatcher=ctx.getRequestDispatcher("/index.jsp");
+				dispatcher.forward(req, res);
+			}//end if
+
+			//If session exists (one of the objects are filled), do either Customer or Admin logic
+			else{
+
+				//CUSTOMER LOGIC
+				if(customer!=null){
+	
+
+				}//END CUSTOMER LOGIC
+
+				//ADMIN LOGIC
+				else if(admin!=null){
+					//If user clicks search for customer under user management
+					if(req.getParameter("searchUser")!=null){
+						
+						//Get the object associated with this username
+						req.setAttribute("firstName", "tim");
+						
+						//Forward to edit user screen
+						dispatcher=ctx.getRequestDispatcher("/edituser.jsp");
+						dispatcher.forward(req, res);
+					}
+				}//END ADMIN LOGIC
+			}//end else
+		}//end if
+
+		//If the session doesn't exist, go back to log in screen.
+		else{
+
+			//Forward to login screen
+			dispatcher=ctx.getRequestDispatcher("/index.jsp");
+			dispatcher.forward(req, res);
+		}//end else
 	}
 	
 	/**
