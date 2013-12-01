@@ -140,10 +140,10 @@ public class YouDriveDAO {
 			getCommentsStatement = conn.prepareStatement("select * from comments where vehicle_id=?");
 			
 			insertVehicleStatement = conn.prepareStatement("insert into vehicles (make,model,year,tag,mileage," +
-					"serviceDate,condition,type_id,location_id) values (?,?,?,?,?,?,?,?,?)");
+					"serviceDate,vehicleCondition,type_id,location_id) values (?,?,?,?,?,?,?,?,?)");
 			readVehicleStatement = conn.prepareStatement("select * from vehicles where id=?");
 			updateVehicleStatement = conn.prepareStatement("update vehicles set make=?,model=?,year=?,tag=?," +
-					"mileage=?,serviceDate=?,condition=?,type_id=?,location_id=? where id=?");
+					"mileage=?,serviceDate=?,vehicleCondition=?,type_id=?,location_id=? where id=?");
 			deleteVehicleStatement = conn.prepareStatement("delete from vehicles where id=?");
 			getAllVehiclesStatement = conn.prepareStatement("select * from vehicles");
 			getAllVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=?");
