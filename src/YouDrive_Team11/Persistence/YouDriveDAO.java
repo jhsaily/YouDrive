@@ -157,10 +157,10 @@ public class YouDriveDAO {
 			updateVehicleStatement = conn.prepareStatement("update vehicles set make=?,model=?,year=?,tag=?," +
 					"mileage=?,serviceDate=?,vehicleCondition=?,type_id=?,location_id=? where id=?");
 			deleteVehicleStatement = conn.prepareStatement("delete from vehicles where id=?");
-			getAllVehiclesStatement = conn.prepareStatement("select * from vehicles");
-			getAllVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=?");
+			getAllVehiclesStatement = conn.prepareStatement("select * from vehicles where isAvailable=?");
+			getAllVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=? and isAvailable=?");
 			getAllVehiclesOfTypeAtLocationStatement = conn.prepareStatement("select * from vehicles" +
-					" where location_id=? and type_id=?");
+					" where location_id=? and type_id=? and isAvailable=?");
 			markVehicleAvailableStatement = conn.prepareStatement("update vehicles set isAvailable=1 where id=?");
 			markVehicleUnavailableStatement = conn.prepareStatement("update vehicles set isAvailable=0 where id=?");
 			
@@ -1056,6 +1056,29 @@ public class YouDriveDAO {
 	}
 	
 	/**
+	 * Retrieves a list of all AVAILABLE vehicles in the YouDrive system
+	 * @return	A LinkedList of Vehicles in the YouDrive system
+	 */
+	public LinkedList<Vehicle> getAllAvailableVehicles(){
+		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
+		try{
+			getAllVehiclesStatement.setBoolean(1, true);
+			ResultSet rs = getAllVehiclesStatement.executeQuery();
+			while(rs.next()){
+				LinkedList<Comment> comments = getComments(rs.getInt("id"));
+				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
+						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
+						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
+				list.add(vehicle);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return list;
+	}
+	
+	/**
 	 * Retrieves a list of all vehicles in the YouDrive system at the
 	 * rental location specified by the provided unique identifier.
 	 * @param locationID	The unique identifier of the rental location
@@ -1065,6 +1088,32 @@ public class YouDriveDAO {
 		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
 		try{
 			getAllVehiclesAtLocationStatement.setInt(1, locationID);
+			ResultSet rs = getAllVehiclesAtLocationStatement.executeQuery();
+			while(rs.next()){
+				LinkedList<Comment> comments = getComments(rs.getInt("id"));
+				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
+						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
+						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
+				list.add(vehicle);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return list;
+	}
+	
+	/**
+	 * Retrieves a list of all AVAILABLE vehicles in the YouDrive system at the
+	 * rental location specified by the provided unique identifier.
+	 * @param locationID	The unique identifier of the rental location
+	 * @return	A LinkedList of Vehicles at the specified rental location
+	 */
+	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID){
+		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
+		try{
+			getAllVehiclesAtLocationStatement.setInt(1, locationID);
+			getAllVehiclesAtLocationStatement.setBoolean(2, true);
 			ResultSet rs = getAllVehiclesAtLocationStatement.executeQuery();
 			while(rs.next()){
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
@@ -1091,6 +1140,33 @@ public class YouDriveDAO {
 		try{
 			getAllVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
 			getAllVehiclesOfTypeAtLocationStatement.setInt(2, typeID);
+			ResultSet rs = getAllVehiclesOfTypeAtLocationStatement.executeQuery();
+			while(rs.next()){
+				LinkedList<Comment> comments = getComments(rs.getInt("id"));
+				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
+						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
+						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
+				list.add(vehicle);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return list;
+	}
+	
+	/**
+	 * Retrieves a list of AVAILABLE vehicles at the specified location of a certain type
+	 * @param locationID	The unique identifier of the rental location
+	 * @param typeID		The unique identifier of the vehicle type
+	 * @return				A LinkedList of Vehicles at the specified rental location of a certain type
+	 */
+	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID, int typeID){
+		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
+		try{
+			getAllVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
+			getAllVehiclesOfTypeAtLocationStatement.setInt(2, typeID);
+			getAllVehiclesOfTypeAtLocationStatement.setBoolean(3, true);
 			ResultSet rs = getAllVehiclesOfTypeAtLocationStatement.executeQuery();
 			while(rs.next()){
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
@@ -1346,9 +1422,9 @@ public class YouDriveDAO {
 				insertReservationStatement.setInt(6, location_id);
 				insertReservationStatement.setInt(7, customer_id);
 				insertReservationStatement.executeUpdate();
+				ResultSet key = insertReservationStatement.getGeneratedKeys();
 				markVehicleUnavailableStatement.setInt(1, vehicle_id);
 				markVehicleUnavailableStatement.executeUpdate();
-				ResultSet key = insertReservationStatement.getGeneratedKeys();
 				if(key.next()){
 					id = key.getInt(1);
 					RentalLocation location = readRentalLocation(location_id);
