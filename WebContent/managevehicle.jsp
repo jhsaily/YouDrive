@@ -54,6 +54,13 @@
 						</c:forEach>
 					</select>
 					<br />
+					Vehicle Location: <select name="vehiclelocation">
+						<option value="${currentLocation.id}" selected>${currentLocation.name}</option>
+						<c:forEach items="${locations}" var="location">
+							<option value="${location.id}">${location.name}</option>
+						</c:forEach>
+					</select>
+					<br />
 					<input type="checkbox" name="removevehicle" value="yes">Remove Vehicle from system?
 					<br /><br />
 					<input type="submit" name="updateVehicle" value="Submit">

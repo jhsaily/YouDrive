@@ -22,30 +22,37 @@
 				<br /><br />
 				<span class="dbpaneltitle" style="font-size:16px;">Choose Reservation Times.</span>
 					<br /><br />
+					Error: ${errorReason}
+					<br /><br />
 				<form action="ReservationManager">
 					Pickup time:
 					<br />
 					<select name="pickupday">
+						<option value="${day}" selected>${day}</option>
 						<c:forEach var="D" begin="1" end="31">
 							<option value="${D}">${D}</option>
 						</c:forEach>
 					</select>/
 					<select name="pickupmonth">
+						<option value="${month}" selected>${month}</option>
 						<c:forEach var="M" begin="1" end="12">
 							<option value="${M}">${M}</option>
 						</c:forEach>
 					</select>/
 					<select name="pickupyear">
+						<option value="${year}" selected>${year}</option>
 						<c:forEach var="Y" begin="13" end="16">
 							<option value="20${Y}">20${Y}</option>
 						</c:forEach>
 					</select> at 
 					<select name="pickuphour">
+						<option value="${hour}" selected>${hour}</option>
 						<c:forEach var="h" begin="1" end="12">
 							<option value="${h}">${h}</option>
 						</c:forEach>
 					</select>
 					<select name="pickupmeridiem">
+						<option value="${meridiem}" selected>${meridiem}</option>
 						<option value="am">am</option>
 						<option value="pm">pm</option>
 					</select>
@@ -54,12 +61,14 @@
 					Rental Type:
 					<br />
 					<select name="rentaltype">
-						<option value="hourly" selected>Hourly</option>
+						<option value="${type}" selected>${type}</option>
+						<option value="hourly">Hourly</option>
 						<option value="daily">Daily</option>
 					</select> rental 
 					<br />
 					<div class="rentaltype" id="hourly">
 						for <select name="rentallengthhours">
+							<option value="${lengthhours}" selected>${lengthhours}</option>
 							<c:forEach var="h" begin="1" end="72">
 								<option value="${h}">${h}</option>
 							</c:forEach>
@@ -67,6 +76,7 @@
 					</div>
 					<div class="rentaltype" id="daily" style="display:none;">
 						for <select name="rentallengthdays">
+							<option value="${lengthdays}" selected>${lengthdays}</option>
 							<c:forEach var="d" begin="1" end="3">
 								<option value="${d}">${d}</option>
 							</c:forEach>
@@ -78,6 +88,7 @@
 					<br />
 					<select name="vehicletype">
 						<option value="" selected>-- Choose One --</option>
+						<option value="${selectedtype.id}" selected>${selectedtype.description}</option>
 						<c:forEach items="${vehicleTypes}" var="type">
 							<option value="${type.id}">${type.description}</option>
 						</c:forEach>
@@ -113,7 +124,13 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-			$(window).load(setWidth());
+			$(window).load(function() {
+				setWidth();
+				var str = "";
+				str += $( "select[name='rentaltype']" ).val();
+				$( "div[class='rentaltype']" ).hide();
+				$( "div[id='" + str + "']" ).show();
+			});
 			$(window).resize(function() {setWidth();});
 			
 			$( "select[name='vehicletype']" ).change(function () {

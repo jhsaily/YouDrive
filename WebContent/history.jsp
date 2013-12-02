@@ -25,7 +25,7 @@
 					Anywhere you want to display an attribute just do reservation.WhateverTheAttributeFromReservationClass
 					I'm currently using a dummy linked list that has 2 reservations with like no info in them. Change the format/whatever
 					as you want, but that's how I'm giving you the info.-->
-					<c:forEach items="${listOfReservations}" var="reservation">
+					<c:forEach items="${listOfActiveReservations}" var="reservation">
 						<form action="ReservationManager" method="POST">
 							Reservation Number: ${reservation.id}
 							<br />
@@ -43,7 +43,20 @@
 						<br />
 						<hr /><br />
 					</c:forEach>
-					
+					<c:forEach items="${listOfInactiveReservations}" var="reservation">
+						Reservation Number: ${reservation.id}
+						<br />
+						Reservation start date: ${reservation.pickupTime}
+						<br />
+						Reservation end date: ${reservation.timeDue}
+						<br />
+						Vehicle Type: ${reservation.vehicle.vehicleType.description}
+						<br />
+						Total: $XX.XX
+						<br /><br />
+						<br />
+						<hr /><br />
+					</c:forEach>
 				</div>
 			</div>
 		</div>

@@ -18,21 +18,22 @@
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav_admin.html" %>
 			<div id="dashboardpanel">
-				<span class="dbpaneltitle">Manage Locations.</span>
+				<span class="dbpaneltitle">${locationName}'s Associated Vehicles.</span>
 				<br /><br />
-				To edit or remove a location, select it from the list below.
+				<a href="LocationAdminManager?clicked=add&id=${locationID}">Add Vehicle?</a>
 				<br /><br />
-				<form action="LocationAdminManager" class="formreserve" method="POST">
-					<select class="reserveselect" style="width:100%;" name="location" size="15">
-						<c:forEach items="${locations}" var="location">
-							<option value="${location.id}">${location.name}</option>
-						</c:forEach>
-					</select>
+				<c:forEach items="${listOfVehicles}" var="vehicle">
+					Vehicle ID: ${vehicle.id}
+					<br />
+					Vehicle Type: ${vehicle.vehicleType.description}
+					<br />
+					Vehicle Model: ${vehicle.year} ${vehicle.make} ${vehicle.model}
 					<br /><br />
-					<input type="submit" name="editLocation" value="Edit Location">
-					<input type="submit" name="editVehiclesAtLocation" value="Edit Vehicles at this Location">
-					<input type="submit" name="removeLocation" value="Remove this Location">
-				</form>
+					<a href="VehicleAdminManager?clicked=edit&id=${vehicle.id}">Edit Vehicle?</a>
+					<br />
+					<a href="VehicleAdminManager?clicked=remove&id=${vehicle.id}">Remove Vehicle?</a>
+					<br /><hr style="width:50%;"/><br />
+				</c:forEach>
 			</div>
 		</div>
 		<script type="text/javascript">

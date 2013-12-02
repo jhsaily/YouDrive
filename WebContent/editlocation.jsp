@@ -38,29 +38,9 @@
 					<input type="text" name="state" value="${state}" placeholder="State" required
 					><br />
 					<input type="text" name="country" value="${country}" placeholder="Country" required>
-					<br />
-					<input type="checkbox" name="removelocation" value="yes">Remove Location from system?
 					<br /><br />
 					<input type="submit" name="updatelocation" value="Submit">
 				</form>
-				
-				<br /><hr /><br />
-				<span class="dbpaneltitle">Associated Vehicles.</span>
-				<br /><br />
-				<a href="LocationAdminManager?clicked=add&id=${locationID}">Add Vehicle?</a>
-				<br /><br />
-				<c:forEach items="${listOfVehicles}" var="vehicle">
-					Vehicle ID: ${vehicle.id}
-					<br />
-					Vehicle Type: ${vehicle.vehicleType.description}
-					<br />
-					Vehicle Model: ${vehicle.year} ${vehicle.make} ${vehicle.model}
-					<br /><br />
-					<a href="VehicleAdminManager?clicked=edit&id=${vehicle.id}">Edit Vehicle?</a>
-					<br />
-					<a href="VehicleAdminManager?clicked=remove&id=${vehicle.id}">Remove Vehicle?</a>
-					<br /><hr style="width:50%;"/><br />
-				</c:forEach>
 			</div>
 		</div>
 		<script type="text/javascript">

@@ -29,7 +29,8 @@
 						</c:forEach>
 					</select>
 					<br /><br />
-					<input type="submit" name="manageVehicleType" value="Submit">
+					<input type="submit" name="manageVehicleType" value="Edit Vehicle Type">
+					<input type="submit" name="removeVehicleType" value="Remove Vehicle Type">
 				</form>
 			</div>
 		</div>
