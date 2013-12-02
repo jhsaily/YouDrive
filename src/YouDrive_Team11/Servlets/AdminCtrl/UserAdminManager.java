@@ -151,15 +151,41 @@ public class UserAdminManager extends HttpServlet{
 
 				//ADMIN LOGIC
 				else if(admin!=null){
+					
 					//If user clicks search for customer under user management
 					if(req.getParameter("searchUser")!=null){
 						
-						//Get the object associated with this username
-						req.setAttribute("firstName", "tim");
+						//Make sure nothing funny was entered by putting this in a try catch
+						try{
+							//Get the object associated with this username
+							Customer c=manageProfile(req.getParameter("username"));
+							req.setAttribute("userName", c.getUsername());
+							req.setAttribute("firstName", c.getFirstName());
+							req.setAttribute("lastName", c.getLastName());
+							req.setAttribute("emailAddress", c.getEmailAddress());
+							req.setAttribute("addrLine1", c.getMailingAddress().getStreetAddrLine1());
+							req.setAttribute("addrLine2", c.getMailingAddress().getStreetAddrLine2());
+							req.setAttribute("city", c.getMailingAddress().getCity());
+							req.setAttribute("state", c.getMailingAddress().getState());
+							req.setAttribute("zip", c.getMailingAddress().getZipCode());
+							req.setAttribute("country", c.getMailingAddress().getCountry());
+							req.setAttribute("licenseNumber", c.getDriversLicense().getLicenseNumber());
+							req.setAttribute("licenseState", c.getDriversLicense().getLicenseState());
 						
-						//Forward to edit user screen
-						dispatcher=ctx.getRequestDispatcher("/edituser.jsp");
-						dispatcher.forward(req, res);
+
+							//Forward to edit user screen
+							dispatcher=ctx.getRequestDispatcher("/edituser.jsp");
+							dispatcher.forward(req, res);
+						}
+						catch(Exception e){
+							System.out.println("Invalid entry for edit user");
+							
+							//Forward to manage users page
+							dispatcher=ctx.getRequestDispatcher("/manageusers.jsp");
+							dispatcher.forward(req, res);
+						}
+						
+						
 					}
 				}//END ADMIN LOGIC
 			}//end else
@@ -180,7 +206,7 @@ public class UserAdminManager extends HttpServlet{
 	 * @return			Returns a Customer object
 	 */
 	public Customer manageProfile(String un){
-		return dao.readCustomer(123);
+		return dao.readCustomer(un);
 		
 	}
 	
@@ -189,6 +215,7 @@ public class UserAdminManager extends HttpServlet{
 	 * @param un		The customer's username
 	 */
 	public void removeUser(String un){
-		dao.deleteCustomer(123);
+		Customer cust=dao.readCustomer(un);
+		dao.deleteCustomer(cust.getId());
 	}
 }

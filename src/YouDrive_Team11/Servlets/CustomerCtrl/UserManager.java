@@ -186,14 +186,14 @@ public class UserManager extends HttpServlet {
 			customer=findCustomer(req.getParameter("username"));
 			
 			//If customer is found in db, reset their password
-			//UNCOMMENT MEif(customer!=null){
+			if(customer!=null){
 			
 			//Retrieve email and send new password
-			//UNCOMMENT ME resetPassword(customer.getEmailAddress());
+			resetPassword(customer.getEmailAddress());
 			
-			resetPassword(req.getParameter("username"));
+			//DELETE ME resetPassword(req.getParameter("username"));
 			
-			//UNCOMMENT ME}//end if
+			}//end if
 			
 			//Forward to login screen
 			dispatcher=ctx.getRequestDispatcher("/index.jsp");
@@ -273,7 +273,7 @@ public class UserManager extends HttpServlet {
 						//Prevent invalid information from being entered
 						try{
 							//Update payment information in the database
-							updatePaymentInfo(req.getParameter("cardnumber"), Integer.valueOf(req.getParameter("cardexpmonth")), Integer.valueOf(req.getParameter("cardexpyear")), Integer.valueOf(req.getParameter("cardverification")), req.getParameter("addressline1"), req.getParameter("addressline2"), req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"));
+							updatePaymentInfo(customer.getUsername(), req.getParameter("cardnumber"), Integer.valueOf(req.getParameter("cardexpmonth")), Integer.valueOf(req.getParameter("cardexpyear")), Integer.valueOf(req.getParameter("cardverification")), req.getParameter("addressline1"), req.getParameter("addressline2"), req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"));
 						
 						
 							//Update the session attribute so that the information is fed back to the jsp page when it's clicked on
@@ -300,7 +300,31 @@ public class UserManager extends HttpServlet {
 
 				//ADMIN LOGIC
 				else if(admin!=null){
-
+					
+					//If the user hits submit after editing a user's information, update it in the db
+					if(req.getParameter("updateprofile")!=null){
+						
+						//Check if remove profile is checked
+						if(req.getParameter("removeprofile")==null){
+							updateName(req.getParameter("username"), req.getParameter("firstname"), req.getParameter("lastname"));
+							updateEmailAddress(req.getParameter("username"), req.getParameter("email"));
+							updateResidenceAddress(req.getParameter("username"), req.getParameter("addressline1"), req.getParameter("addressline2"), Integer.valueOf(req.getParameter("zip")), req.getParameter("city"), req.getParameter("state"), req.getParameter("country"));
+							updateDriversLicense(req.getParameter("username"), req.getParameter("licensenum"), req.getParameter("licensestate"));
+					
+							//Forward to manage user screen
+							dispatcher=ctx.getRequestDispatcher("/manageusers.jsp");
+							dispatcher.forward(req, res);
+						}
+						else{
+							//Remove the user
+							removeUser(req.getParameter("username"));
+							
+							//Forward to UserAdminManager screen
+							dispatcher=ctx.getRequestDispatcher("/manageusers.jsp"); 
+							dispatcher.forward(req, res);
+						}
+					}
+					
 				}//END ADMIN LOGIC
 			}//end else
 		}//end if
@@ -346,7 +370,8 @@ public class UserManager extends HttpServlet {
 	 * @param email		User email address
 	 */
 	public void updateEmailAddress(String un, String email){
-		dao.changeEmailAddress(customer.getId(), email);
+		Customer c=findCustomer(un);
+		dao.changeEmailAddress(c.getId(), email);
 	}
 	
 	/**
@@ -356,7 +381,9 @@ public class UserManager extends HttpServlet {
 	 * @param lName			Last name
 	 */
 	public void updateName(String un, String fName, String lName){
-		dao.updateCustomer(customer.getId(), fName, lName, customer.getMembershipExpiration());
+		Customer c=findCustomer(un);
+		System.out.println(un);
+		dao.updateCustomer(c.getId(), fName, lName, c.getMembershipExpiration());
 
 	}
 	
@@ -371,7 +398,8 @@ public class UserManager extends HttpServlet {
 	 * @param country		Country where user lives
 	 */
 	public void updateResidenceAddress(String un, String street1, String street2, int zip, String city, String state, String country){
-		dao.updateAddressForCustomer(customer.getId(), street1, street2, city, state, zip, country);
+		Customer c=findCustomer(un);
+		dao.updateAddressForCustomer(c.getId(), street1, street2, city, state, zip, country);
 	}
 	
 	/**
@@ -381,7 +409,8 @@ public class UserManager extends HttpServlet {
 	 * @param licenseState		License state
 	 */
 	public void updateDriversLicense(String un, String licenseNum, String licenseState){
-		dao.updateDLForCustomer(customer.getId(), licenseNum, licenseState);
+		Customer c=findCustomer(un);
+		dao.updateDLForCustomer(c.getId(), licenseNum, licenseState);
 	}
 	
 	/**
@@ -391,7 +420,8 @@ public class UserManager extends HttpServlet {
 	 * @param newPw		New password
 	 */
 	public void updatePassword(String un, String newPw){
-		dao.changePassword(customer.getId(), newPw);
+		Customer c=findCustomer(un);
+		dao.changePassword(c.getId(), newPw);
 		
 	}
 	
@@ -423,9 +453,10 @@ public class UserManager extends HttpServlet {
 	 * @param street2		User's billing address
 	 * @param zip			User's zip code
 	 */
-	public void updatePaymentInfo(String ccNum, int ccExpMonth, int ccExpYear, int ccSecurity, String street1, String street2, String city, String state, int zip, String country){
-		dao.updatePaymentInfoForCustomer(customer.getId(), ccNum, ccExpMonth, ccExpYear, ccSecurity);
-		dao.updateAddressForPaymentInfo(customer.getPaymentInfo().getId(), street1, street2, city, state, zip, country);
+	public void updatePaymentInfo(String un, String ccNum, int ccExpMonth, int ccExpYear, int ccSecurity, String street1, String street2, String city, String state, int zip, String country){
+		Customer c=findCustomer(un);
+		dao.updatePaymentInfoForCustomer(c.getId(), ccNum, ccExpMonth, ccExpYear, ccSecurity);
+		dao.updateAddressForPaymentInfo(c.getPaymentInfo().getId(), street1, street2, city, state, zip, country);
 	}
 
 	/**
@@ -479,12 +510,21 @@ public class UserManager extends HttpServlet {
 	}
 	
 	public Customer findCustomer(String un){
-		//UNCOMMENT ME Customer cust=dao.findCustomer(un); 
-		Customer cust=null; //DELETE ME
+		Customer cust=dao.readCustomer(un); 
+		
 		return cust;
 	}
 	
 	public Customer findCustomerById(int id){
 		return dao.readCustomer(id);
+	}
+	
+	/**
+	 * Removes a user from the database
+	 * @param un		The customer's username
+	 */
+	public void removeUser(String un){
+		Customer cust=dao.readCustomer(un);
+		dao.deleteCustomer(cust.getId());
 	}
 }

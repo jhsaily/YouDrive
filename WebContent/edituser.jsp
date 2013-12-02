@@ -22,6 +22,7 @@
 				<br /><br />
 				<form action="UserManager" method="POST">
 					<input type="hidden" name="userid" value="${userID}">
+					<input type="hidden" name="username" value="${userName}">
 					<br />
 					<input type="text" name="firstname" value="${firstName}" placeholder="First Name" required>
 					<br />

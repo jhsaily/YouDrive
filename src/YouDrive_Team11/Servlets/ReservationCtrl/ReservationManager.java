@@ -114,8 +114,9 @@ public class ReservationManager extends HttpServlet {
 							req.setAttribute("locationZip", location.getLocationAddress().getZipCode());
 							req.setAttribute("locationCountry", location.getLocationAddress().getCountry());
 
-							//UNCOMMENT MEreq.setAttribute("vehicles", getAllVehicles(locationId));
-							req.setAttribute("vehicles", getAllVehicles());
+							//Display all available vehicles at this location
+							req.setAttribute("vehicles", getAllVehiclesFrom(location.getId()));
+							req.setAttribute("locationId", location.getId());
 							
 							//Forward to page where they choose their vehicle
 							dispatcher=ctx.getRequestDispatcher("/reservevehicle.jsp");
@@ -146,6 +147,9 @@ public class ReservationManager extends HttpServlet {
 							req.setAttribute("state", customer.getPaymentInfo().getBillingAddress().getState());
 							req.setAttribute("zip", customer.getPaymentInfo().getBillingAddress().getZipCode());
 							req.setAttribute("country", customer.getPaymentInfo().getBillingAddress().getCountry());
+							
+							//Create the reservation and store in the database
+							placeReservation(returnDate("12", "27", "2013"), 23, false, returnDate("12", "29", "2013"), Integer.valueOf(req.getParameter("vehicle")), Integer.valueOf(req.getParameter("locationid")), customer.getId());
 							
 							//Forward to page where reservation details are confirmed and paid for
 							dispatcher=ctx.getRequestDispatcher("/processpayment.jsp");
@@ -307,13 +311,12 @@ public class ReservationManager extends HttpServlet {
 	 * Creates a new reservation under a particular user
 	 * @param pickUp			Time to pick up the vehicle
 	 * @param duration			Length of the reservation
-	 * @param vehicleTypeId		Unique vehicle type identifier
+	 * @param vehicleId		Unique vehicle type identifier
 	 * @param locationId		Unique location identifier
 	 * @return					Returns a reservation object
 	 */
-	public Reservation placeReservation(Date pickUp, double duration, int vehicleTypeId, int locationId){
-		Reservation reservation=null;
-		return reservation;
+	public Reservation placeReservation(Date pickUp, double duration, boolean isHourly, Date timeDue, int vehicleId, int locationId, int custId){
+		return dao.createReservation(pickUp, duration, isHourly, timeDue, vehicleId, locationId, custId);
 	}
 
 	/**
@@ -396,12 +399,19 @@ public class ReservationManager extends HttpServlet {
 	 * Gets all of the vehicles in the database
 	 * @return		Returns a linked list of all the vehicles
 	 */
-	//EDIT Eventually must return vehicles AT A PARTICULAR LOCATION
 	public LinkedList<Vehicle> getAllVehicles(){
 		return dao.getAllVehicles();
 	}
 	
 	public RentalLocation findLocation(int id){
 		return dao.readRentalLocation(id);
+	}
+	
+	/**
+	 * Gets all of the vehicles from a specific location in the database
+	 * @return		Returns a linked list of all the vehicles
+	 */
+	public LinkedList<Vehicle> getAllVehiclesFrom(int id){
+		return dao.getAllVehicles(id);
 	}
 }
