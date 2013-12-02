@@ -79,6 +79,9 @@ public class YouDriveDAO {
 	private PreparedStatement deleteRentalLocationStatement;
 	private PreparedStatement getAllRentalLocationsStatement;
 	
+	private PreparedStatement getMembershipPriceStatement;
+	private PreparedStatement setMembershipPriceStatement;
+	
 	/**
 	 * Creates an instance of the persistence class
 	 */
@@ -157,6 +160,9 @@ public class YouDriveDAO {
 					" where id=?");
 			deleteRentalLocationStatement = conn.prepareStatement("delete from locations where id=?");
 			getAllRentalLocationsStatement = conn.prepareStatement("select * from locations");
+			
+			getMembershipPriceStatement = conn.prepareStatement("select * from context where id=1");
+			setMembershipPriceStatement = conn.prepareStatement("update context set membershipPrice=? where id=1");
 			
 			//addCustomerStatement = conn.prepareStatement("insert into Customer (custName,custAddr,imageURL,creditLimit) values (?,?,?,?)");
 			//updateUnpaidBalanceStatement = conn.prepareStatement("update Customer set unpaidBalance = ? where id=?");
@@ -950,7 +956,7 @@ public class YouDriveDAO {
 				vehicle = new Vehicle(vehicleID, comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"),
-						rs.getString("condition"), readVehicleType(rs.getInt("type_id")));
+						rs.getString("vehicleCondition"), readVehicleType(rs.getInt("type_id")));
 			}
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -1019,7 +1025,7 @@ public class YouDriveDAO {
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
-						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("condition"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
 						readVehicleType(rs.getInt("type_id")));
 				list.add(vehicle);
 			}
@@ -1044,7 +1050,7 @@ public class YouDriveDAO {
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
-						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("condition"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
 						readVehicleType(rs.getInt("type_id")));
 				list.add(vehicle);
 			}
@@ -1070,7 +1076,7 @@ public class YouDriveDAO {
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
-						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("condition"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
 						readVehicleType(rs.getInt("type_id")));
 				list.add(vehicle);
 			}
@@ -1259,5 +1265,35 @@ public class YouDriveDAO {
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		return address;
+	}
+	
+	/**
+	 * Gets the current 6-month membership price
+	 * @return	A double representing the current 6-month YouDrive membership price.
+	 */
+	public double getMembershipPrice(){
+		double price = 0.0;
+		try{
+			ResultSet rs = getMembershipPriceStatement.executeQuery();
+			if(rs.next()){
+				price = rs.getInt("membershipPrice");
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return price;
+	}
+	
+	/**
+	 * Sets the 6-month YouDrive membership price
+	 * @param newPrice	The new price to set
+	 */
+	public void setMembershipPrice(double newPrice){
+		try{
+			setMembershipPriceStatement.setDouble(1, newPrice);
+			setMembershipPriceStatement.executeUpdate();
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
 	}
 }
