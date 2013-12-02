@@ -58,8 +58,22 @@ public class LocationAdminManager extends HttpServlet{
 		ServletContext ctx=this.getServletContext();
 		RequestDispatcher dispatcher;
 
+		/**
+		 * WITHOUT LOGGING IN
+		 */
+		//If a visitor wants to see our locations and vehicles and click it on the topnav
+		if(req.getParameter("clicked").equals("allLocationsVehicles")){
+			req.setAttribute("locations", getAllLocations());
+			
+			//Forward to manage locations Page
+			dispatcher=ctx.getRequestDispatcher("/locationsvehicles.jsp");
+			dispatcher.forward(req, res);
+		}
+		/**
+		 * WITH LOGGING IN
+		 */
 		//If a session exists, then do everything, if not direct to log in : this prevents a user from going to a page without logging in.
-		if(req.getSession().getAttribute("userType")!=null){
+		else if(req.getSession().getAttribute("userType")!=null){
 
 			//Get the session
 			session=req.getSession();
