@@ -28,6 +28,11 @@ public class PaymentInfo {
 	private int cardExpirationYear;
 	
 	/**
+	 * The security code for this card.
+	 */
+	private int securityCode;
+	
+	/**
 	 * The billing address associated with this payment info.
 	 */
 	private Address billingAddress;
@@ -38,16 +43,18 @@ public class PaymentInfo {
 	 * @param creditCardNumber
 	 * @param cardExpirationMonth
 	 * @param cardExpirationYear
+	 * @param securityCode
 	 * @param billingAddress
 	 */
 	public PaymentInfo(int id, String creditCardNumber,
 			int cardExpirationMonth, int cardExpirationYear,
-			Address billingAddress){
+			int securityCode, Address billingAddress){
 		this.id = id;
 		this.creditCardNumber = creditCardNumber;
 		this.cardExpirationMonth = cardExpirationMonth;
 		this.cardExpirationYear = cardExpirationYear;
 		this.billingAddress = billingAddress;
+		this.securityCode = securityCode;
 	}
 
 	/**
@@ -83,5 +90,12 @@ public class PaymentInfo {
 	 */
 	public Address getBillingAddress() {
 		return billingAddress;
+	}
+
+	/**
+	 * @return the securityCode
+	 */
+	public int getSecurityCode() {
+		return securityCode;
 	}
 }

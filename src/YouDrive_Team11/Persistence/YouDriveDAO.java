@@ -113,9 +113,9 @@ public class YouDriveDAO {
 			
 			readPaymentInfoStatement = conn.prepareStatement("select * from payment_methods where user_id=?");
 			updatePaymentInfoStatement = conn.prepareStatement("update payment_methods set cardNumber=?,monthExpiration=?," +
-					"yearExpiration=? where user_id=?");
+					"yearExpiration=?,securityCode=? where user_id=?");
 			insertPaymentInfoStatement = conn.prepareStatement("insert into payment_methods (cardNumber,monthExpiration," +
-					"yearExpiration,user_id) values (?,?,?,?)");
+					"yearExpiration,securityCode,user_id) values (?,?,?,?,?)");
 			
 			readDLStatement = conn.prepareStatement("select * from dl where customer_id=?");
 			updateDLStatement = conn.prepareStatement("update dl set dl_number=?,dl_state=? where customer_id=?");
@@ -463,6 +463,7 @@ public class YouDriveDAO {
 	 * @param cardNumber		The card number
 	 * @param expirationMonth	The card's month of expiry
 	 * @param expirationYear	The card's year of expiry
+	 * @param securityCode		The card's security code
 	 * @param addrLine1			The first line of the card's billing address
 	 * @param addrLine2			The second line of the card's billing address
 	 * @param city				The city of the card's billing address
@@ -472,7 +473,7 @@ public class YouDriveDAO {
 	 * @return					A PaymentInfo object encapsulating all this new data.
 	 */
 	public PaymentInfo addPaymentInfoForCustomer(int customerID, String cardNumber, int expirationMonth,
-			int expirationYear, String addrLine1, String addrLine2, String city, String state,
+			int expirationYear, int securityCode, String addrLine1, String addrLine2, String city, String state,
 			int ZIP, String country){
 		PaymentInfo info = null;
 		int paymentID = 0;
@@ -480,7 +481,8 @@ public class YouDriveDAO {
 			insertPaymentInfoStatement.setString(1, cardNumber);
 			insertPaymentInfoStatement.setInt(2, expirationMonth);
 			insertPaymentInfoStatement.setInt(3, expirationYear);
-			insertPaymentInfoStatement.setInt(4, customerID);
+			insertPaymentInfoStatement.setInt(4, securityCode);
+			insertPaymentInfoStatement.setInt(5, customerID);
 			insertPaymentInfoStatement.executeUpdate();
 			ResultSet key = insertPaymentInfoStatement.getGeneratedKeys();
 			key.next();
@@ -488,7 +490,7 @@ public class YouDriveDAO {
 			Address paymentAddress = updateAddressForPaymentInfo(paymentID, addrLine1,
 					addrLine2, city, state, ZIP, country);
 			info = new PaymentInfo(paymentID, cardNumber,
-					expirationMonth, expirationYear, paymentAddress);
+					expirationMonth, expirationYear, securityCode, paymentAddress);
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
@@ -501,14 +503,16 @@ public class YouDriveDAO {
 	 * @param cardNumber		The new card number
 	 * @param expirationMonth	The new card's month of expiration
 	 * @param expirationYear	The new card's year of expiration
+	 * @param securityCode		The new card's security code
 	 */
 	public void updatePaymentInfoForCustomer(int customerID, String cardNumber, int expirationMonth,
-			int expirationYear){
+			int expirationYear, int securityCode){
 		try{
 			updatePaymentInfoStatement.setString(1, cardNumber);
 			updatePaymentInfoStatement.setInt(2, expirationMonth);
 			updatePaymentInfoStatement.setInt(3, expirationYear);
-			updatePaymentInfoStatement.setInt(4, customerID);
+			updatePaymentInfoStatement.setInt(4, securityCode);
+			updatePaymentInfoStatement.setInt(5, customerID);
 			updatePaymentInfoStatement.executeUpdate();
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -530,7 +534,8 @@ public class YouDriveDAO {
 			if(rs.next()){
 				Address address = getAddressForPaymentInfo(rs.getInt("id"));
 				info = new PaymentInfo(rs.getInt("id"), rs.getString("cardNumber"),
-						rs.getInt("monthExpiration"), rs.getInt("yearExpiration"), address);
+						rs.getInt("monthExpiration"), rs.getInt("yearExpiration"),
+						rs.getInt("securityCode"), address);
 			}
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
