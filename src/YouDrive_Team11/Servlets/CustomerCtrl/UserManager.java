@@ -166,7 +166,7 @@ public class UserManager extends HttpServlet {
 			try{
 			createUser(req.getParameter("username"), req.getParameter("password"), req.getParameter("email"), req.getParameter("firstname"),
 					req.getParameter("lastname"), returnDate("06","30", "2014"), req.getParameter("addressline1"), req.getParameter("addressline2"), 
-					"Chicago", req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"), req.getParameter("licensenum"), req.getParameter("licensestate"));
+					req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"), req.getParameter("licensenum"), req.getParameter("licensestate"));
 			}
 			catch(Exception e){
 				System.out.println("Invalid input");
@@ -236,41 +236,64 @@ public class UserManager extends HttpServlet {
 					//If the user clicks update profile
 					if(req.getParameter("updateprofile")!=null){
 						
-						//If the customer enters a new password, change this
-						if(!(req.getParameter("newpassword").equals(""))){
-							updatePassword(customer.getUsername(), req.getParameter("newpassword"));
+						//Try to prevent invalid entries, especially in number fields
+						try{
+							//If the customer enters a new password, change this
+							if(!(req.getParameter("newpassword").equals(""))){
+								updatePassword(customer.getUsername(), req.getParameter("newpassword"));
+							}
+							updateName(customer.getUsername(), req.getParameter("firstname"), req.getParameter("lastname"));
+							updateEmailAddress(customer.getUsername(), req.getParameter("email"));
+							updateResidenceAddress(customer.getUsername(), req.getParameter("addressline1"), req.getParameter("addressline2"), Integer.valueOf(req.getParameter("zip")), req.getParameter("city"), req.getParameter("state"), req.getParameter("country"));
+							updateDriversLicense(customer.getUsername(), req.getParameter("licensenum"), req.getParameter("licensestate"));
+							
+							//Update temp customer object and re-bind session object
+							customer=findCustomerById(customer.getId());
+							session.setAttribute("currentUser", customer);
+							
+							System.out.println("User Information Updated!");
+							
+							//Forward to dashboard
+							dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+							dispatcher.forward(req, res);
 						}
-						updateName(customer.getUsername(), req.getParameter("firstname"), req.getParameter("lastname"));
-						updateEmailAddress(customer.getUsername(), req.getParameter("email"));
-						updateResidenceAddress(customer.getUsername(), req.getParameter("addressline1"), req.getParameter("addressline2"), Integer.valueOf(req.getParameter("zip")), req.getParameter("city"), req.getParameter("state"), req.getParameter("country"));
-						updateDriversLicense(customer.getUsername(), req.getParameter("licensenum"), req.getParameter("licensestate"));
+						catch(Exception e){
+							System.out.println("Invalid information was entered");
+							
+							//Forward to dashboard if info was invalid
+							dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+							dispatcher.forward(req, res);
+						}
 						
-						//Update temp customer object and re-bind session object
-						customer=findCustomerById(customer.getId());
-						session.setAttribute("currentUser", customer);
-						
-						System.out.println("User Information Updated!");
-						
-						//Forward to dashboard
-						dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
-						dispatcher.forward(req, res);
 					}
 					
 					//When the user submits his/her updated payment information, make the changes in the db
 					if(req.getParameter("updatepayment")!=null){
 						
-						//Update payment information in the database
-						updatePaymentInfo(req.getParameter("cardnumber"), Integer.valueOf(req.getParameter("cardexpmonth")), Integer.valueOf(req.getParameter("cardexpyear")), req.getParameter("addressline1"), req.getParameter("addressline2"), req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"));
+						//Prevent invalid information from being entered
+						try{
+							//Update payment information in the database
+							updatePaymentInfo(req.getParameter("cardnumber"), Integer.valueOf(req.getParameter("cardexpmonth")), Integer.valueOf(req.getParameter("cardexpyear")), Integer.valueOf(req.getParameter("cardverification")), req.getParameter("addressline1"), req.getParameter("addressline2"), req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"));
 						
-						//Update the session attribute so that the information is fed back to the jsp page when it's clicked on
-						System.out.println("Payment Information Updated!");
-						customer=findCustomerById(customer.getId());
-						session.setAttribute("currentUser", customer);
-
 						
-						//Forward to dashboard
-						dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
-						dispatcher.forward(req, res);
+							//Update the session attribute so that the information is fed back to the jsp page when it's clicked on
+							System.out.println("Payment Information Updated!");
+							customer=findCustomerById(customer.getId());
+							session.setAttribute("currentUser", customer);
+	
+							
+							//Forward to dashboard
+							dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+							dispatcher.forward(req, res);
+						
+						}
+						catch(Exception e){
+							System.out.println("Invalid payment information");
+							
+							//Forward to dashboard if payment info was invalid
+							dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
+							dispatcher.forward(req, res);
+						}
 					}
 					
 				}//END CUSTOMER LOGIC
@@ -313,9 +336,8 @@ public class UserManager extends HttpServlet {
 	 * @return						Returns a customer object
 	 */
 	public Customer createUser(String username, String password, String emailAddress, String firstName, String lastName, Date membershipExpiration, String addrLine1, String addrLine2, String city, String state, int ZIP, String country, String DLNumber, String DLState){
-		Customer customer=dao.createCustomer(username, password, emailAddress, firstName, lastName, membershipExpiration, addrLine1, addrLine2, city, state, ZIP, country, DLNumber, DLState);
-		this.customer=customer;
-		return customer;
+		return dao.createCustomer(username, password, emailAddress, firstName, lastName, membershipExpiration, addrLine1, addrLine2, city, state, ZIP, country, DLNumber, DLState);
+		
 	}
 	
 	/**
@@ -383,7 +405,7 @@ public class UserManager extends HttpServlet {
 		String newP=generateRandomPassword();
 		
 		//Update customer information in db
-		//UNCOMMENT ME updatePassword(customer.getUsername(), newP);
+		updatePassword(customer.getUsername(), newP);
 		
 		//Send email with new login info
 		SendEmail mail=new SendEmail();
@@ -401,8 +423,8 @@ public class UserManager extends HttpServlet {
 	 * @param street2		User's billing address
 	 * @param zip			User's zip code
 	 */
-	public void updatePaymentInfo(String ccNum, int ccExpMonth, int ccExpYear, String street1, String street2, String city, String state, int zip, String country){
-		dao.updatePaymentInfoForCustomer(customer.getId(), ccNum, ccExpMonth, ccExpYear);
+	public void updatePaymentInfo(String ccNum, int ccExpMonth, int ccExpYear, int ccSecurity, String street1, String street2, String city, String state, int zip, String country){
+		dao.updatePaymentInfoForCustomer(customer.getId(), ccNum, ccExpMonth, ccExpYear, ccSecurity);
 		dao.updateAddressForPaymentInfo(customer.getPaymentInfo().getId(), street1, street2, city, state, zip, country);
 	}
 

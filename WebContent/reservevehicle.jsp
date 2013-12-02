@@ -49,7 +49,7 @@
 					<br />
 					Vehicle Year: ${vehicle.year}
 					<br /><br />
-					<a href="ReservationManager?location=${location.id}&vehicle=${vehicle.id}&vehiclechosen=true">Choose Vehicle?</a>
+					<a href="ReservationManager?clicked=chooseVehicle&location=${location.id}&vehicle=${vehicle.id}&vehiclechosen=true">Choose Vehicle?</a>
 					<br /><br /><hr style="width:50%;" /><br />
 				</c:forEach>
 			</div>

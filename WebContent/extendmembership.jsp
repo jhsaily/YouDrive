@@ -30,7 +30,7 @@
 					<input type="number" name="months" value="0">
 					, and then you pay $<span id="ppm">${membershipMonthlyPrice}</span> per month.
 					<br /><br />
-					That comes to a total of $<span id="ptotal">X</span>.
+					<!--  That comes to a total of $<span id="ptotal">X</span>.-->
 					<br /><br />
 					Is this okay?
 					<br /><br />

@@ -179,41 +179,15 @@ public class AuthenticationManager extends HttpServlet {
 	 * @param pw
 	 */
 	public Customer login(String un, String pw){
-		//Dummy customer created DELETE ME
-		Address add=new Address(0, "123 Example Street", "Apt. 101", "Kennesaw", "GA", 21202, "Zimbabwe");
-		PaymentInfo paymentInfo=new PaymentInfo(0, "123456789", 11, 2013, add);
-		Customer one=new Customer(0, un, pw, "silly@fake.com", "Dummy", "User", null, null, add, paymentInfo);
-		return one;
-		
+		//EDIT ME
+		Customer cust=null;
+		return cust;
 		/**
 		 * Need a way to find customer by username not id
 		 */
 		//return dao.readCustomer(123);
 	}
 	
-	//DUMMY METHOD DELETE ME
-	public Customer getCustomer(String un, String pw){
-		if(pw.equals("amy")){
-			Address add=new Address(0, "456 Highway", "Apt. 101", "Dalton", "GA", 00502, "UK");
-			PaymentInfo paymentInfo=new PaymentInfo(0, "4928394", 01, 2013, add);
-			Customer two=new Customer(0, un, pw, "amy@fake.com", "Amy", "Smith", null, null, add, paymentInfo);
-			return two;
-		}
-		else if(pw.equals("dummy")){
-			Address add=new Address(0, "123 Example Street", "Apt. 101", "Kennesaw", "GA", 21202, "Zimbabwe");
-			PaymentInfo paymentInfo=new PaymentInfo(0, "123456789", 11, 2013, add);
-			Customer one=new Customer(0, un, pw, "silly@fake.com", "Dummy", "User", null, null, add, paymentInfo);
-			return one;
-		}
-		else if(pw.equals("bob")){
-			Address add=new Address(0, "789 Willow Park", "Suite 7", "Jokersville", "GA", 30283, "France");
-			PaymentInfo paymentInfo=new PaymentInfo(0, "123456789", 11, 2013, add);
-			Customer three=new Customer(0, un, pw, "BigBoy@fake.com", "Bob", "Wills", null, null, add, paymentInfo);
-			return three;
-		}
-		
-		return null;
-	}
 	
 	/**
 	 * Logs the user out

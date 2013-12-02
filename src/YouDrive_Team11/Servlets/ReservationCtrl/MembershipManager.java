@@ -87,6 +87,18 @@ public class MembershipManager extends HttpServlet{
 				if(customer!=null){
 					System.out.println(customer.getUsername() + " is currently logged in.");
 
+					//If the user clicks extend membership
+					if(req.getParameter("clicked").equals("extend")){
+						
+						//Fill in membership price attribute before loading page
+						req.setAttribute("membershipMonthlyPrice", getCurrentMembershipPrice());
+						
+						//Forward to extend membership page
+						dispatcher=ctx.getRequestDispatcher("/extendmembership.jsp");
+						dispatcher.forward(req, res);
+					
+					}
+					
 					//If the user clicks cancel membership
 					if(req.getParameter("clicked").equals("cancel")){
 						
@@ -184,9 +196,35 @@ public class MembershipManager extends HttpServlet{
 							System.out.println("Could not get new date");
 						}
 						
-						//Forward to login screen
-						dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
-						dispatcher.forward(req, res);
+						//If user has payment information on file
+						try{
+							int pmtamt=(int)(Integer.valueOf(req.getParameter("months")) * getCurrentMembershipPrice());
+							
+							req.setAttribute("paymentAmount", pmtamt);
+							req.setAttribute("paymentReason", "Membership Extension");
+							req.setAttribute("firstName", customer.getFirstName());
+							req.setAttribute("lastName", customer.getLastName());
+							req.setAttribute("cardNumber", customer.getPaymentInfo().getCreditCardNumber());
+							req.setAttribute("cardExpMonth", customer.getPaymentInfo().getCardExpirationMonth());
+							req.setAttribute("cardExpYear", customer.getPaymentInfo().getCardExpirationYear());
+							req.setAttribute("addrLine1", customer.getPaymentInfo().getBillingAddress().getStreetAddrLine1());
+							req.setAttribute("addrLine2", customer.getPaymentInfo().getBillingAddress().getStreetAddrLine2());
+							req.setAttribute("city", customer.getPaymentInfo().getBillingAddress().getCity());
+							req.setAttribute("state", customer.getPaymentInfo().getBillingAddress().getState());
+							req.setAttribute("zip", customer.getPaymentInfo().getBillingAddress().getZipCode());
+							req.setAttribute("country", customer.getPaymentInfo().getBillingAddress().getCountry());
+							
+							//Forward to payment page
+							dispatcher=ctx.getRequestDispatcher("/processpayment.jsp");
+							dispatcher.forward(req, res);
+						}
+						catch(Exception e){
+							System.out.println("Invalid input or no payment info on file");
+							
+							//Forward to payment fail
+							dispatcher=ctx.getRequestDispatcher("/paymentfail.jsp");
+							dispatcher.forward(req, res);
+						}
 					}
 					
 				}//END CUSTOMER LOGIC

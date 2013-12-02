@@ -124,6 +124,42 @@ public class ReservationManager extends HttpServlet {
 						}
 					}
 					
+					//If user clicks choose vehicle after choosing a location
+					if(req.getParameter("clicked").equals("chooseVehicle")){
+						
+						//EDIT ME WHEN RANDY IMPLEMENTS RESERVATION STUFF
+						System.out.println("Placing reservation for you!");
+						
+						//If user has payment information on file
+						try{
+							
+							req.setAttribute("paymentAmount", "None");
+							req.setAttribute("paymentReason", "Reservation");
+							req.setAttribute("firstName", customer.getFirstName());
+							req.setAttribute("lastName", customer.getLastName());
+							req.setAttribute("cardNumber", customer.getPaymentInfo().getCreditCardNumber());
+							req.setAttribute("cardExpMonth", customer.getPaymentInfo().getCardExpirationMonth());
+							req.setAttribute("cardExpYear", customer.getPaymentInfo().getCardExpirationYear());
+							req.setAttribute("addrLine1", customer.getPaymentInfo().getBillingAddress().getStreetAddrLine1());
+							req.setAttribute("addrLine2", customer.getPaymentInfo().getBillingAddress().getStreetAddrLine2());
+							req.setAttribute("city", customer.getPaymentInfo().getBillingAddress().getCity());
+							req.setAttribute("state", customer.getPaymentInfo().getBillingAddress().getState());
+							req.setAttribute("zip", customer.getPaymentInfo().getBillingAddress().getZipCode());
+							req.setAttribute("country", customer.getPaymentInfo().getBillingAddress().getCountry());
+							
+							//Forward to page where reservation details are confirmed and paid for
+							dispatcher=ctx.getRequestDispatcher("/processpayment.jsp");
+							dispatcher.forward(req, res);
+						}
+						catch(Exception e){
+							System.out.println("Invalid input or no payment info on file");
+							
+							//Forward to payment fail
+							dispatcher=ctx.getRequestDispatcher("/paymentfail.jsp");
+							dispatcher.forward(req, res);
+						}
+					}
+					
 					//If the user clicks view history, return a list of the past reservations.
 					if(req.getParameter("clicked").equals("history")){
 						req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
