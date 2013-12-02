@@ -18,6 +18,11 @@
 			<%@ include file="resources/html/header.html" %>
 			<div id="infopanel">
 				${membershipPrice}
+				${numberOfUsers}
+				${numberOfLocations}
+				${numberOfVehicles}
+				<br />
+				Look at these numbers. Don't you want to join in on the fun?
 			</div>
 		</div>
 		<script type="text/javascript">
