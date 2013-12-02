@@ -15,6 +15,7 @@ import YouDrive_Team11.Entity.Customer;
 import YouDrive_Team11.Entity.DriversLicense;
 import YouDrive_Team11.Entity.PaymentInfo;
 import YouDrive_Team11.Entity.RentalLocation;
+import YouDrive_Team11.Entity.Reservation;
 import YouDrive_Team11.Entity.User;
 import YouDrive_Team11.Entity.Vehicle;
 import YouDrive_Team11.Entity.VehicleType;
@@ -72,6 +73,8 @@ public class YouDriveDAO {
 	private PreparedStatement getAllVehiclesStatement;
 	private PreparedStatement getAllVehiclesAtLocationStatement;
 	private PreparedStatement getAllVehiclesOfTypeAtLocationStatement;
+	private PreparedStatement markVehicleAvailableStatement;
+	private PreparedStatement markVehicleUnavailableStatement;
 	
 	private PreparedStatement insertRentalLocationStatement;
 	private PreparedStatement readRentalLocationStatement;
@@ -81,6 +84,12 @@ public class YouDriveDAO {
 	
 	private PreparedStatement getMembershipPriceStatement;
 	private PreparedStatement setMembershipPriceStatement;
+	
+	private PreparedStatement insertReservationStatement;
+	private PreparedStatement readReservationStatement;
+	private PreparedStatement updateReservationStatement;
+	private PreparedStatement deleteReservationStatement;
+	private PreparedStatement getAllReservationsStatement;
 	
 	/**
 	 * Creates an instance of the persistence class
@@ -143,7 +152,7 @@ public class YouDriveDAO {
 			getCommentsStatement = conn.prepareStatement("select * from comments where vehicle_id=?");
 			
 			insertVehicleStatement = conn.prepareStatement("insert into vehicles (make,model,year,tag,mileage," +
-					"serviceDate,vehicleCondition,type_id,location_id) values (?,?,?,?,?,?,?,?,?)");
+					"serviceDate,vehicleCondition,type_id,location_id,isAvailable) values (?,?,?,?,?,?,?,?,?,1)");
 			readVehicleStatement = conn.prepareStatement("select * from vehicles where id=?");
 			updateVehicleStatement = conn.prepareStatement("update vehicles set make=?,model=?,year=?,tag=?," +
 					"mileage=?,serviceDate=?,vehicleCondition=?,type_id=?,location_id=? where id=?");
@@ -152,6 +161,8 @@ public class YouDriveDAO {
 			getAllVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=?");
 			getAllVehiclesOfTypeAtLocationStatement = conn.prepareStatement("select * from vehicles" +
 					" where location_id=? and type_id=?");
+			markVehicleAvailableStatement = conn.prepareStatement("update vehicles set isAvailable=1 where id=?");
+			markVehicleUnavailableStatement = conn.prepareStatement("update vehicles set isAvailable=0 where id=?");
 			
 			insertRentalLocationStatement = conn.prepareStatement("insert into locations (name,capacity) values " +
 					"(?,?)");
@@ -163,6 +174,9 @@ public class YouDriveDAO {
 			
 			getMembershipPriceStatement = conn.prepareStatement("select * from context where id=1");
 			setMembershipPriceStatement = conn.prepareStatement("update context set membershipPrice=? where id=1");
+			
+			insertReservationStatement = conn.prepareStatement("insert into reservations (pickupTime,rentalDuration," +
+					"isHourly,timeDue,vehicle_id,location_id,customer_id) values (?,?,?,?,?,?,?)");
 			
 			//addCustomerStatement = conn.prepareStatement("insert into Customer (custName,custAddr,imageURL,creditLimit) values (?,?,?,?)");
 			//updateUnpaidBalanceStatement = conn.prepareStatement("update Customer set unpaidBalance = ? where id=?");
@@ -196,12 +210,12 @@ public class YouDriveDAO {
 			int ZIP, String country, String DLNumber, String DLState){
 		Customer customer = null;
 		try{
-			insertCustomerStatement.setString(0, username);
-			insertCustomerStatement.setString(1, password);
-			insertCustomerStatement.setString(2, emailAddress);
-			insertCustomerStatement.setString(3, firstName);
-			insertCustomerStatement.setString(4, lastName);
-			insertCustomerStatement.setDate(5, membershipExpiration);
+			insertCustomerStatement.setString(1, username);
+			insertCustomerStatement.setString(2, password);
+			insertCustomerStatement.setString(3, emailAddress);
+			insertCustomerStatement.setString(4, firstName);
+			insertCustomerStatement.setString(5, lastName);
+			insertCustomerStatement.setDate(6, membershipExpiration);
 			insertCustomerStatement.executeUpdate();
 			ResultSet key = insertCustomerStatement.getGeneratedKeys();
 			key.next();
@@ -939,7 +953,7 @@ public class YouDriveDAO {
 			vehicleID = key.getInt(1);
 			VehicleType vt = readVehicleType(vehicle_type);
 			vehicle = new Vehicle(vehicleID, new LinkedList<Comment>(), make,
-					model, year, tag, mileage, serviceDate, condition, vt);
+					model, year, tag, mileage, serviceDate, condition, vt, true);
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
@@ -961,7 +975,8 @@ public class YouDriveDAO {
 				vehicle = new Vehicle(vehicleID, comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"),
-						rs.getString("vehicleCondition"), readVehicleType(rs.getInt("type_id")));
+						rs.getString("vehicleCondition"), readVehicleType(rs.getInt("type_id")),
+						rs.getBoolean("isAvailable"));
 			}
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -1031,7 +1046,7 @@ public class YouDriveDAO {
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
-						readVehicleType(rs.getInt("type_id")));
+						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
 				list.add(vehicle);
 			}
 		}catch(SQLException e){
@@ -1056,7 +1071,7 @@ public class YouDriveDAO {
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
-						readVehicleType(rs.getInt("type_id")));
+						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
 				list.add(vehicle);
 			}
 		}catch(SQLException e){
@@ -1082,7 +1097,7 @@ public class YouDriveDAO {
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
-						readVehicleType(rs.getInt("type_id")));
+						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
 				list.add(vehicle);
 			}
 		}catch(SQLException e){
@@ -1115,7 +1130,8 @@ public class YouDriveDAO {
 			ResultSet key = insertRentalLocationStatement.getGeneratedKeys();
 			key.next();
 			locationID = key.getInt(1);
-			Address address = getAddressForRentalLocation(locationID);
+			Address address = updateAddressForRentalLocation(locationID,addrLine1,
+					addrLine2,city,state,ZIP,country);
 			LinkedList<Vehicle> vehicles = getAllVehicles(locationID);
 			location = new RentalLocation(locationID, name, capacity, address, vehicles);
 			
@@ -1212,7 +1228,7 @@ public class YouDriveDAO {
 	 * @param ZIP			The new address zip code
 	 * @param country		The new address country
 	 */
-	public void updateAddressForRentalLocation(int locationID, String addrLine1, 
+	public Address updateAddressForRentalLocation(int locationID, String addrLine1, 
 			String addrLine2, String city, String state, int ZIP, String country){
 		Address address = getAddressForRentalLocation(locationID);
 		int modifiedID = 0;
@@ -1227,6 +1243,7 @@ public class YouDriveDAO {
 				updateAddressStatement.setString(6, country);
 				updateAddressStatement.setInt(7, address.getId());
 				updateAddressStatement.executeUpdate();
+				modifiedID = address.getId();
 			}else{
 				// This customer does not have an address. Let's make one.
 				insertAddressStatement.setString(1, addrLine1);
@@ -1246,6 +1263,7 @@ public class YouDriveDAO {
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
+		return address;
 	}
 	
 	/**
@@ -1281,7 +1299,7 @@ public class YouDriveDAO {
 		try{
 			ResultSet rs = getMembershipPriceStatement.executeQuery();
 			if(rs.next()){
-				price = rs.getInt("membershipPrice");
+				price = rs.getDouble("membershipPrice");
 			}
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -1300,5 +1318,50 @@ public class YouDriveDAO {
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
+	}
+	
+	/**
+	 * Adds a reservation for a vehicle to the YouDrive system
+	 * @param pickupTime		The date/time the vehicle can be picked up
+	 * @param rentalDuration	The rental duration, in either hours or days depending on rental type
+	 * @param isHourly			Whether the rental is hourly (true) or daily (false)
+	 * @param timeDue			The date/time the vehicle is due to be returned
+	 * @param vehicle_id		The unique identifier of the vehicle we are renting
+	 * @param location_id		The unique identifier of the rental location to pickup from
+	 * @param customer_id		The unique identifier of the customer placing the reservation
+	 * @return	A Reservation object, encapsulating this reservation data.
+	 */
+	public Reservation createReservation(Date pickupTime, double rentalDuration,
+			boolean isHourly, Date timeDue, int vehicle_id, int location_id, int customer_id){
+		Reservation reservation = null;
+		int id = 0;
+		Vehicle vehicle = readVehicle(vehicle_id);
+		if(vehicle.isAvailable()){
+			try{
+				insertReservationStatement.setDate(1, pickupTime);
+				insertReservationStatement.setDouble(2, rentalDuration);
+				insertReservationStatement.setBoolean(3, isHourly);
+				insertReservationStatement.setDate(4, timeDue);
+				insertReservationStatement.setInt(5, vehicle_id);
+				insertReservationStatement.setInt(6, location_id);
+				insertReservationStatement.setInt(7, customer_id);
+				insertReservationStatement.executeUpdate();
+				markVehicleUnavailableStatement.setInt(1, vehicle_id);
+				markVehicleUnavailableStatement.executeUpdate();
+				ResultSet key = insertReservationStatement.getGeneratedKeys();
+				if(key.next()){
+					id = key.getInt(1);
+					RentalLocation location = readRentalLocation(location_id);
+					Customer customer = readCustomer(customer_id);
+					vehicle = readVehicle(vehicle_id);
+					reservation = new Reservation(id, pickupTime, rentalDuration,
+							isHourly,null,timeDue,vehicle,location,customer);
+				}
+			}catch(SQLException e){
+				System.out.println(e.getClass().getName() + ": " + e.getMessage());
+			}
+		}
+		
+		return reservation;
 	}
 }
