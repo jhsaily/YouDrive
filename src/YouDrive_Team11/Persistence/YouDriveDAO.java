@@ -1094,6 +1094,7 @@ public class YouDriveDAO {
 	 */
 	public RentalLocation createRentalLocation(String name, int capacity, String addrLine1,
 			String addrLine2, String city, String state, int ZIP, String country){
+		
 		RentalLocation location = null;
 		int locationID = 0;
 		try{
@@ -1106,6 +1107,7 @@ public class YouDriveDAO {
 			Address address = getAddressForRentalLocation(locationID);
 			LinkedList<Vehicle> vehicles = getAllVehicles(locationID);
 			location = new RentalLocation(locationID, name, capacity, address, vehicles);
+			
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}

@@ -20,6 +20,7 @@
 			<div id="dashboardpanel">
 				<span class="dbpaneltitle">New Location.</span>
 				<br /><br />
+				<p>${output}</p>
 				<form action="LocationAdminManager" method="POST">
 					<input type="text" name="locationname" placeholder="Location Name" required>
 					<br />
