@@ -29,6 +29,7 @@ public class YouDriveDAO {
 	
 	private PreparedStatement insertCustomerStatement;
 	private PreparedStatement readCustomerStatement;
+	private PreparedStatement getCustomerByUsernameStatement;
 	private PreparedStatement updateCustomerStatement;
 	private PreparedStatement deleteCustomerStatement;
 	private PreparedStatement getAllCustomersStatement;
@@ -106,6 +107,7 @@ public class YouDriveDAO {
 			insertCustomerStatement = conn.prepareStatement("insert into users (username,password,isAdmin,emailAddress,firstName,lastName,membershipExpiration)" +
 					"values (?,?,0,?,?,?,?");
 			readCustomerStatement = conn.prepareStatement("select * from users where id=? and isAdmin=0");
+			getCustomerByUsernameStatement = conn.prepareStatement("select * from users where username=?");
 			updateCustomerStatement = conn.prepareStatement("update users set firstName=?," +
 					"lastName=?,membershipExpiration=? where id=? and isAdmin=0");
 			deleteCustomerStatement = conn.prepareStatement("delete from users where id=? and isAdmin=0");
@@ -248,6 +250,31 @@ public class YouDriveDAO {
 			readCustomerStatement.setInt(1, custID);
 			ResultSet rs = readCustomerStatement.executeQuery();
 			if(rs.next()){
+				DriversLicense license = getDLForCustomer(custID);
+				Address address = getAddressForCustomer(custID);
+				PaymentInfo info = getPaymentInfoForCustomer(custID);
+				customer = new Customer(custID, rs.getString("username"), rs.getString("password"),
+						rs.getString("emailAddress"), rs.getString("firstName"), rs.getString("lastName"),
+						rs.getDate("membershipExpiration"), license, address, info);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return customer;
+	}
+	
+	/**
+	 * Retrieves a customer from the YouDrive system from a username.
+	 * @param username	The username of the user.
+	 * @return			A Customer represented by the username.
+	 */
+	public Customer readCustomer(String username){
+		Customer customer = null;
+		try{
+			getCustomerByUsernameStatement.setString(1, username);
+			ResultSet rs = getCustomerByUsernameStatement.executeQuery();
+			if(rs.next()){
+				int custID = rs.getInt("id");
 				DriversLicense license = getDLForCustomer(custID);
 				Address address = getAddressForCustomer(custID);
 				PaymentInfo info = getPaymentInfoForCustomer(custID);
