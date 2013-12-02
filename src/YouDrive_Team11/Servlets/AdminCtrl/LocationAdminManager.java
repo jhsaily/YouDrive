@@ -180,6 +180,18 @@ public class LocationAdminManager extends HttpServlet{
 						}
 					}
 					
+					//If a user clicks submit after selecting a location to manage, send them to the vehicles at that location
+					if(req.getParameter("manageLocation")!=null){
+						
+						//EDIT Return vehicles from location selected
+						//UNCOMMENT ME req.setAttribute("vehicles", getAllVehicles(location id));
+						req.setAttribute("vehicles", getAllVehicles());
+						
+						//Forward to vehicle management page
+						dispatcher=ctx.getRequestDispatcher("/managevehicle.jsp");
+						dispatcher.forward(req, res);
+					}
+					
 				}//END ADMIN LOGIC
 			}//end else
 		}//end if
@@ -235,5 +247,14 @@ public class LocationAdminManager extends HttpServlet{
 	 */
 	public LinkedList getAllLocations(){
 		return dao.getAllRentalLocations();
+	}
+	
+	/**
+	 * Gets all of the vehicles in the database
+	 * @return		Returns a linked list of all the vehicles
+	 */
+	//EDIT Eventually must return vehicles AT A PARTICULAR LOCATION
+	public LinkedList<Vehicle> getAllVehicles(){
+		return dao.getAllVehicles();
 	}
 }

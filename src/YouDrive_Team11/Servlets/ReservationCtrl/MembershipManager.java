@@ -104,7 +104,15 @@ public class MembershipManager extends HttpServlet{
 
 				//ADMIN LOGIC
 				else if(admin!=null){
-
+					if(req.getParameter("clicked").equals("managemembership")){
+						
+						//Need to be able to get the current membership price to set it in the page
+						//UNCOMMENT ME req.setAttribute("memPrice", getMembershipPrice());
+						
+						//Forward to Manage membership page
+						dispatcher=ctx.getRequestDispatcher("/managemembership.jsp");
+						dispatcher.forward(req, res);
+					}
 				}//END ADMIN LOGIC
 			}//end else
 		}//end if
@@ -165,8 +173,8 @@ public class MembershipManager extends HttpServlet{
 						System.out.println("Extending your membership by: " + req.getParameter("months") + " months.");
 						
 						try{
-							//String currentMemExpirationDate=customer.getMembershipExpiration().toString();
-							String currentMemExpirationDate="2013-11-09";//DELETE ME LATER
+							String currentMemExpirationDate=customer.getMembershipExpiration().toString();
+							//String currentMemExpirationDate="2013-11-09";//DELETE ME LATER
 							System.out.println("Current Exp Date: " + currentMemExpirationDate);
 							Date newDate=getNewDate(currentMemExpirationDate, Integer.valueOf(req.getParameter("months")));
 							System.out.println("New date is: " + newDate);
@@ -186,6 +194,15 @@ public class MembershipManager extends HttpServlet{
 				//ADMIN LOGIC
 				else if(admin!=null){
 
+					//If user submits new membership price, change it in the db
+					if(req.getParameter("editPrice")!=null){
+						changePrice(Integer.valueOf(req.getParameter("price")));
+						
+						//Forward to change price screen
+						req.setAttribute("output", "Price changed.");
+						dispatcher=ctx.getRequestDispatcher("/managemembership.jsp");
+						dispatcher.forward(req, res);
+					}
 				}//END ADMIN LOGIC
 			}//end else
 		}//end if
@@ -204,7 +221,7 @@ public class MembershipManager extends HttpServlet{
 	 * Changes the membership price
 	 * @param price		Price of membership
 	 */
-	public void changePrice(Currency price){
+	public void changePrice(int price){
 		
 	}
 	

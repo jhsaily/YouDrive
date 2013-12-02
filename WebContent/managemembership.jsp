@@ -20,6 +20,7 @@
 			<div id="dashboardpanel">
 				<span class="dbpaneltitle">Manage Membership Information.</span>
 				<br /><br />
+				<p>${output}</p>
 				<form action="MembershipManager" method="POST">
 					Current Membership Price: ${memPrice} / Month
 					<br />

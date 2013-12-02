@@ -20,14 +20,15 @@
 			<div id="dashboardpanel">
 				<span class="dbpaneltitle">New Vehicle Type.</span>
 				<br /><br />
-				<form action="LocationAdminManager" method="POST">
+				<p>${output}</p>
+				<form action="VehicleAdminManager" method="POST">
 					<input type="text" name="description" placeholder="Type Description" required>
 					<br />
-					<input type="number" name="hourlyrate" placeholder="Hourly Rate" required>
+					<input type="number" name="hourlyRate" placeholder="Hourly Rate" required>
 					<br />
 					<input type="number" name="dailyRate" placeholder="Daily Rate" required>
 					<br /><br />
-					<input type="submit" name="addLocation" value="Submit">
+					<input type="submit" name="addVehicleType" value="Submit">
 				</form>
 			</div>
 		</div>

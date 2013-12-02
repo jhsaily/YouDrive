@@ -24,7 +24,7 @@
 					<input type="hidden" name="id" value="${typeID}">
 					<input type="text" name="description" value="${typeDescription}" placeholder="Type Description" required>
 					<br />
-					<input type="number" name="hourlyrate" value="${hourlyRate}" placeholder="Hourly Rate" required>
+					<input type="number" name="hourlyRate" value="${hourlyRate}" placeholder="Hourly Rate" required>
 					<br />
 					<input type="number" name="dailyRate" value="${dailyRate}" placeholder="Daily Rate" required>
 					<br /><br />
