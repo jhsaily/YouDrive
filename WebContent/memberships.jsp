@@ -17,7 +17,7 @@
 		<div id="mainbody">
 			<%@ include file="resources/html/header.html" %>
 			<div id="infopanel">
-			{memberships info}
+				${membershipPrice}
 			</div>
 		</div>
 		<script type="text/javascript">
