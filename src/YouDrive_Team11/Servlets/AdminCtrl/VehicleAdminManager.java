@@ -102,6 +102,7 @@ public class VehicleAdminManager extends HttpServlet {
 						dispatcher.forward(req, res);
 					}
 					
+					
 				}//END ADMIN LOGIC
 			}//end else
 		}//end if
@@ -185,9 +186,7 @@ public class VehicleAdminManager extends HttpServlet {
 					//If a user clicks submit after selecting the vehicle type they'd like to edit, forward to the edit page
 					if(req.getParameter("manageVehicleType")!=null){
 						
-						//Create a temporary object for the vehicle type
-						
-					
+						//Create a temporary object for the vehicle type					
 						VehicleType vt=getVehicleType(Integer.valueOf(req.getParameter("vehicletype")));
 						
 						//Set the vehicle type on the edit page to the chosen one with all its attributes
@@ -198,6 +197,13 @@ public class VehicleAdminManager extends HttpServlet {
 						//Forward to vehicle type edit page
 						dispatcher=ctx.getRequestDispatcher("/editvehicletype.jsp");
 						dispatcher.forward(req, res);
+					}
+					
+
+					//If a user clicks submit after editing vehicle information, update the information in the db
+					if(req.getParameter("updatevehicle")!=null){
+						//EDIT ME Idk what the id attr is from the jsp page. It will probably be set beforehand
+						editVehicle(Integer.valueOf(req.getParameter("vehicle")), req.getParameter("vehiclemake"), req.getParameter("vehiclemodel"), Integer.valueOf(req.getParameter("vehicleyear")), req.getParameter("vehicletag"), Integer.valueOf(req.getParameter("vehiclemileage")), new Date(00000), req.getParameter("vehiclecondition"), Integer.valueOf(req.getParameter("vehicletype")), 0);
 					}
 					
 				}//END ADMIN LOGIC
