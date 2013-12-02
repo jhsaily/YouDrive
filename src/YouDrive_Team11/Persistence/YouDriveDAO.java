@@ -73,6 +73,9 @@ public class YouDriveDAO {
 	private PreparedStatement getAllVehiclesStatement;
 	private PreparedStatement getAllVehiclesAtLocationStatement;
 	private PreparedStatement getAllVehiclesOfTypeAtLocationStatement;
+	private PreparedStatement getAllAvailableVehiclesStatement;
+	private PreparedStatement getAllAvailableVehiclesAtLocationStatement;
+	private PreparedStatement getAllAvailableVehiclesOfTypeAtLocationStatement;
 	private PreparedStatement markVehicleAvailableStatement;
 	private PreparedStatement markVehicleUnavailableStatement;
 	
@@ -157,10 +160,14 @@ public class YouDriveDAO {
 			updateVehicleStatement = conn.prepareStatement("update vehicles set make=?,model=?,year=?,tag=?," +
 					"mileage=?,serviceDate=?,vehicleCondition=?,type_id=?,location_id=? where id=?");
 			deleteVehicleStatement = conn.prepareStatement("delete from vehicles where id=?");
-			getAllVehiclesStatement = conn.prepareStatement("select * from vehicles where isAvailable=?");
-			getAllVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=? and isAvailable=?");
+			getAllVehiclesStatement = conn.prepareStatement("select * from vehicles");
+			getAllVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=?");
 			getAllVehiclesOfTypeAtLocationStatement = conn.prepareStatement("select * from vehicles" +
-					" where location_id=? and type_id=? and isAvailable=?");
+					" where location_id=? and type_id=?");
+			getAllAvailableVehiclesStatement = conn.prepareStatement("select * from vehicles where isAvailable=1");
+			getAllAvailableVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=? and isAvailable=1");
+			getAllAvailableVehiclesOfTypeAtLocationStatement = conn.prepareStatement("select * from vehicles" +
+					" where location_id=? and type_id=? and isAvailable=1");
 			markVehicleAvailableStatement = conn.prepareStatement("update vehicles set isAvailable=1 where id=?");
 			markVehicleUnavailableStatement = conn.prepareStatement("update vehicles set isAvailable=0 where id=?");
 			
@@ -1062,8 +1069,7 @@ public class YouDriveDAO {
 	public LinkedList<Vehicle> getAllAvailableVehicles(){
 		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
 		try{
-			getAllVehiclesStatement.setBoolean(1, true);
-			ResultSet rs = getAllVehiclesStatement.executeQuery();
+			ResultSet rs = getAllAvailableVehiclesStatement.executeQuery();
 			while(rs.next()){
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
@@ -1112,9 +1118,8 @@ public class YouDriveDAO {
 	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID){
 		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
 		try{
-			getAllVehiclesAtLocationStatement.setInt(1, locationID);
-			getAllVehiclesAtLocationStatement.setBoolean(2, true);
-			ResultSet rs = getAllVehiclesAtLocationStatement.executeQuery();
+			getAllAvailableVehiclesAtLocationStatement.setInt(1, locationID);
+			ResultSet rs = getAllAvailableVehiclesAtLocationStatement.executeQuery();
 			while(rs.next()){
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
@@ -1164,10 +1169,9 @@ public class YouDriveDAO {
 	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID, int typeID){
 		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
 		try{
-			getAllVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
-			getAllVehiclesOfTypeAtLocationStatement.setInt(2, typeID);
-			getAllVehiclesOfTypeAtLocationStatement.setBoolean(3, true);
-			ResultSet rs = getAllVehiclesOfTypeAtLocationStatement.executeQuery();
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setInt(2, typeID);
+			ResultSet rs = getAllAvailableVehiclesOfTypeAtLocationStatement.executeQuery();
 			while(rs.next()){
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
