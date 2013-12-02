@@ -102,8 +102,8 @@ public class UserManager extends HttpServlet {
 						req.setAttribute("zip", customer.getMailingAddress().getZipCode());
 						req.setAttribute("state", customer.getMailingAddress().getState());
 						req.setAttribute("country", customer.getMailingAddress().getCountry());
-						//req.setAttribute("licenseNumber", customer.getDriversLicense().getLicenseNumber());
-						//req.setAttribute("licenseState", customer.getDriversLicense().getLicenseState());
+						req.setAttribute("licenseNumber", customer.getDriversLicense().getLicenseNumber());
+						req.setAttribute("licenseState", customer.getDriversLicense().getLicenseState());
 						
 						//Forward to dashboard
 						dispatcher=ctx.getRequestDispatcher("/editprofile.jsp");
@@ -235,13 +235,20 @@ public class UserManager extends HttpServlet {
 
 					//If the user clicks update profile
 					if(req.getParameter("updateprofile")!=null){
-						/*UNCOMMENT ME
-						updatePassword(customer.getUsername(), req.getParameter("currentpassword"), req.getParameter("newpassword"));
+						
+						//If the customer enters a new password, change this
+						if(!(req.getParameter("newpassword").equals(""))){
+							updatePassword(customer.getUsername(), req.getParameter("newpassword"));
+						}
 						updateName(customer.getUsername(), req.getParameter("firstname"), req.getParameter("lastname"));
 						updateEmailAddress(customer.getUsername(), req.getParameter("email"));
 						updateResidenceAddress(customer.getUsername(), req.getParameter("addressline1"), req.getParameter("addressline2"), Integer.valueOf(req.getParameter("zip")), req.getParameter("city"), req.getParameter("state"), req.getParameter("country"));
 						updateDriversLicense(customer.getUsername(), req.getParameter("licensenum"), req.getParameter("licensestate"));
-						*/
+						
+						//Update temp customer object and re-bind session object
+						customer=findCustomerById(customer.getId());
+						session.setAttribute("currentUser", customer);
+						
 						System.out.println("User Information Updated!");
 						
 						//Forward to dashboard
@@ -251,10 +258,15 @@ public class UserManager extends HttpServlet {
 					
 					//When the user submits his/her updated payment information, make the changes in the db
 					if(req.getParameter("updatepayment")!=null){
-						/*UNCOMMENT ME
-						updatePaymentInfo(customer.getParameter("cardnumber"), customer.getParameter("cardexpmonth"), customer.getParameter("cardexpyear"), customer.getParameter("addressline1"), customer.getParameter("addressline2"), customer.getParameter("city"), customer.getParameter("state"), customer.getParameter("zip"), customer.getParameter("country"));
-						*/
+						
+						//Update payment information in the database
+						updatePaymentInfo(req.getParameter("cardnumber"), Integer.valueOf(req.getParameter("cardexpmonth")), Integer.valueOf(req.getParameter("cardexpyear")), req.getParameter("addressline1"), req.getParameter("addressline2"), req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"));
+						
+						//Update the session attribute so that the information is fed back to the jsp page when it's clicked on
 						System.out.println("Payment Information Updated!");
+						customer=findCustomerById(customer.getId());
+						session.setAttribute("currentUser", customer);
+
 						
 						//Forward to dashboard
 						dispatcher=ctx.getRequestDispatcher("/dashboard.jsp");
@@ -448,5 +460,9 @@ public class UserManager extends HttpServlet {
 		//UNCOMMENT ME Customer cust=dao.findCustomer(un); 
 		Customer cust=null; //DELETE ME
 		return cust;
+	}
+	
+	public Customer findCustomerById(int id){
+		return dao.readCustomer(id);
 	}
 }

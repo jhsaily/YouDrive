@@ -178,7 +178,7 @@ public class MembershipManager extends HttpServlet{
 							System.out.println("Current Exp Date: " + currentMemExpirationDate);
 							Date newDate=getNewDate(currentMemExpirationDate, Integer.valueOf(req.getParameter("months")));
 							System.out.println("New date is: " + newDate);
-							//extendMembership(customer.getUsername(), newDate);
+							extendMembership(customer.getUsername(), newDate);
 						}
 						catch(Exception e){
 							System.out.println("Could not get new date");
