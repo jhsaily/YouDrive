@@ -107,7 +107,7 @@ public class MembershipManager extends HttpServlet{
 					if(req.getParameter("clicked").equals("managemembership")){
 						
 						//Need to be able to get the current membership price to set it in the page
-						//UNCOMMENT ME req.setAttribute("memPrice", getMembershipPrice());
+						req.setAttribute("memPrice", getCurrentMembershipPrice());
 						
 						//Forward to Manage membership page
 						dispatcher=ctx.getRequestDispatcher("/managemembership.jsp");
@@ -198,6 +198,9 @@ public class MembershipManager extends HttpServlet{
 					if(req.getParameter("editPrice")!=null){
 						changePrice(Integer.valueOf(req.getParameter("price")));
 						
+						//Reset the attributes on the page
+						req.setAttribute("memPrice", getCurrentMembershipPrice());
+						
 						//Forward to change price screen
 						req.setAttribute("output", "Price changed.");
 						dispatcher=ctx.getRequestDispatcher("/managemembership.jsp");
@@ -222,7 +225,7 @@ public class MembershipManager extends HttpServlet{
 	 * @param price		Price of membership
 	 */
 	public void changePrice(int price){
-		
+		dao.setMembershipPrice(price);
 	}
 	
 	/**
@@ -271,6 +274,10 @@ public class MembershipManager extends HttpServlet{
 		//Find the sql date of the new numbers
 		return returnDate(newm.toString(), d, newy.toString());
 		
+	}
+	
+	public double getCurrentMembershipPrice(){
+		return dao.getMembershipPrice();
 	}
 }
 
