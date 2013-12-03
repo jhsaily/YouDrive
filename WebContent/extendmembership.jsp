@@ -45,7 +45,7 @@
 				var str = $('.hiddenVar').text().toLowerCase();
 				var temp = $( "input[name='months']" ).val();
 				var ppm = $('#ppm').text().toLowerCase();
-				if(str == "false" || true)
+				if(str == "false")
 				{
 					if (temp < 6) {
 						window.alert("Since you've never been a member, you need to choose a minimum of 6 months.");
