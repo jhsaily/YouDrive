@@ -24,9 +24,9 @@
 				<form action="UserManager" method="POST">
 					<input type="password" name="currentpassword" placeholder="Current Password" required>
 					<br />
-					<input type="text" name="cardnumber" placeholder="Card Number" required>
+					<input type="text" name="cardnumber" value="${hiddenCardNumber}" placeholder="Card Number" required>
 					<br />
-					<input type="text" name="cardverification" placeholder="Card Security Code" required>
+					<input type="text" name="cardverification" value="${hiddenCardCode}" placeholder="Card Security Code" required>
 					<br />
 					<input type="text" name="cardexpmonth" placeholder="Card Expiration Month" value="${cardExpirationMonth}" required>
 					 <span class="datedivider">/</span> 

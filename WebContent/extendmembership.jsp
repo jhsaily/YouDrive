@@ -33,9 +33,7 @@
 					<br /><br />
 					That comes to a total of $<span id="ptotal">0</span>
 					<br /><br />
-					Is this okay?
-					<br /><br />
-					<input type="submit" name="extend" style="float:left;" value="Yes"> <input type="submit" style="float:right;" value="No" formaction="dashboard.jsp">
+					<input type="submit" name="extend" value="Submit">
 				</form>
 			</div>
 		</div>
