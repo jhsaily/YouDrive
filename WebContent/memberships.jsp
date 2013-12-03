@@ -19,6 +19,7 @@
 			<div id="infopanel">
             	<span class="dbpaneltitle">YouDrive.</span>
                 <br /><br />
+                If you actually need a reason to 
 				${membershipPrice}
 				${numberOfUsers}
 				${numberOfLocations}

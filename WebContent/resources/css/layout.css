@@ -258,4 +258,8 @@ input[type=password], input[type=text], input[type=number]
 	border-bottom-style:solid;
 	margin-bottom:5px;
 }
+.datedivider
+{
+	font-size:20px;
+}
 	

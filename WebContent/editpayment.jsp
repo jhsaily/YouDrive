@@ -29,7 +29,7 @@
 					<input type="text" name="cardverification" placeholder="Card Security Code" required>
 					<br />
 					<input type="text" name="cardexpmonth" placeholder="Card Expiration Month" value="${cardExpirationMonth}" required>
-					 / 
+					 <span class="datedivider">/</span> 
 					<input type="text" name="cardexpyear" placeholder="Card Expiration Year" value="${cardExpirationYear}" required>
 					<br />
 					<input type="text" name="addressline1" placeholder="Billing Address Line 1" value="${addrLine1}" required>

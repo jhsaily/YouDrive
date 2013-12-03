@@ -32,7 +32,7 @@
 					<input type="text" name="vehiclemileage" placeholder="Vehicle Mileage" required>
 					<br />
 					Last Service Date: 
-					<input type="text" name="serviceday" placeholder="Service Day"> / <input type="text" name="servicemonth" placeholder="Service Month"> / <input type="text" name="serviceyear" placeholder="Service Year">
+					<input type="text" name="serviceday" placeholder="Service Day"> <span class="datedivider">/</span> <input type="text" name="servicemonth" placeholder="Service Month"> <span class="datedivider">/</span> <input type="text" name="serviceyear" placeholder="Service Year">
 					<br />
 					Vehicle Condition: <select name="vehiclecondition">
 						<option value="awesome" selected>Awesome</option>

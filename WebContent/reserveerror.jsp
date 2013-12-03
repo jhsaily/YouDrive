@@ -32,13 +32,13 @@
 						<c:forEach var="D" begin="1" end="31">
 							<option value="${D}">${D}</option>
 						</c:forEach>
-					</select>/
+					</select> <span class="datedivider">/</span> 
 					<select name="pickupmonth">
 						<option value="${month}" selected>${month}</option>
 						<c:forEach var="M" begin="1" end="12">
 							<option value="${M}">${M}</option>
 						</c:forEach>
-					</select>/
+					</select> <span class="datedivider">/</span> 
 					<select name="pickupyear">
 						<option value="${year}" selected>${year}</option>
 						<c:forEach var="Y" begin="13" end="16">
