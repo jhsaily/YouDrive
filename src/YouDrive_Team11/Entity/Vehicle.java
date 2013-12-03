@@ -61,11 +61,6 @@ public class Vehicle {
 	private VehicleType vehicleType;
 	
 	/**
-	 * Whether this vehicle is available for rental
-	 */
-	boolean isAvailable;
-	
-	/**
 	 * Creates a vehicle object from the specified parameters
 	 * @param id
 	 * @param comments
@@ -77,12 +72,11 @@ public class Vehicle {
 	 * @param serviceDate
 	 * @param condition
 	 * @param vehicleType
-	 * @param isAvailable
 	 */
 	public Vehicle(int id, LinkedList<Comment> comments, String make,
 			String model, int year, String tag, int mileage,
 			Date serviceDate, String condition, 
-			VehicleType vehicleType, boolean isAvailable){
+			VehicleType vehicleType){
 		this.id = id;
 		this.comments = comments;
 		this.make = make;
@@ -93,7 +87,6 @@ public class Vehicle {
 		this.serviceDate = serviceDate;
 		this.condition = condition;
 		this.vehicleType = vehicleType;
-		this.isAvailable = isAvailable;
 	}
 
 	/**
@@ -164,12 +157,5 @@ public class Vehicle {
 	 */
 	public VehicleType getVehicleType() {
 		return vehicleType;
-	}
-
-	/**
-	 * @return the isAvailable
-	 */
-	public boolean isAvailable() {
-		return isAvailable;
 	}
 }

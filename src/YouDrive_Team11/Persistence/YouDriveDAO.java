@@ -80,6 +80,7 @@ public class YouDriveDAO {
 	private PreparedStatement getAllAvailableVehiclesOfTypeAtLocationStatement;
 	private PreparedStatement markVehicleAvailableStatement;
 	private PreparedStatement markVehicleUnavailableStatement;
+	private PreparedStatement getVehicleNotConflictingWithTimesStatement;
 	
 	private PreparedStatement insertRentalLocationStatement;
 	private PreparedStatement readRentalLocationStatement;
@@ -104,6 +105,18 @@ public class YouDriveDAO {
 			"vehicles.type_id=? AND " +
 			"vehicles.id NOT IN (" +
 			"SELECT vehicles.id FROM vehicles,reservations WHERE " +
+			"reservations.timeReturned IS NULL AND " +
+			"reservations.vehicle_id = vehicles.id AND " +
+			"((pickupTime <= ? AND timeDue >= ?) OR " +
+			"(pickupTime <= ? AND timeDue >= ?) OR " +
+			"(pickupTime > ? AND timeDue < ?))" +
+			")";
+	private String isVehicleAvailableString = "SELECT vehicles.* " +
+			"FROM vehicles " +
+			"WHERE vehicles.id=? AND " +
+			"vehicles.id NOT IN(" +
+			"SELECT vehicles.id FROM vehicles,reservations WHERE " +
+			"reservations.timeReturned IS NULL AND " +
 			"reservations.vehicle_id = vehicles.id AND " +
 			"((pickupTime <= ? AND timeDue >= ?) OR " +
 			"(pickupTime <= ? AND timeDue >= ?) OR " +
@@ -188,6 +201,7 @@ public class YouDriveDAO {
 			getAllAvailableVehiclesOfTypeAtLocationStatement = conn.prepareStatement(availableVehiclesString);
 			markVehicleAvailableStatement = conn.prepareStatement("update vehicles set isAvailable=1 where id=?");
 			markVehicleUnavailableStatement = conn.prepareStatement("update vehicles set isAvailable=0 where id=?");
+			getVehicleNotConflictingWithTimesStatement = conn.prepareStatement(isVehicleAvailableString);
 			
 			insertRentalLocationStatement = conn.prepareStatement("insert into locations (name,capacity) values " +
 					"(?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -1007,7 +1021,7 @@ public class YouDriveDAO {
 			vehicleID = key.getInt(1);
 			VehicleType vt = readVehicleType(vehicle_type);
 			vehicle = new Vehicle(vehicleID, new LinkedList<Comment>(), make,
-					model, year, tag, mileage, serviceDate, condition, vt, true);
+					model, year, tag, mileage, serviceDate, condition, vt);
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
@@ -1029,8 +1043,7 @@ public class YouDriveDAO {
 				vehicle = new Vehicle(vehicleID, comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"),
-						rs.getString("vehicleCondition"), readVehicleType(rs.getInt("type_id")),
-						rs.getBoolean("isAvailable"));
+						rs.getString("vehicleCondition"), readVehicleType(rs.getInt("type_id")));
 			}
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -1100,7 +1113,7 @@ public class YouDriveDAO {
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
-						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
+						readVehicleType(rs.getInt("type_id")));
 				list.add(vehicle);
 			}
 		}catch(SQLException e){
@@ -1122,7 +1135,7 @@ public class YouDriveDAO {
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
-						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
+						readVehicleType(rs.getInt("type_id")));
 				list.add(vehicle);
 			}
 		}catch(SQLException e){
@@ -1147,7 +1160,7 @@ public class YouDriveDAO {
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
-						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
+						readVehicleType(rs.getInt("type_id")));
 				list.add(vehicle);
 			}
 		}catch(SQLException e){
@@ -1172,7 +1185,7 @@ public class YouDriveDAO {
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
-						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
+						readVehicleType(rs.getInt("type_id")));
 				list.add(vehicle);
 			}
 		}catch(SQLException e){
@@ -1198,7 +1211,7 @@ public class YouDriveDAO {
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
 						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
 						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
-						readVehicleType(rs.getInt("type_id")), rs.getBoolean("isAvailable"));
+						readVehicleType(rs.getInt("type_id")));
 				list.add(vehicle);
 			}
 		}catch(SQLException e){
@@ -1253,10 +1266,44 @@ public class YouDriveDAO {
 			getAllVehiclesOfTypeAtLocationStatement.setDate(6,  reservationEnd);
 			getAllVehiclesOfTypeAtLocationStatement.setDate(7, reservationStart);
 			getAllVehiclesOfTypeAtLocationStatement.setDate(8, reservationEnd);
+			ResultSet rs = getAllVehiclesOfTypeAtLocationStatement.executeQuery();
+			while(rs.next()){
+				LinkedList<Comment> comments = getComments(rs.getInt("id"));
+				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
+						rs.getString("model"), rs.getInt("year"), rs.getString("tag"),
+						rs.getInt("mileage"), rs.getDate("serviceDate"), rs.getString("vehicleCondition"),
+						readVehicleType(rs.getInt("type_id")));
+				availableVehicles.add(vehicle);
+			}
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		return availableVehicles;
+	}
+	
+	/**
+	 * Tells whether a specified vehicle is available for the given span.
+	 * @param vehicleID		The unique ID of the vehicle
+	 * @param startDate		The start timestamp the vehicle should be available for
+	 * @param endDate		The end timestamp the vehicle should be available for
+	 * @return				True if the vehicle is available, false otherwise.
+	 */
+	public boolean isVehicleAvailable(int vehicleID, Date startDate, Date endDate){
+		boolean value = false;
+		try{
+			getVehicleNotConflictingWithTimesStatement.setInt(1, vehicleID);
+			getVehicleNotConflictingWithTimesStatement.setDate(2, startDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(3, startDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(4, endDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(5, endDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(6, startDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(7, endDate);
+			ResultSet rs = getVehicleNotConflictingWithTimesStatement.executeQuery();
+			value = rs.next();
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return value;
 	}
 	
 	/**
@@ -1489,7 +1536,7 @@ public class YouDriveDAO {
 		Reservation reservation = null;
 		int id = 0;
 		Vehicle vehicle = readVehicle(vehicle_id);
-		if(vehicle != null && vehicle.isAvailable()){
+		if(vehicle != null && isVehicleAvailable(vehicle_id, pickupTime, timeDue)){
 			try{
 				insertReservationStatement.setDate(1, pickupTime);
 				insertReservationStatement.setDouble(2, rentalDuration);
