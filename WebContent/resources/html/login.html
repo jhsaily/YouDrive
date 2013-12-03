@@ -1,6 +1,6 @@
 <div id="loginpanel">
 	<div class="boxlogo"></div>
-	<form action="AuthenticationManager" class="formmain" method="POST">
+	<form name="login" onsubmit="return validateFormLogin()" action="AuthenticationManager" class="formmain" method="POST">
 		Login to YouDrive.<br /><br />
 		<input type="text" name="username" placeholder="Username" required><br />
 		<input class="logintextfield" type="password" name="password" placeholder="Password" required><br />
@@ -12,7 +12,7 @@
 </div>
 <div id="forgotpasspanel">
 	<div class="boxlogo"></div>
-	<form action="UserManager" class="formmain" method="POST">
+	<form name="reset" onsubmit="return validateFormReset()" action="UserManager" class="formmain" method="POST">
 		Reset your Password.<br /><br />
 
 		<input type="text" name="username" placeholder="Username" required><br />
@@ -24,7 +24,7 @@
 </div>
 <div id="registerpanel">
 	<div class="boxlogo"></div>
-	<form action="UserManager" class="formregister" method="POST">
+	<form name="register" onsubmit="return validateFormRegister()" action="UserManager" class="formregister" method="POST">
 		Register an Account.<br /><br />
 		<input type="text" name="username" placeholder="Username" style="width:420px;" required><br />
 		<input type="password" name="password" placeholder="Password" required>
@@ -45,3 +45,125 @@
 		<a href="#" class="login">Back to login.</a>
 	</form>
 </div>
+<script type="text/javascript">
+function validateFormLogin()
+{
+	var x=document.forms["login"]["username"].value;
+	if (x==null || x=="")
+	{
+		alert("Username must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["login"]["password"].value;
+	if (x==null || x=="")
+	{
+		alert("Password must be filled out.");
+		return false;
+	}
+}
+
+function validateFormReset()
+{
+	var x=document.forms["reset"]["username"].value;
+	if (x==null || x=="")
+	{
+		alert("Username must be filled out.");
+		return false;
+	}
+}
+
+function validateFormRegister()
+{
+	var x=document.forms["register"]["username"].value;
+	if (x==null || x=="")
+	{
+		alert("Username must be filled out.");
+		return false;
+	}
+	
+	var y=document.forms["register"]["password"].value;
+	if (y==null || y=="")
+	{
+		alert("Password must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["register"]["passwordagain"].value;
+	if (x != y)
+	{
+		alert("You password must be verified correctly.");
+		return false;
+	}
+	
+	x=document.forms["register"]["firstname"].value;
+	if (x==null || x=="")
+	{
+		alert("First Name must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["register"]["lastname"].value;
+	if (x==null || x=="")
+	{
+		alert("Last Name must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["register"]["email"].value;
+	if (x==null || x=="")
+	{
+		alert("Email Address must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["register"]["addressline1"].value;
+	if (x==null || x=="")
+	{
+		alert("Address Line 1 must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["register"]["city"].value;
+	if (x==null || x=="")
+	{
+		alert("City must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["register"]["state"].value;
+	if (x==null || x=="")
+	{
+		alert("State must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["register"]["zip"].value;
+	if (x==null || x=="")
+	{
+		alert("Zip Code must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["register"]["country"].value;
+	if (x==null || x=="")
+	{
+		alert("Country must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["register"]["licensenum"].value;
+	if (x==null || x=="")
+	{
+		alert("Driver's License # must be filled out.");
+		return false;
+	}
+	
+	x=document.forms["register"]["licensestate"].value;
+	if (x==null || x=="")
+	{
+		alert("Driver's License State must be filled out.");
+		return false;
+	}
+}
+</script>
