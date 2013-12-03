@@ -17,7 +17,11 @@
 		<div id="mainbody">
 			<%@ include file="resources/html/header.html" %>
 			<div id="infopanel">
-			{About info}
+				<span class="dbpaneltitle">About.</span>
+                <br /><br />
+                YouDrive is a web-based car rental service that allows users to rent cars at an hourly or daily rate up to 3 days or 72 hours.
+                <br /><br />
+                Created by Tanta&trade; Siclait&trade;, Dandy&trade; Stapleton&trade;, Travis&trade; Whittaker&trade;, and Jan-Henrik&trade; Saily&trade; De&trade; La&trade; Pena&trade;&trade;&trade;&trade;&trade;&trade;
 			</div>
 		</div>
 		<script type="text/javascript">

@@ -9,8 +9,6 @@ html, body
 	padding:0;
 	font-family:Arial, Helvetica, sans-serif;
 	font-size:.95em;
-	/*background-image:url(../images/bg_color.png);
-	background-attachment:fixed;*/
 }
 h1
 {
@@ -66,6 +64,8 @@ select,option
 	width:250px;
 	float:left;
 	background-color:#464141;
+	background-image:url(../images/logo.png);
+	background-attachment:fixed;
 }
 
 #tagline
@@ -257,6 +257,7 @@ input[type=password], input[type=text], input[type=number]
 	border-bottom-color:#DDD;
 	border-bottom-style:solid;
 	margin-bottom:5px;
+	padding-left:10px;
 }
 .datedivider
 {

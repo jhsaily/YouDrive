@@ -19,11 +19,12 @@
 			<div id="infopanel">
             	<span class="dbpaneltitle">YouDrive.</span>
                 <br /><br />
-                If you actually need a reason to 
-				${membershipPrice}
-				${numberOfUsers}
-				${numberOfLocations}
-				${numberOfVehicles}
+                If you actually need a reason to join us, just look at our numbers!
+                <br /><br />
+				Membership Monthly Price: ${membershipPrice}<br />
+				# of Users: ${numberOfUsers}<br />
+				# of Locations: ${numberOfLocations}<br />
+				# of Vehicles: ${numberOfVehicles}<br />
 				<br />
 				Look at these numbers. Don't you want to join in on the fun?
 			</div>
