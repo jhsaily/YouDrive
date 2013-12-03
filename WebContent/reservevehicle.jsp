@@ -46,11 +46,12 @@
 					<br />
 					Hourly Rate:
 					<br />
-					${vehicleType.hourlyRate}
+					<fmt:setLocale value="en_US"/>
+					<fmt:formatNumber value="${vehicleType.hourlyRate}" type="currency"/>
 					<br />
 					Daily Rate:
 					<br />
-					${vehicleType.dailyRate}
+					<fmt:formatNumber value="${vehicleType.dailyRate}" type="currency"/>
 					<br /><br />
 					Location: 
 					<br />

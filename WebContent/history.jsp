@@ -34,8 +34,6 @@
 							Reservation end date: ${reservation.timeDue}
 							<br />
 							Vehicle Type: ${reservation.vehicle.vehicleType.description}
-							<br />
-							Total: $XX.XX
 							<br /><br />
 							<input type="hidden" name="reservationnumber" value="${reservation.id}">
 							<input type="submit" name="cancel" value="Cancel Reservation?">
@@ -52,8 +50,6 @@
 						<br />
 						Vehicle Type: ${reservation.vehicle.vehicleType.description}
 						<br />
-						Total: $XX.XX
-						<br /><br />
 						<br />
 						<hr /><br />
 					</c:forEach>

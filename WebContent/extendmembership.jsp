@@ -29,7 +29,7 @@
 				<form action="MembershipManager" method="POST">
 					Renew your membership for
 					<input type="number" name="months" placeholder="# of Months">
-					months, and then you pay $<span id="ppm">${membershipMonthlyPrice}</span> per month.
+					months, and then you pay <span id="ppm" style="display:none;">${membershipMonthlyPrice}</span><fmt:formatNumber value="${membershipMonthlyPrice}" type="currency"/> per month.
 					<br /><br />
 					That comes to a total of $<span id="ptotal">0</span>
 					<br /><br />
@@ -45,7 +45,7 @@
 				var str = $('.hiddenVar').text().toLowerCase();
 				var temp = $( "input[name='months']" ).val();
 				var ppm = $('#ppm').text().toLowerCase();
-				if(str == "false" || true)
+				if(str == "false")
 				{
 					if (temp < 6) {
 						window.alert("Since you've never been a member, you need to choose a minimum of 6 months.");
