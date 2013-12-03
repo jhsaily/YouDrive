@@ -20,7 +20,9 @@
 		</div>
 		<script type="text/javascript">
 			$(window).load(setWidth());
-			$(window).resize(function() {setWidth();});
+			$(window).resize(function() {
+				setWidth();
+			});
 			
 			$( ".forgotpass" ).click(function() {
 				$( "#loginpanel" ).fadeOut( "slow", function() {
@@ -32,6 +34,7 @@
 				$( "#forgotpasspanel" ).fadeIn( "slow", function() {
 					// Animation complete.
 				});
+				setWidth();
 			});
 			$( ".login" ).click(function() {
 				$( "#forgotpasspanel" ).fadeOut( "slow", function() {
@@ -43,6 +46,7 @@
 				$( "#loginpanel" ).fadeIn( "slow", function() {
 					// Animation complete.
 				});
+				setWidth();
 			});
 			$( ".register" ).click(function() {
 				$( "#forgotpasspanel" ).fadeOut( "slow", function() {
@@ -54,6 +58,7 @@
 				$( "#registerpanel" ).fadeIn( "slow", function() {
 					// Animation complete.
 				});
+				setWidth();
 			});
 		</script>
 	</body>

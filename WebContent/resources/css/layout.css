@@ -47,6 +47,16 @@ select,option
 	min-width:750px;
 	position:relative;
 }
+a:link, a:visited
+{
+	color:#443d3d;
+	text-decoration:none;
+	text-shadow: 0 1px 0px rgba(0,0,0,0.3);
+}
+a:hover, a:active
+{
+	text-decoration:underline;
+}
 #header
 {
 	margin-left:auto;
@@ -65,7 +75,6 @@ select,option
 	float:left;
 	background-color:#464141;
 	background-image:url(../images/logo.png);
-	background-attachment:fixed;
 }
 
 #tagline
