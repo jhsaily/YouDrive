@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 
 import YouDrive_Team11.Entity.Address;
@@ -105,7 +106,7 @@ public class YouDriveDAO {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://uml.cs.uga.edu/team11","team11","virtual");
 			System.out.println("Connected to MySQL!");
 			insertCustomerStatement = conn.prepareStatement("insert into users (username,password,isAdmin,emailAddress,firstName,lastName,membershipExpiration)" +
-					" values (?,?,?,?,?,?,?)");
+					" values (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			readCustomerStatement = conn.prepareStatement("select * from users where id=? and isAdmin=0");
 			getCustomerByUsernameStatement = conn.prepareStatement("select * from users where username=?");
 			updateCustomerStatement = conn.prepareStatement("update users set firstName=?," +
@@ -123,21 +124,21 @@ public class YouDriveDAO {
 			updateAddressStatement = conn.prepareStatement("update addresses set addrLine1=?,addrLine2=?,city=?,state=?,ZIP=?," +
 					"country=? where id=?");
 			insertAddressStatement = conn.prepareStatement("insert into addresses (addrLine1,addrLine2,city,state,ZIP,country,link_id,type)" +
-					" values (?,?,?,?,?,?,?,?)");
+					" values (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			
 			readPaymentInfoStatement = conn.prepareStatement("select * from payment_methods where user_id=?");
 			updatePaymentInfoStatement = conn.prepareStatement("update payment_methods set cardNumber=?,monthExpiration=?," +
 					"yearExpiration=?,securityCode=? where user_id=?");
 			insertPaymentInfoStatement = conn.prepareStatement("insert into payment_methods (cardNumber,monthExpiration," +
-					"yearExpiration,securityCode,user_id) values (?,?,?,?,?)");
+					"yearExpiration,securityCode,user_id) values (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			
 			readDLStatement = conn.prepareStatement("select * from dl where customer_id=?");
 			updateDLStatement = conn.prepareStatement("update dl set dl_number=?,dl_state=? where customer_id=?");
 			insertDLStatement = conn.prepareStatement("insert into dl (dl_number,dl_state,customer_id)" +
-					" values (?,?,?)");
+					" values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			
 			insertAdminStatement = conn.prepareStatement("insert into users (username,password,isAdmin) values" +
-					" (?,?,1)");
+					" (?,?,1)", Statement.RETURN_GENERATED_KEYS);
 			readAdminStatement = conn.prepareStatement("select * from users where id=? and isAdmin=1");
 			updateAdminStatement = conn.prepareStatement("update users set username=?,password=?" +
 					" where id=? and isAdmin=1");
@@ -145,7 +146,7 @@ public class YouDriveDAO {
 			getAllAdminsStatement = conn.prepareStatement("select * from users where isAdmin=1");
 			
 			insertVehicleTypeStatement = conn.prepareStatement("insert into vehicle_types (description, hourlyRate," +
-					"dailyRate) values (?,?,?)");
+					"dailyRate) values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			readVehicleTypeStatement = conn.prepareStatement("select * from vehicle_types where id=?");
 			updateVehicleTypeStatement = conn.prepareStatement("update vehicle_types set description=?,hourlyRate=?," +
 					"dailyRate=? where id=?");
@@ -153,11 +154,11 @@ public class YouDriveDAO {
 			getAllVehicleTypesStatement = conn.prepareStatement("select * from vehicle_types");
 			
 			insertCommentStatement = conn.prepareStatement("insert into comments (content, vehicle_id) " +
-					"values (?,?)");
+					"values (?,?)", Statement.RETURN_GENERATED_KEYS);
 			getCommentsStatement = conn.prepareStatement("select * from comments where vehicle_id=?");
 			
 			insertVehicleStatement = conn.prepareStatement("insert into vehicles (make,model,year,tag,mileage," +
-					"serviceDate,vehicleCondition,type_id,location_id,isAvailable) values (?,?,?,?,?,?,?,?,?,1)");
+					"serviceDate,vehicleCondition,type_id,location_id,isAvailable) values (?,?,?,?,?,?,?,?,?,1)", Statement.RETURN_GENERATED_KEYS);
 			readVehicleStatement = conn.prepareStatement("select * from vehicles where id=?");
 			updateVehicleStatement = conn.prepareStatement("update vehicles set make=?,model=?,year=?,tag=?," +
 					"mileage=?,serviceDate=?,vehicleCondition=?,type_id=?,location_id=? where id=?");
@@ -174,7 +175,7 @@ public class YouDriveDAO {
 			markVehicleUnavailableStatement = conn.prepareStatement("update vehicles set isAvailable=0 where id=?");
 			
 			insertRentalLocationStatement = conn.prepareStatement("insert into locations (name,capacity) values " +
-					"(?,?)");
+					"(?,?)", Statement.RETURN_GENERATED_KEYS);
 			readRentalLocationStatement = conn.prepareStatement("select * from locations where id=?");
 			updateRentalLocationStatement = conn.prepareStatement("update locations set name=?,capacity=?" +
 					" where id=?");
@@ -185,7 +186,7 @@ public class YouDriveDAO {
 			setMembershipPriceStatement = conn.prepareStatement("update context set membershipPrice=? where id=1");
 			
 			insertReservationStatement = conn.prepareStatement("insert into reservations (pickupTime,rentalDuration," +
-					"isHourly,timeDue,vehicle_id,location_id,customer_id) values (?,?,?,?,?,?,?)");
+					"isHourly,timeDue,vehicle_id,location_id,customer_id) values (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			
 			//addCustomerStatement = conn.prepareStatement("insert into Customer (custName,custAddr,imageURL,creditLimit) values (?,?,?,?)");
 			//updateUnpaidBalanceStatement = conn.prepareStatement("update Customer set unpaidBalance = ? where id=?");
