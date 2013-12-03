@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.LinkedList;
 
 import YouDrive_Team11.Entity.Address;
@@ -1254,17 +1255,17 @@ public class YouDriveDAO {
 	 * @param reservationEnd	The proposed end timestamp for the reservation
 	 * @return					A list of vehicles available for the given time span, of the given type, at the given location
 	 */
-	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID, int typeID, Date reservationStart, Date reservationEnd){
+	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID, int typeID, Timestamp reservationStart, Timestamp reservationEnd){
 		LinkedList<Vehicle> availableVehicles = new LinkedList<Vehicle>();
 		try{
 			getAllAvailableVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
 			getAllAvailableVehiclesOfTypeAtLocationStatement.setInt(2, typeID);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(3, reservationStart);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(4, reservationStart);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(5, reservationEnd);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(6,  reservationEnd);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(7, reservationStart);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(8, reservationEnd);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(3, reservationStart);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(4, reservationStart);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(5, reservationEnd);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(6,  reservationEnd);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(7, reservationStart);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(8, reservationEnd);
 			ResultSet rs = getAllAvailableVehiclesOfTypeAtLocationStatement.executeQuery();
 			while(rs.next()){
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
@@ -1287,16 +1288,16 @@ public class YouDriveDAO {
 	 * @param endDate		The end timestamp the vehicle should be available for
 	 * @return				True if the vehicle is available, false otherwise.
 	 */
-	public boolean isVehicleAvailable(int vehicleID, Date startDate, Date endDate){
+	public boolean isVehicleAvailable(int vehicleID, Timestamp startDate, Timestamp endDate){
 		boolean value = false;
 		try{
 			getVehicleNotConflictingWithTimesStatement.setInt(1, vehicleID);
-			getVehicleNotConflictingWithTimesStatement.setDate(2, startDate);
-			getVehicleNotConflictingWithTimesStatement.setDate(3, startDate);
-			getVehicleNotConflictingWithTimesStatement.setDate(4, endDate);
-			getVehicleNotConflictingWithTimesStatement.setDate(5, endDate);
-			getVehicleNotConflictingWithTimesStatement.setDate(6, startDate);
-			getVehicleNotConflictingWithTimesStatement.setDate(7, endDate);
+			getVehicleNotConflictingWithTimesStatement.setTimestamp(2, startDate);
+			getVehicleNotConflictingWithTimesStatement.setTimestamp(3, startDate);
+			getVehicleNotConflictingWithTimesStatement.setTimestamp(4, endDate);
+			getVehicleNotConflictingWithTimesStatement.setTimestamp(5, endDate);
+			getVehicleNotConflictingWithTimesStatement.setTimestamp(6, startDate);
+			getVehicleNotConflictingWithTimesStatement.setTimestamp(7, endDate);
 			ResultSet rs = getVehicleNotConflictingWithTimesStatement.executeQuery();
 			value = rs.next();
 		}catch(SQLException e){
@@ -1530,17 +1531,17 @@ public class YouDriveDAO {
 	 * @param customer_id		The unique identifier of the customer placing the reservation
 	 * @return	A Reservation object, encapsulating this reservation data.
 	 */
-	public Reservation createReservation(Date pickupTime, double rentalDuration,
-			boolean isHourly, Date timeDue, int vehicle_id, int location_id, int customer_id){
+	public Reservation createReservation(Timestamp pickupTime, double rentalDuration,
+			boolean isHourly, Timestamp timeDue, int vehicle_id, int location_id, int customer_id){
 		Reservation reservation = null;
 		int id = 0;
 		Vehicle vehicle = readVehicle(vehicle_id);
 		if(vehicle != null && isVehicleAvailable(vehicle_id, pickupTime, timeDue)){
 			try{
-				insertReservationStatement.setDate(1, pickupTime);
+				insertReservationStatement.setTimestamp(1, pickupTime);
 				insertReservationStatement.setDouble(2, rentalDuration);
 				insertReservationStatement.setBoolean(3, isHourly);
-				insertReservationStatement.setDate(4, timeDue);
+				insertReservationStatement.setTimestamp(4, timeDue);
 				insertReservationStatement.setInt(5, vehicle_id);
 				insertReservationStatement.setInt(6, location_id);
 				insertReservationStatement.setInt(7, customer_id);
@@ -1576,8 +1577,8 @@ public class YouDriveDAO {
 				Vehicle vehicle = readVehicle(rs.getInt("vehicle_id"));
 				RentalLocation location = readRentalLocation(rs.getInt("location_id"));
 				Customer customer = readCustomer(rs.getInt("customer_id"));
-				reservation = new Reservation(rs.getInt("id"), rs.getDate("pickupTime"), rs.getDouble("rentalDuration"),
-						rs.getBoolean("isHourly"), rs.getDate("timeReturned"), rs.getDate("timeDue"),vehicle,
+				reservation = new Reservation(rs.getInt("id"), rs.getTimestamp("pickupTime"), rs.getDouble("rentalDuration"),
+						rs.getBoolean("isHourly"), rs.getTimestamp("timeReturned"), rs.getTimestamp("timeDue"),vehicle,
 						location,customer,rs.getBoolean("isActive"));
 			}
 		}catch(SQLException e){
@@ -1626,9 +1627,9 @@ public class YouDriveDAO {
 				Customer customer = readCustomer(rs.getInt("customer_id"));
 				Date timeReturned = rs.getDate("timeReturned");
 				boolean isActive = (timeReturned == null);
-				Reservation reservation = new Reservation(rs.getInt("id"), rs.getDate("pickupTime"),
-						rs.getDouble("rentalDuration"), rs.getBoolean("isHourly"), rs.getDate("timeReturned"),
-						rs.getDate("timeDue"), vehicle, location, customer, isActive);
+				Reservation reservation = new Reservation(rs.getInt("id"), rs.getTimestamp("pickupTime"),
+						rs.getDouble("rentalDuration"), rs.getBoolean("isHourly"), rs.getTimestamp("timeReturned"),
+						rs.getTimestamp("timeDue"), vehicle, location, customer, isActive);
 				list.add(reservation);
 			}
 		}catch(SQLException e){
