@@ -33,6 +33,7 @@ public class YouDriveDAO {
 	private PreparedStatement readCustomerStatement;
 	private PreparedStatement getCustomerByUsernameStatement;
 	private PreparedStatement updateCustomerStatement;
+	private PreparedStatement revokeMembershipStatement;
 	private PreparedStatement deleteCustomerStatement;
 	private PreparedStatement getAllCustomersStatement;
 	
@@ -137,6 +138,7 @@ public class YouDriveDAO {
 			getCustomerByUsernameStatement = conn.prepareStatement("select * from users where username=?");
 			updateCustomerStatement = conn.prepareStatement("update users set firstName=?," +
 					"lastName=?,membershipExpiration=? where id=? and isAdmin=0");
+			revokeMembershipStatement = conn.prepareStatement("update users set membershipExpiration=NULL where id=? and isAdmin=0");
 			deleteCustomerStatement = conn.prepareStatement("delete from users where id=? and isAdmin=0");
 			getAllCustomersStatement = conn.prepareStatement("select * from users where isAdmin=0");
 			
@@ -334,6 +336,19 @@ public class YouDriveDAO {
 			updateCustomerStatement.setDate(3, membershipExpiration);
 			updateCustomerStatement.setInt(4, custID);
 			updateCustomerStatement.executeUpdate();
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Revokes the membership of the specified user
+	 * @param customerID	The unique identifier of the user whose membership is being revoked.
+	 */
+	public void revokeMembership(int customerID){
+		try{
+			revokeMembershipStatement.setInt(1, customerID);
+			revokeMembershipStatement.executeUpdate();
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
