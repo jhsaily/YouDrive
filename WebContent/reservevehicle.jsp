@@ -40,32 +40,32 @@
 					
 					Vehicle Type:
 					<br />
-					<input type="hidden" name="vehicletype" value="${vehicleType.id}">
-					<input type="hidden" name="location" value="${location.id}">
-					${vehicleType.description}
+					<input type="hidden" name="vehicletype" value="${vehicleType}">
+					<input type="hidden" name="location" value="${location}">
+					${description}
 					<br />
 					Hourly Rate:
 					<br />
-					<fmt:setLocale value="en_US"/>
-					<fmt:formatNumber value="${vehicleType.hourlyRate}" type="currency"/>
+                    <fmt:setLocale value="en_US"/>
+					<fmt:formatNumber value="${hourlyRate}" type="currency"/>
 					<br />
 					Daily Rate:
 					<br />
-					<fmt:formatNumber value="${vehicleType.dailyRate}" type="currency"/>
+                    <fmt:formatNumber value="${dailyRate}" type="currency"/>
 					<br /><br />
 					Location: 
 					<br />
-					${location.name}
+					${locationname}
 					<br /><br />
 					Address:
 					<br />
-					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.streetAddrLine1}
+					&nbsp;&nbsp;&nbsp;&nbsp;${streetAddrLine1}
 					<br />
-					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.streetAddrLine2}
+					&nbsp;&nbsp;&nbsp;&nbsp;${streetAddrLine2}
 					<br />
-					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.city}, ${location.locationAddress.state} ${location.locationAddress.zipCode}
+					&nbsp;&nbsp;&nbsp;&nbsp;${city}, ${state} ${zipCode}
 					<br />
-					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.country}
+					&nbsp;&nbsp;&nbsp;&nbsp;${country}
 					<br /><br />
 					
 					<span class="dbpaneltitle" style="font-size:16px;">Choose Vehicle.</span>
@@ -92,7 +92,21 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-			$(window).load(setWidth());
+			$(window).load(function() {
+				setWidth();
+				var str = "";
+				var temp = "";
+				str += $( "input[name='rentaltype']" ).val().toLowerCase();
+				if (str == "hourly")
+				{
+					temp = "hours.";
+				}
+				else
+				{
+					temp = "days.";
+				}
+				$( "span[class='timetype']" ).text(temp);
+			});
 			$(window).resize(function() {setWidth();});
 		</script>
 	</body>

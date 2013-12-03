@@ -46,11 +46,12 @@
 					<br />
 					Hourly Rate:
 					<br />
-					${hourlyRate}
+                    <fmt:setLocale value="en_US"/>
+					<fmt:formatNumber value="${hourlyRate}" type="currency"/>
 					<br />
 					Daily Rate:
 					<br />
-					${dailyRate}
+                    <fmt:formatNumber value="${dailyRate}" type="currency"/>
 					<br /><br />
 					Location: 
 					<br />
@@ -91,7 +92,21 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-			$(window).load(setWidth());
+			$(window).load(function() {
+				setWidth();
+				var str = "";
+				var temp = "";
+				str += $( "input[name='rentaltype']" ).val().toLowerCase();
+				if (str == "hourly")
+				{
+					temp = "hours.";
+				}
+				else
+				{
+					temp = "days.";
+				}
+				$( "span[class='timetype']" ).text(temp);
+			});
 			$(window).resize(function() {setWidth();});
 		</script>
 	</body>
