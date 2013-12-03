@@ -105,7 +105,7 @@ public class YouDriveDAO {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://uml.cs.uga.edu/team11","team11","virtual");
 			System.out.println("Connected to MySQL!");
 			insertCustomerStatement = conn.prepareStatement("insert into users (username,password,isAdmin,emailAddress,firstName,lastName,membershipExpiration)" +
-					"values (?,?,0,?,?,?,?");
+					" values (?,?,0,?,?,?,?");
 			readCustomerStatement = conn.prepareStatement("select * from users where id=? and isAdmin=0");
 			getCustomerByUsernameStatement = conn.prepareStatement("select * from users where username=?");
 			updateCustomerStatement = conn.prepareStatement("update users set firstName=?," +
