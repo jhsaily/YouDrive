@@ -185,13 +185,18 @@ public class ReservationManager extends HttpServlet {
 						try{
 							
 							boolean hly;
-							if(req.getParameter("rentalType").equals("hourly")){
+							if(req.getParameter("rentaltype").equals("hourly")){
+								System.out.println("hourly is true");
 								hly=true;
 							}
 							else{
 								hly=false;
 							}
-							placeReservation(returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), Integer.valueOf(req.getParameter("rentallengthhours")), hly, null, 0, 0, 0);
+							Reservation r=placeReservation(returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), Double.valueOf(req.getParameter("rentallengthhours")), hly, returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), 1, Integer.valueOf(req.getParameter("location")), customer.getId());
+							if(r==null){
+								System.out.println("r is null");
+							}
+							
 						}
 						catch(Exception e){
 							System.out.println("Could not place reservation!");

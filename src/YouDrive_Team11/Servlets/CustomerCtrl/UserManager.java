@@ -165,7 +165,7 @@ public class UserManager extends HttpServlet {
 			
 			try{
 			createUser(req.getParameter("username"), req.getParameter("password"), req.getParameter("email"), req.getParameter("firstname"),
-					req.getParameter("lastname"), returnDate("06","30", "2014"), req.getParameter("addressline1"), req.getParameter("addressline2"), 
+					req.getParameter("lastname"), req.getParameter("addressline1"), req.getParameter("addressline2"), 
 					req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"), req.getParameter("licensenum"), req.getParameter("licensestate"));
 			}
 			catch(Exception e){
@@ -359,8 +359,8 @@ public class UserManager extends HttpServlet {
 	 * @param DLState				The customer's driver's license state
 	 * @return						Returns a customer object
 	 */
-	public Customer createUser(String username, String password, String emailAddress, String firstName, String lastName, Date membershipExpiration, String addrLine1, String addrLine2, String city, String state, int ZIP, String country, String DLNumber, String DLState){
-		return dao.createCustomer(username, password, emailAddress, firstName, lastName, membershipExpiration, addrLine1, addrLine2, city, state, ZIP, country, DLNumber, DLState);
+	public Customer createUser(String username, String password, String emailAddress, String firstName, String lastName, String addrLine1, String addrLine2, String city, String state, int ZIP, String country, String DLNumber, String DLState){
+		return dao.createCustomer(username, password, emailAddress, firstName, lastName, addrLine1, addrLine2, city, state, ZIP, country, DLNumber, DLState);
 		
 	}
 	
