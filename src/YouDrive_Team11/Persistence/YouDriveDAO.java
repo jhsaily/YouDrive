@@ -493,6 +493,7 @@ public class YouDriveDAO {
 				updateAddressStatement.setString(6, country);
 				updateAddressStatement.setInt(7, address.getId());
 				updateAddressStatement.executeUpdate();
+				modifiedID = address.getId();
 			}else{
 				// This customer does not have an address. Let's make one.
 				insertAddressStatement.setString(1, addrLine1);
@@ -652,6 +653,7 @@ public class YouDriveDAO {
 				updateAddressStatement.setString(6, country);
 				updateAddressStatement.setInt(7, address.getId());
 				updateAddressStatement.executeUpdate();
+				modifiedID = address.getId();
 			}else{
 				// This customer does not have an address. Let's make one.
 				insertAddressStatement.setString(1, addrLine1);
@@ -718,6 +720,7 @@ public class YouDriveDAO {
 				updateDLStatement.setString(1, DLNumber);
 				updateDLStatement.setString(2, DLState);
 				updateDLStatement.setInt(3, license.getId());
+				modifiedID = license.getId();
 			}else{
 				// This customer doesn't have a DL on file. Let's make one.
 				insertDLStatement.setString(1, DLNumber);
