@@ -244,7 +244,7 @@ public class ReservationManager extends HttpServlet {
 							else{
 								hly=false;
 							}
-							Reservation r=placeReservation(returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), Double.valueOf(req.getParameter("rentallength")), hly, returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), Integer.valueOf(req.getParameter("vehicle")), Integer.valueOf(req.getParameter("location")), customer.getId());
+							Reservation r=placeReservation(returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), Double.valueOf(req.getParameter("rentallength")), hly, returnEndDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear"), Integer.valueOf(req.getParameter("rentallength")), hly), Integer.valueOf(req.getParameter("vehicle")), Integer.valueOf(req.getParameter("location")), customer.getId());
 							
 							System.out.println(r.getPickupTime().getHours());
 							
@@ -391,6 +391,40 @@ public class ReservationManager extends HttpServlet {
 		java.sql.Date date=new java.sql.Date(utilDate.getTime());
 		
 		return date;
+	}
+	
+	public Date returnEndDate(String mm, String dd, String yyyy, int time, boolean hours) throws ParseException{
+		if(hours){
+			System.out.println("Adding " + time + " hours to date.");
+		
+			java.util.Date utilDate=new SimpleDateFormat("MM/dd/yyyy").parse(mm+"/"+dd+"/"+yyyy);
+			java.sql.Date date=new java.sql.Date(utilDate.getTime());
+			
+			//Get the start date in hours
+			int h=date.getHours();
+			
+			//Add the hours to the start date
+			int newh=h+time;
+			
+			date.setHours(newh);
+			
+			return date;
+		}
+		else{
+			System.out.println("Adding " + time + " days to date.");
+			
+			java.util.Date utilDate=new SimpleDateFormat("MM/dd/yyyy").parse(mm+"/"+dd+"/"+yyyy);
+			java.sql.Date date=new java.sql.Date(utilDate.getTime());
+			
+			//Get the start date in hours
+			int d=date.getDay();
+			
+			//Add the hours to the start date
+			int newd=d+time;
+			
+			date.setDate(newd);
+			return date;
+		}
 	}
 	
 	/**

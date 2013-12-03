@@ -113,20 +113,29 @@ public class UserManager extends HttpServlet {
 					//If the user clicks edit payment information, send already existent info to form
 					if(req.getParameter("clicked").equals("payment")){
 						
-						//Send in already existent user information to jsp vars
-						
-						req.setAttribute("cardExpirationMonth", customer.getPaymentInfo().getCardExpirationMonth());
-						req.setAttribute("cardExpirationYear", customer.getPaymentInfo().getCardExpirationYear());
-						req.setAttribute("addrLine1", customer.getMailingAddress().getStreetAddrLine1());
-						req.setAttribute("addrLine2", customer.getMailingAddress().getStreetAddrLine2());
-						req.setAttribute("city", customer.getMailingAddress().getCity());
-						req.setAttribute("zip", customer.getMailingAddress().getZipCode());
-						req.setAttribute("state", customer.getMailingAddress().getState());
-						req.setAttribute("country", customer.getMailingAddress().getCountry());
-						
-						//Forward to dashboard
-						dispatcher=ctx.getRequestDispatcher("/editpayment.jsp");
-						dispatcher.forward(req, res);
+						try{
+							//Send in already existent user information to jsp vars
+							
+							req.setAttribute("cardExpirationMonth", customer.getPaymentInfo().getCardExpirationMonth());
+							req.setAttribute("cardExpirationYear", customer.getPaymentInfo().getCardExpirationYear());
+							req.setAttribute("addrLine1", customer.getPaymentInfo().getBillingAddress().getStreetAddrLine1());
+							req.setAttribute("addrLine2", customer.getPaymentInfo().getBillingAddress().getStreetAddrLine2());
+							req.setAttribute("city", customer.getPaymentInfo().getBillingAddress().getCity());
+							req.setAttribute("zip", customer.getPaymentInfo().getBillingAddress().getZipCode());
+							req.setAttribute("state", customer.getPaymentInfo().getBillingAddress().getState());
+							req.setAttribute("country", customer.getPaymentInfo().getBillingAddress().getCountry());
+							
+							//Forward to payment page
+							dispatcher=ctx.getRequestDispatcher("/editpayment.jsp");
+							dispatcher.forward(req, res);
+						}
+						catch(Exception e){
+							System.out.println("Could not pull up payment information. Sending empty payment page.");
+							
+							//Forward to payment page
+							dispatcher=ctx.getRequestDispatcher("/editpayment.jsp");
+							dispatcher.forward(req, res);
+						}
 					}
 				}//END CUSTOMER LOGIC
 

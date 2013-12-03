@@ -179,7 +179,7 @@ public class UserAdminManager extends HttpServlet{
 							dispatcher.forward(req, res);
 						}
 						catch(Exception e){
-							System.out.println("Invalid entry for edit user");
+							System.out.println("Invalid entry for edit user. May be missing license info.");
 							
 							//Forward to manage users page
 							dispatcher=ctx.getRequestDispatcher("/manageusers.jsp");

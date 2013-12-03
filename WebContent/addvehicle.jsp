@@ -21,6 +21,8 @@
 				<span class="dbpaneltitle">New Vehicle.</span>
 				<br /><br />
 				<form action="VehicleAdminManager" method="POST">
+				<input type="hidden" name="locationid" value="${locationId}">
+				
 					<input type="text" name="vehiclemake" placeholder="Vehicle Make" required>
 					<br />
 					<input type="text" name="vehiclemodel" placeholder="Vehicle Model" required>

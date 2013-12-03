@@ -19,7 +19,7 @@
 			<%@ include file="resources/html/header.html" %>
 			<%@ include file="resources/html/leftnav.html" %>
 			<div id="dashboardpanel">
-			<!-- TODO: script to automatically calculate cost based on aquired price per month values -->
+			<!-- TODO: script to automatically calculate cost based on acquired price per month values -->
 				<span class="dbpaneltitle">Extend your Membership.</span>
 				<br /><br />
 				Here you can extend your membership for YouDrive.
@@ -32,6 +32,7 @@
 					months, and then you pay <span id="ppm" style="display:none;">${membershipMonthlyPrice}</span><fmt:formatNumber value="${membershipMonthlyPrice}" type="currency"/> per month.
 					<br /><br />
 					That comes to a total of $<span id="ptotal">0</span>
+					<p>${error}</p>
 					<br /><br />
 					<input type="submit" name="extend" value="Submit">
 				</form>

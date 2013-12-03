@@ -115,6 +115,16 @@ public class LocationAdminManager extends HttpServlet{
 						dispatcher.forward(req, res);
 					}
 					
+					//If user chooses to add a vehicle
+					if(req.getParameter("clicked").equals("add")){
+						
+						req.setAttribute("locationId", req.getParameter("id"));
+						req.setAttribute("vehicleTypes", dao.getAllVehicleTypes());
+						
+						//Forward to add vehicle page
+						dispatcher=ctx.getRequestDispatcher("/addvehicle.jsp");
+						dispatcher.forward(req, res);
+					}
 					
 				}//END ADMIN LOGIC
 			}//end else
@@ -198,12 +208,106 @@ public class LocationAdminManager extends HttpServlet{
 					if(req.getParameter("manageLocation")!=null){
 						
 						//EDIT Return vehicles from location selected
-						//UNCOMMENT ME req.setAttribute("vehicles", getAllVehicles(location id));
-						req.setAttribute("vehicles", getAllVehicles());
+						req.setAttribute("vehicles", dao.getAllVehicles(Integer.valueOf(req.getParameter("location"))));
+						//req.setAttribute("vehicles", getAllVehicles());
 						
 						//Forward to vehicle management page
 						dispatcher=ctx.getRequestDispatcher("/managevehicle.jsp");
 						dispatcher.forward(req, res);
+					}
+					
+					//If user chooses edit location
+					if(req.getParameter("editLocation")!=null){
+						//Make sure user chooses from list
+						try{
+							RentalLocation l=findLocation(Integer.valueOf(req.getParameter("location")));
+							
+							//Set attributes on page
+							req.setAttribute("locationID", l.getId());
+							req.setAttribute("locationName", l.getName());
+							req.setAttribute("locationCap", l.getCapacity());
+							req.setAttribute("addrLine1", l.getLocationAddress().getStreetAddrLine1());
+							req.setAttribute("addrLine2", l.getLocationAddress().getStreetAddrLine2());
+							req.setAttribute("city", l.getLocationAddress().getCity());
+							req.setAttribute("state", l.getLocationAddress().getState());
+							req.setAttribute("country", l.getLocationAddress().getCountry());
+							req.setAttribute("zip", l.getLocationAddress().getZipCode());
+	
+							//Forward to edit location page
+							dispatcher=ctx.getRequestDispatcher("/editlocation.jsp");
+							dispatcher.forward(req, res);
+						}
+						catch(Exception e){
+							System.out.println("Must choose from list.");
+							
+							//Set locations values in list
+							req.setAttribute("locations", getAllLocations());
+							
+							//Forward to manage locations Page
+							dispatcher=ctx.getRequestDispatcher("/managelocation.jsp");
+							dispatcher.forward(req, res);
+						}
+					}
+					
+					//If user submit after editing location
+					if(req.getParameter("updatelocation")!=null){
+						editRentalLocation(Integer.valueOf(req.getParameter("locationid")), req.getParameter("locationname"), Integer.valueOf(req.getParameter("capacity")), req.getParameter("addressline1"), req.getParameter("addressline2"), req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"));
+					
+						//Reset vars
+						req.setAttribute("locations", getAllLocations());
+						
+						//Forward to manage locations Page
+						dispatcher=ctx.getRequestDispatcher("/managelocation.jsp");
+						dispatcher.forward(req, res);
+					}
+					
+					//If a user chooses to remove a location
+					if(req.getParameter("removeLocation")!=null){
+						try{
+							dao.deleteRentalLocation(Integer.valueOf(req.getParameter("location")));
+							
+							//Reset vars
+							req.setAttribute("locations", getAllLocations());
+							
+							//Forward to manage locations Page
+							dispatcher=ctx.getRequestDispatcher("/managelocation.jsp");
+							dispatcher.forward(req, res);
+						}
+						catch(Exception e){
+							System.out.println("Must choose item from list");
+							
+							//Reset vars
+							req.setAttribute("locations", getAllLocations());
+							
+							//Forward to manage locations Page
+							dispatcher=ctx.getRequestDispatcher("/managelocation.jsp");
+							dispatcher.forward(req, res);
+						}
+					}
+					
+					//If user chooses edit vehicles at this location
+					if(req.getParameter("editVehiclesAtLocation")!=null){
+						try{
+							RentalLocation l=findLocation(Integer.valueOf(req.getParameter("location")));
+							
+							req.setAttribute("locationName", l.getName());
+							req.setAttribute("locationID", l.getId());
+							req.setAttribute("listOfVehicles", dao.getAllVehicles(l.getId()));
+							
+							//Forward to manage vehicles Page
+							dispatcher=ctx.getRequestDispatcher("/editlocationvehicles.jsp");
+							dispatcher.forward(req, res);
+						}
+						catch(Exception e){
+							System.out.println("Something must be selected from list");
+							
+							//Reset vars
+							req.setAttribute("locations", getAllLocations());
+							
+							//Forward to manage locations Page
+							dispatcher=ctx.getRequestDispatcher("/managelocation.jsp");
+							dispatcher.forward(req, res);
+						}
 					}
 					
 				}//END ADMIN LOGIC
@@ -243,8 +347,9 @@ public class LocationAdminManager extends HttpServlet{
 	 * @param name				Name of location
 	 * @param capacity			Number of cars it should hold
 	 */
-	public void editRentalLocation(int locationId, String name, int capacity){
+	public void editRentalLocation(int locationId, String name, int capacity, String add1, String add2, String city, String state, int zip, String country){
 		dao.updateRentalLocation(locationId, name, capacity);
+		dao.updateAddressForRentalLocation(locationId, add1, add2, city, state, zip, country);
 	}
 	
 	/**
@@ -270,5 +375,9 @@ public class LocationAdminManager extends HttpServlet{
 	//EDIT Eventually must return vehicles AT A PARTICULAR LOCATION
 	public LinkedList<Vehicle> getAllVehicles(){
 		return dao.getAllVehicles();
+	}
+	
+	public RentalLocation findLocation(int id){
+		return dao.readRentalLocation(id);
 	}
 }

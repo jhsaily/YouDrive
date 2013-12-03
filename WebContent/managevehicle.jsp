@@ -20,27 +20,27 @@
 			<div id="dashboardpanel">
 				<span class="dbpaneltitle">Manage Vehicle.</span>
 				<br /><br />
-				Vehicle ID: ${vehicle.id}
+				Vehicle ID: ${id}
 				<br />
 				<form action="VehicleAdminManager" method="POST">
-					<input type="hidden" name="vehicleid" value="${vehicle.id}">
+					<input type="hidden" name="vehicleid" value="${id}">
 					<br />
-					<input type="text" name="vehiclemake" value="${vehicle.make}" placeholder="Vehicle Make" required>
+					<input type="text" name="vehiclemake" value="${make}" placeholder="Vehicle Make" required>
 					<br />
-					<input type="text" name="vehiclemodel" value="${vehicle.model}" placeholder="Vehicle Model" required>
+					<input type="text" name="vehiclemodel" value="${model}" placeholder="Vehicle Model" required>
 					<br />
-					<input type="number" name="vehicleyear" value="${vehicle.year}" placeholder="Vehicle Year" required>
+					<input type="number" name="vehicleyear" value="${year}" placeholder="Vehicle Year" required>
 					<br />
-					<input type="text" name="vehicletag" value="${vehicle.tag}" placeholder="Vehicle Tag" required>
+					<input type="text" name="vehicletag" value="${tag}" placeholder="Vehicle Tag" required>
 					<br />
-					<input type="text" name="vehiclemileage" value="${vehicle.mileage}" placeholder="Vehicle Mileage" required>
+					<input type="text" name="vehiclemileage" value="${mileage}" placeholder="Vehicle Mileage" required>
 					<br />
-					Current Service Date: ${vehicle.serviceDate}
+					Current Service Date: ${serviceDate}
 					<br />
 					<input type="text" name="serviceday" placeholder="New Service Day"> / <input type="text" name="servicemonth" placeholder="New Service Month"> / <input type="text" name="serviceyear" placeholder="New Service Year">
 					<br />
 					Vehicle Condition: <select name="vehiclecondition">
-						<option value="${vehicle.condition}" selected>${vehicle.condition}</option>
+						<option value="${condition}" selected>${condition}</option>
 						<option value="Awesome">Awesome</option>
 						<option value="Good">Good</option>
 						<option value="Bad">Bad</option>
@@ -70,7 +70,7 @@
 				<span class="dbpaneltitle">Associated Comments.</span>
 				<br /><br />
 	
-				<c:forEach items="${vehicle.comments}" var="comment">
+				<c:forEach items="${comments}" var="comment">
 					<p class="vehiclecomment">
 						Comment ID: ${comment.id}
 						<br />
