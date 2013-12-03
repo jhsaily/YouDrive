@@ -1288,16 +1288,16 @@ public class YouDriveDAO {
 	 * @param endDate		The end timestamp the vehicle should be available for
 	 * @return				True if the vehicle is available, false otherwise.
 	 */
-	public boolean isVehicleAvailable(int vehicleID, Timestamp startDate, Timestamp endDate){
+	public boolean isVehicleAvailable(int vehicleID, Date startDate, Date endDate){
 		boolean value = false;
 		try{
 			getVehicleNotConflictingWithTimesStatement.setInt(1, vehicleID);
-			getVehicleNotConflictingWithTimesStatement.setTimestamp(2, startDate);
-			getVehicleNotConflictingWithTimesStatement.setTimestamp(3, startDate);
-			getVehicleNotConflictingWithTimesStatement.setTimestamp(4, endDate);
-			getVehicleNotConflictingWithTimesStatement.setTimestamp(5, endDate);
-			getVehicleNotConflictingWithTimesStatement.setTimestamp(6, startDate);
-			getVehicleNotConflictingWithTimesStatement.setTimestamp(7, endDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(2, startDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(3, startDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(4, endDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(5, endDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(6, startDate);
+			getVehicleNotConflictingWithTimesStatement.setDate(7, endDate);
 			ResultSet rs = getVehicleNotConflictingWithTimesStatement.executeQuery();
 			value = rs.next();
 		}catch(SQLException e){
@@ -1531,17 +1531,17 @@ public class YouDriveDAO {
 	 * @param customer_id		The unique identifier of the customer placing the reservation
 	 * @return	A Reservation object, encapsulating this reservation data.
 	 */
-	public Reservation createReservation(Timestamp pickupTime, double rentalDuration,
-			boolean isHourly, Timestamp timeDue, int vehicle_id, int location_id, int customer_id){
+	public Reservation createReservation(Date pickupTime, double rentalDuration,
+			boolean isHourly, Date timeDue, int vehicle_id, int location_id, int customer_id){
 		Reservation reservation = null;
 		int id = 0;
 		Vehicle vehicle = readVehicle(vehicle_id);
 		if(vehicle != null && isVehicleAvailable(vehicle_id, pickupTime, timeDue)){
 			try{
-				insertReservationStatement.setTimestamp(1, pickupTime);
+				insertReservationStatement.setDate(1, pickupTime);
 				insertReservationStatement.setDouble(2, rentalDuration);
 				insertReservationStatement.setBoolean(3, isHourly);
-				insertReservationStatement.setTimestamp(4, timeDue);
+				insertReservationStatement.setDate(4, timeDue);
 				insertReservationStatement.setInt(5, vehicle_id);
 				insertReservationStatement.setInt(6, location_id);
 				insertReservationStatement.setInt(7, customer_id);
@@ -1577,8 +1577,8 @@ public class YouDriveDAO {
 				Vehicle vehicle = readVehicle(rs.getInt("vehicle_id"));
 				RentalLocation location = readRentalLocation(rs.getInt("location_id"));
 				Customer customer = readCustomer(rs.getInt("customer_id"));
-				reservation = new Reservation(rs.getInt("id"), rs.getTimestamp("pickupTime"), rs.getDouble("rentalDuration"),
-						rs.getBoolean("isHourly"), rs.getTimestamp("timeReturned"), rs.getTimestamp("timeDue"),vehicle,
+				reservation = new Reservation(rs.getInt("id"), rs.getDate("pickupTime"), rs.getDouble("rentalDuration"),
+						rs.getBoolean("isHourly"), rs.getDate("timeReturned"), rs.getDate("timeDue"),vehicle,
 						location,customer,rs.getBoolean("isActive"));
 			}
 		}catch(SQLException e){
@@ -1627,9 +1627,9 @@ public class YouDriveDAO {
 				Customer customer = readCustomer(rs.getInt("customer_id"));
 				Date timeReturned = rs.getDate("timeReturned");
 				boolean isActive = (timeReturned == null);
-				Reservation reservation = new Reservation(rs.getInt("id"), rs.getTimestamp("pickupTime"),
-						rs.getDouble("rentalDuration"), rs.getBoolean("isHourly"), rs.getTimestamp("timeReturned"),
-						rs.getTimestamp("timeDue"), vehicle, location, customer, isActive);
+				Reservation reservation = new Reservation(rs.getInt("id"), rs.getDate("pickupTime"),
+						rs.getDouble("rentalDuration"), rs.getBoolean("isHourly"), rs.getDate("timeReturned"),
+						rs.getDate("timeDue"), vehicle, location, customer, isActive);
 				list.add(reservation);
 			}
 		}catch(SQLException e){

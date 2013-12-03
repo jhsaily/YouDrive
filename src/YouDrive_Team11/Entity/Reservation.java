@@ -19,7 +19,7 @@ public class Reservation {
 	/**
 	 * The date/time for pickup of the car
 	 */
-	private Timestamp pickupTime;
+	private Date pickupTime;
 	
 	/**
 	 * The duration of the rental. A double value in either hours or days
@@ -35,12 +35,12 @@ public class Reservation {
 	/**
 	 * The timestamp of when the vehicle was returned
 	 */
-	private Timestamp timeReturned;
+	private Date timeReturned;
 	
 	/**
 	 * The date/time when the vehicle is due back
 	 */
-	private Timestamp timeDue;
+	private Date timeDue;
 	
 	/**
 	 * The vehicle for which this reservation is made
@@ -72,8 +72,8 @@ public class Reservation {
 	 * @param reservingCustomer
 	 * @param isActive
 	 */
-	public Reservation(int id, Timestamp pickupTime, double rentalDuration,
-			boolean isHourly, Timestamp timeReturned, Timestamp timeDue,
+	public Reservation(int id, Date pickupTime, double rentalDuration,
+			boolean isHourly, Date timeReturned, Date timeDue,
 			Vehicle vehicle, RentalLocation pickupLocation,
 			Customer reservingCustomer, boolean isActive){
 		this.id = id;
@@ -98,7 +98,7 @@ public class Reservation {
 	/**
 	 * @return the pickupTime
 	 */
-	public Timestamp getPickupTime() {
+	public Date getPickupTime() {
 		return pickupTime;
 	}
 
@@ -119,14 +119,14 @@ public class Reservation {
 	/**
 	 * @return the timeReturned
 	 */
-	public Timestamp getTimeReturned() {
+	public Date getTimeReturned() {
 		return timeReturned;
 	}
 
 	/**
 	 * @return the timeDue
 	 */
-	public Timestamp getTimeDue() {
+	public Date getTimeDue() {
 		return timeDue;
 	}
 
