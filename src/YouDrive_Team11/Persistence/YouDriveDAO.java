@@ -226,6 +226,7 @@ public class YouDriveDAO {
 			insertCustomerStatement.setString(5, firstName);
 			insertCustomerStatement.setString(6, lastName);
 			insertCustomerStatement.setDate(7, membershipExpiration);
+			System.out.println(insertCustomerStatement);
 			insertCustomerStatement.executeUpdate();
 			ResultSet key = insertCustomerStatement.getGeneratedKeys();
 			key.next();
