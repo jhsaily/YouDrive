@@ -1138,11 +1138,11 @@ public class YouDriveDAO {
 		return list;
 	}
 	
-	/**
+	/*
 	 * Retrieves a list of all AVAILABLE vehicles in the YouDrive system
 	 * @return	A LinkedList of Vehicles in the YouDrive system
 	 */
-	public LinkedList<Vehicle> getAllAvailableVehicles(){
+	/*public LinkedList<Vehicle> getAllAvailableVehicles(){
 		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
 		try{
 			ResultSet rs = getAllAvailableVehiclesStatement.executeQuery();
@@ -1158,7 +1158,7 @@ public class YouDriveDAO {
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		return list;
-	}
+	}*/
 	
 	/**
 	 * Retrieves a list of all vehicles in the YouDrive system at the
@@ -1185,13 +1185,13 @@ public class YouDriveDAO {
 		return list;
 	}
 	
-	/**
+	/*
 	 * Retrieves a list of all AVAILABLE vehicles in the YouDrive system at the
 	 * rental location specified by the provided unique identifier.
 	 * @param locationID	The unique identifier of the rental location
 	 * @return	A LinkedList of Vehicles at the specified rental location
 	 */
-	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID){
+	/*public LinkedList<Vehicle> getAllAvailableVehicles(int locationID){
 		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
 		try{
 			getAllAvailableVehiclesAtLocationStatement.setInt(1, locationID);
@@ -1208,7 +1208,7 @@ public class YouDriveDAO {
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		return list;
-	}
+	}*/
 	
 	/**
 	 * Retrieves a list of vehicles at the specified location of a certain type
