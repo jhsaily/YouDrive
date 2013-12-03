@@ -93,6 +93,7 @@ public class YouDriveDAO {
 	private PreparedStatement insertReservationStatement;
 	private PreparedStatement readReservationStatement;
 	private PreparedStatement updateReservationStatement;
+	private PreparedStatement closeReservationStatement;
 	private PreparedStatement deleteReservationStatement;
 	private PreparedStatement getAllReservationsStatement;
 	private PreparedStatement getAllActiveReservationsStatement;
@@ -188,6 +189,8 @@ public class YouDriveDAO {
 			
 			insertReservationStatement = conn.prepareStatement("insert into reservations (pickupTime,rentalDuration," +
 					"isHourly,timeDue,vehicle_id,location_id,customer_id) values (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			readReservationStatement = conn.prepareStatement("select * from reservations where id=?");
+			closeReservationStatement = conn.prepareStatement("update reservations set timeReturned=NOW() where id=?");
 			getAllReservationsStatement = conn.prepareStatement("select * from reservations where user_id=?");
 			getAllActiveReservationsStatement = conn.prepareStatement("select * from reservations where user_id=? and (timeReturned IS NULL or timeReturned='')");
 			
@@ -1447,7 +1450,7 @@ public class YouDriveDAO {
 		Reservation reservation = null;
 		int id = 0;
 		Vehicle vehicle = readVehicle(vehicle_id);
-		if(vehicle.isAvailable()){
+		if(vehicle != null && vehicle.isAvailable()){
 			try{
 				insertReservationStatement.setDate(1, pickupTime);
 				insertReservationStatement.setDouble(2, rentalDuration);
@@ -1474,6 +1477,50 @@ public class YouDriveDAO {
 		}
 		
 		return reservation;
+	}
+	
+	/**
+	 * Retrieves a reservation from the YouDrive system.
+	 * @param reservationID		The unique identifier of the reservation
+	 * @return					A Reservation object encapsulating the reservation data.
+	 */
+	public Reservation readReservation(int reservationID){
+		Reservation reservation = null;
+		try{
+			readReservationStatement.setInt(1, reservationID);
+			ResultSet rs = readReservationStatement.executeQuery();
+			if(rs.next()){
+				Vehicle vehicle = readVehicle(rs.getInt("vehicle_id"));
+				RentalLocation location = readRentalLocation(rs.getInt("location_id"));
+				Customer customer = readCustomer(rs.getInt("customer_id"));
+				reservation = new Reservation(rs.getInt("id"), rs.getDate("pickupTime"), rs.getDouble("rentalDuration"),
+						rs.getBoolean("isHourly"), rs.getDate("timeReturned"), rs.getDate("timeDue"),vehicle,
+						location,customer,rs.getBoolean("isActive"));
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return reservation;
+	}
+	
+	/**
+	 * Closes a reservation by returning a vehicle. Marks the vehicle to be returned at the current timestamp
+	 * and marks the vehicle as available.
+	 * @param reservationID		The unique identifier of the reservation in the YouDrive system.
+	 */
+	public void closeReservation(int reservationID){
+		try{
+			Reservation reservation = readReservation(reservationID);
+			if(reservation != null){
+				closeReservationStatement.setInt(1, reservationID);
+				closeReservationStatement.executeUpdate();
+				int vehicleID = reservation.getVehicle().getId();
+				markVehicleAvailableStatement.setInt(1, vehicleID);
+				markVehicleAvailableStatement.executeUpdate();
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
 	}
 	
 	/**
