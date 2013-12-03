@@ -157,6 +157,7 @@ public class UserAdminManager extends HttpServlet{
 						
 						//Make sure nothing funny was entered by putting this in a try catch
 						try{
+							
 							//Get the object associated with this username
 							Customer c=manageProfile(req.getParameter("username"));
 							req.setAttribute("userName", c.getUsername());

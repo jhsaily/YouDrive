@@ -356,6 +356,22 @@ public class ReservationManager extends HttpServlet {
 		return dao.getAllVehicleTypes();
 	}
 	
+	public boolean doTimesConflict(Date startTime1, Date endTime1, Date startTime2, Date endTime2) {
+		long start1 = startTime1.getTime();
+		long end1 = endTime1.getTime();
+		
+		long start2 = startTime2.getTime();
+		long end2 = endTime2.getTime();
+		
+		if (start1 <= end2 && end1 >= start2)
+		{
+			return true;
+		}
+		
+		
+		return false; //There is no conflict
+	}
+	
 	public RentalLocation findLocation(int id){
 		return dao.readRentalLocation(id);
 	}
