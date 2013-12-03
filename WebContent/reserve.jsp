@@ -83,11 +83,11 @@
 						</c:forEach>
 					</select>
 					<c:forEach items="${vehicleTypes}" var="type">
-						<div class="typeinfobox" id="${type.id}" style="float:right; display:none;margin-top:-5px;">
+						<span class="typeinfobox" id="${type.id}" style="position:absolute;display:none;margin-top:-5px; margin-left:5px;">
 							Hourly Rate: ${type.hourlyRate}
 							<br />
 							Daily Rate: ${type.dailyRate}
-						</div>
+						</span>
 					</c:forEach>
 					<br /><br />
 					<span class="dbpaneltitle" style="font-size:16px;">Choose Location.</span>
@@ -119,15 +119,15 @@
 			$( "select[name='vehicletype']" ).change(function () {
 				var str = "";
 				str += $( this ).val();
-				$( "div[class='typeinfobox']" ).hide();
-				$( "div[id='" + str + "']" ).show();
+				$( "span[class='typeinfobox']" ).hide();
+				$( "span[id='" + str + "']" ).show();
 			});
 			
 			$( "select[name='rentaltype']" ).change(function () {
 				var str = "";
 				str += $( this ).val();
-				$( "div[class='rentaltype']" ).hide();
-				$( "div[id='" + str + "']" ).show();
+				$( "span[class='rentaltype']" ).hide();
+				$( "span[id='" + str + "']" ).show();
 			});
 		</script>
 	</body>
