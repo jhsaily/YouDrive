@@ -104,7 +104,7 @@ public class ReservationManager extends HttpServlet {
 					
 					//If the user clicks view history, return a list of the past reservations.
 					if(req.getParameter("clicked").equals("history")){
-						req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
+						req.setAttribute("listOfActiveReservations", getAllActiveReservations(customer.getId()));
 
 						//Forward to Reservation History page
 						dispatcher=ctx.getRequestDispatcher("/history.jsp");
@@ -113,7 +113,7 @@ public class ReservationManager extends HttpServlet {
 					
 					//If the user clicks return a rental, take them to the return page populated with their reservations
 					if(req.getParameter("clicked").equals("return")){
-						req.setAttribute("listOfActiveReservations", getAllReservations(customer.getUsername()));
+						req.setAttribute("listOfActiveReservations", getAllActiveReservations(customer.getId()));
 
 						//Forward to Reservation History page
 						dispatcher=ctx.getRequestDispatcher("/return.jsp");
@@ -177,9 +177,61 @@ public class ReservationManager extends HttpServlet {
 				if(customer!=null){
 					System.out.println(customer.getUsername() + " is currently logged in.");
 
-					//If user clicks submit on place reservation page, place a reservation
+					//If user clicks submit on place reservation page, collect information and forward to vehicles page
 					if(req.getParameter("placeReservation")!=null){
-						System.out.println("Placing Reservation!");
+						try{
+							//Set all the attributes on the vehicle reservation page before forwarding
+							req.setAttribute("month", req.getParameter("pickupmonth"));
+							req.setAttribute("day", req.getParameter("pickupday"));
+							req.setAttribute("year", req.getParameter("pickupyear"));
+							req.setAttribute("hour", req.getParameter("rentallengthhours"));
+							req.setAttribute("meridiem", req.getParameter("pickupmeridiem"));
+							req.setAttribute("rentalType", req.getParameter("rentaltype"));
+							req.setAttribute("rentalLength", req.getParameter("rentallengthhours"));
+							req.setAttribute("vehicleType", req.getParameter("vehicletype"));
+							req.setAttribute("location", req.getParameter("location"));
+							
+							//Create temporary location object
+							RentalLocation rl=findLocation(Integer.valueOf(req.getParameter("location")));
+							VehicleType vt=findVehicleType(Integer.valueOf(req.getParameter("vehicletype")));
+							
+							//Set attributes on vehicle page to ones from object
+							req.setAttribute("description", vt.getDescription());
+							req.setAttribute("dailyRate", vt.getDailyRate());
+							req.setAttribute("hourlyRate", vt.getHourlyRate());
+							req.setAttribute("locationname", rl.getName());
+							req.setAttribute("streetAddrLine1", rl.getLocationAddress().getStreetAddrLine1());
+							req.setAttribute("streetAddrLine2", rl.getLocationAddress().getStreetAddrLine2());
+							req.setAttribute("city", rl.getLocationAddress().getCity());
+							req.setAttribute("state", rl.getLocationAddress().getState());
+							req.setAttribute("zipCode", rl.getLocationAddress().getZipCode());
+							req.setAttribute("country", rl.getLocationAddress().getCountry());
+						
+							//Send in the available vehicles from that location
+							//req.setAttribute("availableVehicles", getAllVehiclesFrom(Integer.valueOf(req.getParameter("location")), Integer.valueOf(req.getParameter("vehicletype")), returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear"))));
+							req.setAttribute("availableVehicles", dao.getAllVehicles());
+							
+							//Forward to reserve vehicle page
+							dispatcher=ctx.getRequestDispatcher("/reservevehicle.jsp");
+							dispatcher.forward(req, res);
+						}
+						catch(Exception e){
+							System.out.println("Could not place reservation");
+							
+							//Reset attributes
+							req.setAttribute("locations", getAllLocations());
+							req.setAttribute("vehicleTypes", getAllVehicles());
+							
+							//Forward to reserve vehicle page
+							dispatcher=ctx.getRequestDispatcher("/reserve.jsp");
+							dispatcher.forward(req, res);
+						}
+							
+							
+					}
+					
+					//If customer submits on reserve vehicle page
+					if(req.getParameter("placeReservationFinal")!=null){
 						
 						///Create the reservation
 						try{
@@ -192,24 +244,36 @@ public class ReservationManager extends HttpServlet {
 							else{
 								hly=false;
 							}
-							Reservation r=placeReservation(returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), Double.valueOf(req.getParameter("rentallengthhours")), hly, returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), 1, Integer.valueOf(req.getParameter("location")), customer.getId());
+							Reservation r=placeReservation(returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), Double.valueOf(req.getParameter("rentallength")), hly, returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), Integer.valueOf(req.getParameter("vehicle")), Integer.valueOf(req.getParameter("location")), customer.getId());
+							
+							System.out.println(r.getPickupTime().getHours());
+							
 							if(r==null){
 								System.out.println("r is null");
 							}
 							
+							//Update Reservation Page
+							req.setAttribute("listOfActiveReservations", getAllActiveReservations(customer.getId()));
+		
+							//Forward to Reservation History page
+							dispatcher=ctx.getRequestDispatcher("/history.jsp");
+							dispatcher.forward(req, res);
+							
 						}
 						catch(Exception e){
 							System.out.println("Could not place reservation!");
+							
+							//Reset attributes
+							req.setAttribute("locations", getAllLocations());
+							req.setAttribute("vehicleTypes", getAllVehicles());
+							
+							//Forward to reserve page
+							dispatcher=ctx.getRequestDispatcher("/reserve.jsp");
+							dispatcher.forward(req, res);
 						}
 						
-						//Update Reservation Page
-						req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
-
-						//Forward to Reservation History page
-						dispatcher=ctx.getRequestDispatcher("/history.jsp");
-						dispatcher.forward(req, res);
-					}
-					
+						
+				}
 
 					//If the user clicks cancel reservation, remove reservation from linked list
 					if(req.getParameter("cancel")!=null){
@@ -219,10 +283,7 @@ public class ReservationManager extends HttpServlet {
 						cancelReservation(Integer.valueOf(req.getParameter("reservationnumber")));
 
 						//Update Reservation History Page
-						LinkedList<Reservation> updated=new LinkedList<Reservation>(); //DELETE ME
-						updated=getAllReservations(customer.getUsername()); //DELETE ME
-						updated.remove(); //DELETE ME
-						req.setAttribute("listOfReservations", updated); //UPDATE ME to pass in the correct linked list
+						req.setAttribute("listOfActiveReservations", getAllActiveReservations(customer.getId())); //UPDATE ME to pass in the correct linked list
 
 						//Forward to Reservation History page
 						dispatcher=ctx.getRequestDispatcher("/history.jsp");
@@ -243,7 +304,7 @@ public class ReservationManager extends HttpServlet {
 						System.out.println("Rental successfully returned!");
 						
 						//Update Reservation History
-						req.setAttribute("listOfReservations", getAllReservations(customer.getUsername())); //UPDATE ME to pass in the correct linked list
+						req.setAttribute("listOfActiveReservations", getAllActiveReservations(customer.getId())); //UPDATE ME to pass in the correct linked list
 						
 						//Forward to Reservation History page
 						dispatcher=ctx.getRequestDispatcher("/history.jsp");
@@ -282,6 +343,7 @@ public class ReservationManager extends HttpServlet {
 	 */
 	public void cancelReservation(int reservationId){
 		System.out.println("Reservation with number: " + reservationId + " has been removed");
+		//Remove reservation
 	}
 
 	/**
@@ -319,16 +381,8 @@ public class ReservationManager extends HttpServlet {
 	 * @return			Returns a linked list of the reservations
 	 * @throws ParseException 
 	 */
-	public LinkedList<Reservation> getAllReservations(String pw){
-		LinkedList<Reservation> list=new LinkedList<Reservation>();
-		try{
-				
-		}
-		catch(Exception e){
-			System.out.println("Failure in getAllReservations method");
-		}
-		
-		return list;
+	public LinkedList<Reservation> getAllActiveReservations(int id){
+		return dao.getAllReservations(id, false);
 	}
 	
 	public Date returnDate(String mm, String dd, String yyyy) throws ParseException{
@@ -376,12 +430,16 @@ public class ReservationManager extends HttpServlet {
 		return dao.readRentalLocation(id);
 	}
 	
+	public VehicleType findVehicleType(int id){
+		return dao.readVehicleType(id);
+	}
+	
 	/**
 	 * Gets all of the vehicles from a specific location in the database
 	 * @return		Returns a linked list of all the vehicles
 	 */
-	public LinkedList<VehicleType> getAllVehiclesFrom(int id){
-		return dao.getAllVehicleTypes();
+	public LinkedList<Vehicle> getAllVehiclesFrom(int id, int type, Date start, Date end){
+		return dao.getAllAvailableVehicles(id, type, start, end);
 	}
 	
 	public boolean doesReservationConflict(Date start, Date end, int locationId, int VehicleTypeId){
