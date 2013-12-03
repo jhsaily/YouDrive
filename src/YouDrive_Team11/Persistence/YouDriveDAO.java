@@ -105,7 +105,7 @@ public class YouDriveDAO {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://uml.cs.uga.edu/team11","team11","virtual");
 			System.out.println("Connected to MySQL!");
 			insertCustomerStatement = conn.prepareStatement("insert into users (username,password,isAdmin,emailAddress,firstName,lastName,membershipExpiration)" +
-					" values (?,?,0,?,?,?,?");
+					" values (?,?,?,?,?,?,?");
 			readCustomerStatement = conn.prepareStatement("select * from users where id=? and isAdmin=0");
 			getCustomerByUsernameStatement = conn.prepareStatement("select * from users where username=?");
 			updateCustomerStatement = conn.prepareStatement("update users set firstName=?," +
@@ -221,10 +221,11 @@ public class YouDriveDAO {
 		try{
 			insertCustomerStatement.setString(1, username);
 			insertCustomerStatement.setString(2, password);
-			insertCustomerStatement.setString(3, emailAddress);
-			insertCustomerStatement.setString(4, firstName);
-			insertCustomerStatement.setString(5, lastName);
-			insertCustomerStatement.setDate(6, membershipExpiration);
+			insertCustomerStatement.setBoolean(3, false);
+			insertCustomerStatement.setString(4, emailAddress);
+			insertCustomerStatement.setString(5, firstName);
+			insertCustomerStatement.setString(6, lastName);
+			insertCustomerStatement.setDate(7, membershipExpiration);
 			insertCustomerStatement.executeUpdate();
 			ResultSet key = insertCustomerStatement.getGeneratedKeys();
 			key.next();
