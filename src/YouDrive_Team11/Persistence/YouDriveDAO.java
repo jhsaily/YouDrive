@@ -98,6 +98,18 @@ public class YouDriveDAO {
 	private PreparedStatement getAllReservationsStatement;
 	private PreparedStatement getAllActiveReservationsStatement;
 	
+	private String availableVehiclesString = "SELECT vehicles.* " +
+			"FROM vehicles " +
+			"WHERE vehicles.location_id=? AND " +
+			"vehicles.type_id=? AND " +
+			"vehicles.id NOT IN (" +
+			"SELECT vehicles.id FROM vehicles,reservations WHERE " +
+			"reservations.vehicle_id = vehicles.id AND " +
+			"((pickupTime <= ? AND timeDue >= ?) OR " +
+			"(pickupTime <= ? AND timeDue >= ?) OR " +
+			"(pickupTime > ? AND timeDue < ?))" +
+			")";
+	
 	/**
 	 * Creates an instance of the persistence class
 	 */
@@ -172,8 +184,9 @@ public class YouDriveDAO {
 					" where location_id=? and type_id=?");
 			getAllAvailableVehiclesStatement = conn.prepareStatement("select * from vehicles where isAvailable=1");
 			getAllAvailableVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=? and isAvailable=1");
-			getAllAvailableVehiclesOfTypeAtLocationStatement = conn.prepareStatement("select * from vehicles" +
-					" where location_id=? and type_id=? and isAvailable=1");
+			//getAllAvailableVehiclesOfTypeAtLocationStatement = conn.prepareStatement("select * from vehicles" +
+				//	" where location_id=? and type_id=? and isAvailable=1 and ");
+			getAllAvailableVehiclesOfTypeAtLocationStatement = conn.prepareStatement(availableVehiclesString);
 			markVehicleAvailableStatement = conn.prepareStatement("update vehicles set isAvailable=1 where id=?");
 			markVehicleUnavailableStatement = conn.prepareStatement("update vehicles set isAvailable=0 where id=?");
 			
@@ -1195,13 +1208,13 @@ public class YouDriveDAO {
 		return list;
 	}
 	
-	/**
+	/*
 	 * Retrieves a list of AVAILABLE vehicles at the specified location of a certain type
 	 * @param locationID	The unique identifier of the rental location
 	 * @param typeID		The unique identifier of the vehicle type
 	 * @return				A LinkedList of Vehicles at the specified rental location of a certain type
 	 */
-	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID, int typeID){
+	/*public LinkedList<Vehicle> getAllAvailableVehicles(int locationID, int typeID){
 		LinkedList<Vehicle> list = new LinkedList<Vehicle>();
 		try{
 			getAllAvailableVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
@@ -1219,6 +1232,32 @@ public class YouDriveDAO {
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		return list;
+	}*/
+	
+	/**
+	 * Retrieves a list of vehicles at the specified location of a certain type AVAILABLE for a
+	 * given span specified by a start and end timestamp.
+	 * @param locationID		The unique identifier of the rental location
+	 * @param typeID			The unique identifier of the vehicle type
+	 * @param reservationStart	The proposed start timestamp for the reservation
+	 * @param reservationEnd	The proposed end timestamp for the reservation
+	 * @return					A list of vehicles available for the given time span, of the given type, at the given location
+	 */
+	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID, int typeID, Date reservationStart, Date reservationEnd){
+		LinkedList<Vehicle> availableVehicles = new LinkedList<Vehicle>();
+		try{
+			getAllVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
+			getAllVehiclesOfTypeAtLocationStatement.setInt(2, typeID);
+			getAllVehiclesOfTypeAtLocationStatement.setDate(3, reservationStart);
+			getAllVehiclesOfTypeAtLocationStatement.setDate(4, reservationStart);
+			getAllVehiclesOfTypeAtLocationStatement.setDate(5, reservationEnd);
+			getAllVehiclesOfTypeAtLocationStatement.setDate(6,  reservationEnd);
+			getAllVehiclesOfTypeAtLocationStatement.setDate(7, reservationStart);
+			getAllVehiclesOfTypeAtLocationStatement.setDate(8, reservationEnd);
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return availableVehicles;
 	}
 	
 	/**
