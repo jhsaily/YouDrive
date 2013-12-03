@@ -1,6 +1,7 @@
 package YouDrive_Team11.Entity;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * A reservation placed on a vehicle of a certain type, at a specific location,
@@ -18,7 +19,7 @@ public class Reservation {
 	/**
 	 * The date/time for pickup of the car
 	 */
-	private Date pickupTime;
+	private Timestamp pickupTime;
 	
 	/**
 	 * The duration of the rental. A double value in either hours or days
@@ -34,12 +35,12 @@ public class Reservation {
 	/**
 	 * The timestamp of when the vehicle was returned
 	 */
-	private Date timeReturned;
+	private Timestamp timeReturned;
 	
 	/**
 	 * The date/time when the vehicle is due back
 	 */
-	private Date timeDue;
+	private Timestamp timeDue;
 	
 	/**
 	 * The vehicle for which this reservation is made
@@ -71,8 +72,8 @@ public class Reservation {
 	 * @param reservingCustomer
 	 * @param isActive
 	 */
-	public Reservation(int id, Date pickupTime, double rentalDuration,
-			boolean isHourly, Date timeReturned, Date timeDue,
+	public Reservation(int id, Timestamp pickupTime, double rentalDuration,
+			boolean isHourly, Timestamp timeReturned, Timestamp timeDue,
 			Vehicle vehicle, RentalLocation pickupLocation,
 			Customer reservingCustomer, boolean isActive){
 		this.id = id;
@@ -97,7 +98,7 @@ public class Reservation {
 	/**
 	 * @return the pickupTime
 	 */
-	public Date getPickupTime() {
+	public Timestamp getPickupTime() {
 		return pickupTime;
 	}
 
@@ -118,14 +119,14 @@ public class Reservation {
 	/**
 	 * @return the timeReturned
 	 */
-	public Date getTimeReturned() {
+	public Timestamp getTimeReturned() {
 		return timeReturned;
 	}
 
 	/**
 	 * @return the timeDue
 	 */
-	public Date getTimeDue() {
+	public Timestamp getTimeDue() {
 		return timeDue;
 	}
 
