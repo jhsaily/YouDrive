@@ -95,6 +95,7 @@ public class YouDriveDAO {
 	private PreparedStatement updateReservationStatement;
 	private PreparedStatement deleteReservationStatement;
 	private PreparedStatement getAllReservationsStatement;
+	private PreparedStatement getAllActiveReservationsStatement;
 	
 	/**
 	 * Creates an instance of the persistence class
@@ -187,6 +188,8 @@ public class YouDriveDAO {
 			
 			insertReservationStatement = conn.prepareStatement("insert into reservations (pickupTime,rentalDuration," +
 					"isHourly,timeDue,vehicle_id,location_id,customer_id) values (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			getAllReservationsStatement = conn.prepareStatement("select * from reservations where user_id=?");
+			getAllActiveReservationsStatement = conn.prepareStatement("select * from reservations where user_id=? and (timeReturned IS NULL or timeReturned='')");
 			
 			//addCustomerStatement = conn.prepareStatement("insert into Customer (custName,custAddr,imageURL,creditLimit) values (?,?,?,?)");
 			//updateUnpaidBalanceStatement = conn.prepareStatement("update Customer set unpaidBalance = ? where id=?");
@@ -1472,5 +1475,37 @@ public class YouDriveDAO {
 		}
 		
 		return reservation;
+	}
+	
+	/**
+	 * Returns a list of reservations associated with a user, either including or excluding past reservations.
+	 * @param customerID				The unique identifier of the customer we're looking up reservations for
+	 * @param includePastReservations	Whether we should include past reservations (true) or not (false)
+	 * @return							A LinkedList of Reservation objects
+	 */
+	public LinkedList<Reservation> getAllReservations(int customerID, boolean includePastReservations){
+		LinkedList<Reservation> list = new LinkedList<Reservation>();
+		ResultSet rs;
+		try{
+			if(includePastReservations){
+				getAllReservationsStatement.setInt(1, customerID);
+				rs = getAllReservationsStatement.executeQuery();
+			}else{
+				getAllActiveReservationsStatement.setInt(1, customerID);
+				rs = getAllActiveReservationsStatement.executeQuery();
+			}
+			while(rs.next()){
+				Vehicle vehicle = readVehicle(rs.getInt("vehicle_id"));
+				RentalLocation location = readRentalLocation(rs.getInt("location_id"));
+				Customer customer = readCustomer(rs.getInt("customer_id"));
+				Reservation reservation = new Reservation(rs.getInt("id"), rs.getDate("pickupTime"),
+						rs.getDouble("rentalDuration"), rs.getBoolean("isHourly"), rs.getDate("timeReturned"),
+						rs.getDate("timeDue"), vehicle, location, customer);
+				list.add(reservation);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return list;
 	}
 }
