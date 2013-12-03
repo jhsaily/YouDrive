@@ -38,8 +38,6 @@ select,option
 	/* Font styles */
 	color: white;
 	text-shadow: 0 1px 0 rgba(0,0,0,0.3);
-	font-size: 16px;
-	font-weight: bold;	
 }
 #mainbody
 {
@@ -267,9 +265,5 @@ input[type=password], input[type=text], input[type=number]
 	border-bottom-style:solid;
 	margin-bottom:5px;
 	padding-left:10px;
-}
-.datedivider
-{
-	font-size:20px;
 }
 	
