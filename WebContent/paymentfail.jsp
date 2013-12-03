@@ -23,7 +23,6 @@
 				It seems something went wrong. Do you have payment information entered into the system? If so, then a team of monkeys will be on the case withing the next millenia.
 			</div>
 		</div>
-		</div>
 		<script type="text/javascript">
 			$(window).load(setWidth());
 			$(window).resize(function() {setWidth();});

@@ -23,7 +23,6 @@
 				Congratulations, you're poorer.
 			</div>
 		</div>
-		</div>
 		<script type="text/javascript">
 			$(window).load(setWidth());
 			$(window).resize(function() {setWidth();});
