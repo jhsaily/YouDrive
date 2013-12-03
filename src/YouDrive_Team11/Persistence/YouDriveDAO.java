@@ -106,8 +106,8 @@ public class YouDriveDAO {
 			System.out.println("Instantiated MySQL driver!");
 			Connection conn = DriverManager.getConnection("jdbc:mysql://uml.cs.uga.edu/team11","team11","virtual");
 			System.out.println("Connected to MySQL!");
-			insertCustomerStatement = conn.prepareStatement("insert into users (username,password,isAdmin,emailAddress,firstName,lastName,membershipExpiration)" +
-					" values (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			insertCustomerStatement = conn.prepareStatement("insert into users (username,password,isAdmin,emailAddress,firstName,lastName)" +
+					" values (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			readCustomerStatement = conn.prepareStatement("select * from users where id=? and isAdmin=0");
 			getCustomerByUsernameStatement = conn.prepareStatement("select * from users where username=?");
 			updateCustomerStatement = conn.prepareStatement("update users set firstName=?," +
@@ -218,7 +218,7 @@ public class YouDriveDAO {
 	 * @return	A customer object, encapsulating all the customer's data
 	 */
 	public Customer createCustomer(String username, String password, String emailAddress,
-			String firstName, String lastName, Date membershipExpiration,
+			String firstName, String lastName,
 			String addrLine1, String addrLine2, String city, String state,
 			int ZIP, String country, String DLNumber, String DLState){
 		Customer customer = null;
@@ -229,7 +229,6 @@ public class YouDriveDAO {
 			insertCustomerStatement.setString(4, emailAddress);
 			insertCustomerStatement.setString(5, firstName);
 			insertCustomerStatement.setString(6, lastName);
-			insertCustomerStatement.setDate(7, membershipExpiration);
 			insertCustomerStatement.executeUpdate();
 			ResultSet key = insertCustomerStatement.getGeneratedKeys();
 			key.next();
@@ -237,7 +236,7 @@ public class YouDriveDAO {
 			Address address = updateAddressForCustomer(id, addrLine1,addrLine2,city,state,ZIP,country);
 			DriversLicense license = updateDLForCustomer(id, DLNumber, DLState);
 			PaymentInfo info = getPaymentInfoForCustomer(id);
-			customer = new Customer(id, username, password, emailAddress, firstName, lastName, membershipExpiration, license,address, info);
+			customer = new Customer(id, username, password, emailAddress, firstName, lastName, null, license,address, info);
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
