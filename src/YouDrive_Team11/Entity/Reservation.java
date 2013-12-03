@@ -56,6 +56,8 @@ public class Reservation {
 	 */
 	private Customer reservingCustomer;
 	
+	private boolean isActive;
+	
 	/**
 	 * Creates a reservation object from the given parameters
 	 * @param id
@@ -67,11 +69,12 @@ public class Reservation {
 	 * @param vehicle
 	 * @param pickupLocation
 	 * @param reservingCustomer
+	 * @param isActive
 	 */
 	public Reservation(int id, Date pickupTime, double rentalDuration,
 			boolean isHourly, Date timeReturned, Date timeDue,
 			Vehicle vehicle, RentalLocation pickupLocation,
-			Customer reservingCustomer){
+			Customer reservingCustomer, boolean isActive){
 		this.id = id;
 		this.pickupTime = pickupTime;
 		this.rentalDuration = rentalDuration;
@@ -81,6 +84,7 @@ public class Reservation {
 		this.vehicle = vehicle;
 		this.pickupLocation = pickupLocation;
 		this.reservingCustomer = reservingCustomer;
+		this.isActive = isActive;
 	}
 
 	/**
@@ -144,5 +148,12 @@ public class Reservation {
 	 */
 	public Customer getReservingCustomer() {
 		return reservingCustomer;
+	}
+
+	/**
+	 * @return the isActive
+	 */
+	public boolean isActive() {
+		return isActive;
 	}
 }

@@ -1467,7 +1467,7 @@ public class YouDriveDAO {
 					Customer customer = readCustomer(customer_id);
 					vehicle = readVehicle(vehicle_id);
 					reservation = new Reservation(id, pickupTime, rentalDuration,
-							isHourly,null,timeDue,vehicle,location,customer);
+							isHourly,null,timeDue,vehicle,location,customer, true);
 				}
 			}catch(SQLException e){
 				System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -1498,9 +1498,11 @@ public class YouDriveDAO {
 				Vehicle vehicle = readVehicle(rs.getInt("vehicle_id"));
 				RentalLocation location = readRentalLocation(rs.getInt("location_id"));
 				Customer customer = readCustomer(rs.getInt("customer_id"));
+				Date timeReturned = rs.getDate("timeReturned");
+				boolean isActive = (timeReturned == null);
 				Reservation reservation = new Reservation(rs.getInt("id"), rs.getDate("pickupTime"),
 						rs.getDouble("rentalDuration"), rs.getBoolean("isHourly"), rs.getDate("timeReturned"),
-						rs.getDate("timeDue"), vehicle, location, customer);
+						rs.getDate("timeDue"), vehicle, location, customer, isActive);
 				list.add(reservation);
 			}
 		}catch(SQLException e){
