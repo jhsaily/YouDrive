@@ -219,6 +219,7 @@ public class YouDriveDAO {
 			closeReservationStatement = conn.prepareStatement("update reservations set timeReturned=NOW() where id=?");
 			getAllReservationsStatement = conn.prepareStatement("select * from reservations where customer_id=?");
 			getAllActiveReservationsStatement = conn.prepareStatement("select * from reservations where customer_id=? and (timeReturned IS NULL or timeReturned='')");
+			deleteReservationStatement = conn.prepareStatement("delete from reservations where id=?");
 			
 			//addCustomerStatement = conn.prepareStatement("insert into Customer (custName,custAddr,imageURL,creditLimit) values (?,?,?,?)");
 			//updateUnpaidBalanceStatement = conn.prepareStatement("update Customer set unpaidBalance = ? where id=?");
@@ -1614,6 +1615,19 @@ public class YouDriveDAO {
 				closeReservationStatement.setInt(1, reservationID);
 				closeReservationStatement.executeUpdate();
 			}
+		}catch(SQLException e){
+			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Removes a reservation from the database
+	 * @param reservationID	The unique identifier of the reservation to cancel
+	 */
+	public void cancelReservation(int reservationID){
+		try{
+			deleteReservationStatement.setInt(1, reservationID);
+			deleteReservationStatement.executeUpdate();
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 		}
