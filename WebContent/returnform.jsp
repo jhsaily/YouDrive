@@ -21,6 +21,7 @@
 				<span class="dbpaneltitle">Return a Vehicle.</span>
 				<br /><br />
 				<form action="ReservationManager" method="POST">
+				<input type="hidden" value="${resId}" name="reservationnumber"> 
 					If you would like to return the vehicle, with reservation number, ${reservationNum}, please fill out the following information before continuing.
 					<br /><br />
 					To reasonable standards, you are returning the vehicle in a(n) 

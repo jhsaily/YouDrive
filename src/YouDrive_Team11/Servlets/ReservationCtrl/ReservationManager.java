@@ -105,7 +105,9 @@ public class ReservationManager extends HttpServlet {
 					//If the user clicks view history, return a list of the past reservations.
 					if(req.getParameter("clicked").equals("history")){
 						req.setAttribute("listOfActiveReservations", getAllActiveReservations(customer.getId()));
+						req.setAttribute("listOfInactiveReservations", getAllInactiveReservations(customer.getId()));
 
+						
 						//Forward to Reservation History page
 						dispatcher=ctx.getRequestDispatcher("/history.jsp");
 						dispatcher.forward(req, res);
@@ -293,7 +295,7 @@ public class ReservationManager extends HttpServlet {
 					//If the user clicks return on one of his/her reservations, send them to the return form with a res#
 					if(req.getParameter("gotoreturnform")!=null){
 						req.setAttribute("reservationNum", req.getParameter("reservationnumber"));
-						
+						req.setAttribute("resId", req.getParameter("reservationnumber"));
 						//Forward to Return form page
 						dispatcher=ctx.getRequestDispatcher("/returnform.jsp");
 						dispatcher.forward(req, res);
@@ -301,8 +303,8 @@ public class ReservationManager extends HttpServlet {
 					
 					//If the user submits the return form, add that reservation to their history, remove from active reservations
 					if(req.getParameter("submitReturn")!=null){
+						returnRental(Integer.valueOf(req.getParameter("reservationnumber")));
 						System.out.println("Rental successfully returned!");
-						
 						//Update Reservation History
 						req.setAttribute("listOfActiveReservations", getAllActiveReservations(customer.getId())); //UPDATE ME to pass in the correct linked list
 						
@@ -342,6 +344,8 @@ public class ReservationManager extends HttpServlet {
 	 * @param reservationId
 	 */
 	public void cancelReservation(int reservationId){
+		//dao.closeReservation(reservationId);
+		dao.cancelReservation(reservationId);
 		System.out.println("Reservation with number: " + reservationId + " has been removed");
 		//Remove reservation
 	}
@@ -361,8 +365,9 @@ public class ReservationManager extends HttpServlet {
 	 * @param reservationId		Unique reservation identifier
 	 * @param timeReturned		Time vehicle was returned
 	 */
-	public void returnRental(int reservationId, Date timeReturned){
-
+	public void returnRental(int reservationId){
+		dao.closeReservation(reservationId);
+		
 	}
 
 	/**
@@ -383,6 +388,10 @@ public class ReservationManager extends HttpServlet {
 	 */
 	public LinkedList<Reservation> getAllActiveReservations(int id){
 		return dao.getAllReservations(id, false);
+	}
+	
+	public LinkedList<Reservation> getAllInactiveReservations(int id){
+		return dao.getAllReservations(id, true);
 	}
 	
 	public Date returnDate(String mm, String dd, String yyyy) throws ParseException{
