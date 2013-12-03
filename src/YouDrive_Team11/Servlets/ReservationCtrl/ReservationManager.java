@@ -92,77 +92,15 @@ public class ReservationManager extends HttpServlet {
 					//If the user clicks place a reservation, populate the reserve.jsp page with locations
 					if(req.getParameter("clicked").equals("place")){
 						req.setAttribute("locations", getAllLocations());
+						req.setAttribute("vehicleTypes", getAllVehicles());
 						
 						//Forward to reserve page
 						dispatcher=ctx.getRequestDispatcher("/reserve.jsp");
 						dispatcher.forward(req, res);
 					}
 					
-					//After user has chosen a location, set the location and return the list of available vehicles there
-					if(req.getParameter("clicked").equals("chooseLocation")){
-						if(req.getParameter("vehiclechosen").equals("false")){
-							
-							//Create temp location object to obtain info about for later
-							RentalLocation location=findLocation(Integer.valueOf(req.getParameter("location")));
-							
-							//Set all location attributes on reserve vehicle page
-							req.setAttribute("locationName", location.getName());
-							req.setAttribute("locationAddrLine1", location.getLocationAddress().getStreetAddrLine1());
-							req.setAttribute("locationAddrLine2", location.getLocationAddress().getStreetAddrLine2());
-							req.setAttribute("locationCity", location.getLocationAddress().getCity());
-							req.setAttribute("locationState", location.getLocationAddress().getState());
-							req.setAttribute("locationZip", location.getLocationAddress().getZipCode());
-							req.setAttribute("locationCountry", location.getLocationAddress().getCountry());
-
-							//Display all available vehicles at this location
-							req.setAttribute("vehicles", getAllVehiclesFrom(location.getId()));
-							req.setAttribute("locationId", location.getId());
-							
-							//Forward to page where they choose their vehicle
-							dispatcher=ctx.getRequestDispatcher("/reservevehicle.jsp");
-							dispatcher.forward(req, res);
-						
-						}
-					}
 					
-					//If user clicks choose vehicle after choosing a location
-					if(req.getParameter("clicked").equals("chooseVehicle")){
-						
-						//EDIT ME WHEN RANDY IMPLEMENTS RESERVATION STUFF
-						System.out.println("Placing reservation for you!");
-						
-						//If user has payment information on file
-						try{
-							
-							req.setAttribute("paymentAmount", "None");
-							req.setAttribute("paymentReason", "Reservation");
-							req.setAttribute("firstName", customer.getFirstName());
-							req.setAttribute("lastName", customer.getLastName());
-							req.setAttribute("cardNumber", customer.getPaymentInfo().getCreditCardNumber());
-							req.setAttribute("cardExpMonth", customer.getPaymentInfo().getCardExpirationMonth());
-							req.setAttribute("cardExpYear", customer.getPaymentInfo().getCardExpirationYear());
-							req.setAttribute("addrLine1", customer.getPaymentInfo().getBillingAddress().getStreetAddrLine1());
-							req.setAttribute("addrLine2", customer.getPaymentInfo().getBillingAddress().getStreetAddrLine2());
-							req.setAttribute("city", customer.getPaymentInfo().getBillingAddress().getCity());
-							req.setAttribute("state", customer.getPaymentInfo().getBillingAddress().getState());
-							req.setAttribute("zip", customer.getPaymentInfo().getBillingAddress().getZipCode());
-							req.setAttribute("country", customer.getPaymentInfo().getBillingAddress().getCountry());
-							
-							//Create the reservation and store in the database
-							placeReservation(returnDate("12", "27", "2013"), 23, false, returnDate("12", "29", "2013"), Integer.valueOf(req.getParameter("vehicle")), Integer.valueOf(req.getParameter("locationid")), customer.getId());
-							
-							//Forward to page where reservation details are confirmed and paid for
-							dispatcher=ctx.getRequestDispatcher("/processpayment.jsp");
-							dispatcher.forward(req, res);
-						}
-						catch(Exception e){
-							System.out.println("Invalid input or no payment info on file");
-							
-							//Forward to payment fail
-							dispatcher=ctx.getRequestDispatcher("/paymentfail.jsp");
-							dispatcher.forward(req, res);
-						}
-					}
+					
 					
 					//If the user clicks view history, return a list of the past reservations.
 					if(req.getParameter("clicked").equals("history")){
@@ -243,8 +181,21 @@ public class ReservationManager extends HttpServlet {
 					if(req.getParameter("placeReservation")!=null){
 						System.out.println("Placing Reservation!");
 						
-						//Create a new reservation
-						//placeReservation(null, 0, 0, 0);
+						///Create the reservation
+						try{
+							
+							boolean hly;
+							if(req.getParameter("rentalType").equals("hourly")){
+								hly=true;
+							}
+							else{
+								hly=false;
+							}
+							placeReservation(returnDate(req.getParameter("pickupmonth"), req.getParameter("pickupday"), req.getParameter("pickupyear")), Integer.valueOf(req.getParameter("rentallengthhours")), hly, null, 0, 0, 0);
+						}
+						catch(Exception e){
+							System.out.println("Could not place reservation!");
+						}
 						
 						//Update Reservation Page
 						req.setAttribute("listOfReservations", getAllReservations(customer.getUsername()));
@@ -253,6 +204,7 @@ public class ReservationManager extends HttpServlet {
 						dispatcher=ctx.getRequestDispatcher("/history.jsp");
 						dispatcher.forward(req, res);
 					}
+					
 
 					//If the user clicks cancel reservation, remove reservation from linked list
 					if(req.getParameter("cancel")!=null){
@@ -365,11 +317,7 @@ public class ReservationManager extends HttpServlet {
 	public LinkedList<Reservation> getAllReservations(String pw){
 		LinkedList<Reservation> list=new LinkedList<Reservation>();
 		try{
-				//DELETE ME dummy values
-				Reservation res1=new Reservation(1, returnDate("09", "29", "2013"), 10.0, false, null, null, null, null, customer);
-				Reservation res2=new Reservation(2, returnDate("12", "27", "2013"), 4.5, false, null, null, null, null, customer);
-				list.add(res1);
-				list.add(res2);	
+				
 		}
 		catch(Exception e){
 			System.out.println("Failure in getAllReservations method");
@@ -399,8 +347,8 @@ public class ReservationManager extends HttpServlet {
 	 * Gets all of the vehicles in the database
 	 * @return		Returns a linked list of all the vehicles
 	 */
-	public LinkedList<Vehicle> getAllVehicles(){
-		return dao.getAllVehicles();
+	public LinkedList<VehicleType> getAllVehicles(){
+		return dao.getAllVehicleTypes();
 	}
 	
 	public RentalLocation findLocation(int id){
@@ -411,7 +359,13 @@ public class ReservationManager extends HttpServlet {
 	 * Gets all of the vehicles from a specific location in the database
 	 * @return		Returns a linked list of all the vehicles
 	 */
-	public LinkedList<Vehicle> getAllVehiclesFrom(int id){
-		return dao.getAllVehicles(id);
+	public LinkedList<VehicleType> getAllVehiclesFrom(int id){
+		return dao.getAllVehicleTypes();
+	}
+	
+	public boolean doesReservationConflict(Date start, Date end, int locationId, int VehicleTypeId){
+		//Take in start time and check if it is before the start time of each reservation
+		//currently placed on all vehicles under a specific vehicle type. If true, 
+		return false;
 	}
 }

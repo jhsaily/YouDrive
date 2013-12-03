@@ -22,7 +22,7 @@
 				<br /><br />
 				<span class="dbpaneltitle" style="font-size:16px;">Choose Reservation Times.</span>
 					<br /><br />
-				<form action="ReservationManager">
+				<form action="ReservationManager" method="POST">
 					Pickup time:
 					<br />
 					<select name="pickupday">
@@ -108,7 +108,7 @@
 					<input type="radio" name="location" value="${location.id}">Choose this location?
 					<br /><br /><hr /><br />
 				</c:forEach>
-				<input type="submit" name="chooselocation" value="Submit">
+				<input type="submit" name="placeReservation" value="Submit">
 				</form>
 			</div>
 		</div>
