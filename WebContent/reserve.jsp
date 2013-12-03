@@ -84,9 +84,9 @@
 					</select>
 					<c:forEach items="${vehicleTypes}" var="type">
 						<span class="typeinfobox" id="${type.id}" style="position:absolute;display:none;margin-top:-5px; margin-left:5px;">
-							Hourly Rate: ${type.hourlyRate}
+							Hourly Rate: <fmt:formatNumber value="${type.hourlyRate}" type="currency"/>
 							<br />
-							Daily Rate: ${type.dailyRate}
+							Daily Rate: <fmt:formatNumber value="${type.dailyRate}" type="currency"/>
 						</span>
 					</c:forEach>
 					<br /><br />

@@ -21,7 +21,7 @@
 				<span class="dbpaneltitle">Return a Vehicle.</span>
 				<br /><br />
 				<div class="returnlist">
-					You currently have (2) active reservations.
+					You currently have ${numberOfActiveReservations} active reservations.
 					<br /><br />
 					To return a vehicle, please click on it in the list below.
 					<br />A series of questions will follow to finalize the process.
@@ -33,7 +33,7 @@
 							Vehicle Type: ${reservation.vehicle.vehicleType.description}
 							<br />
 							Reservation start date: ${reservation.pickupTime}
-							<br />
+							<br /><br />
 							<input type="hidden" name="reservationnumber" value="${reservation.id}">
 							<input type="submit" name="gotoreturnform" value="Return?">
 						</form>

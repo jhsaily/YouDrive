@@ -21,7 +21,7 @@
 				<span class="dbpaneltitle">Payment Summary/Confirmation.</span>
 				<br /><br />
 				<form action="PaymentManager" method="POST">
-					Payment Amount: ${paymentAmount}
+					Payment Amount: <fmt:formatNumber value="${paymentAmount}" type="currency"/>
 					<br />
 					Reason : ${paymentReason}
 					<br /><br /><hr /><br />
