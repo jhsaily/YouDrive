@@ -78,8 +78,6 @@ public class YouDriveDAO {
 	private PreparedStatement getAllAvailableVehiclesStatement;
 	private PreparedStatement getAllAvailableVehiclesAtLocationStatement;
 	private PreparedStatement getAllAvailableVehiclesOfTypeAtLocationStatement;
-	private PreparedStatement markVehicleAvailableStatement;
-	private PreparedStatement markVehicleUnavailableStatement;
 	private PreparedStatement getVehicleNotConflictingWithTimesStatement;
 	
 	private PreparedStatement insertRentalLocationStatement;
@@ -185,7 +183,7 @@ public class YouDriveDAO {
 			getCommentsStatement = conn.prepareStatement("select * from comments where vehicle_id=?");
 			
 			insertVehicleStatement = conn.prepareStatement("insert into vehicles (make,model,year,tag,mileage," +
-					"serviceDate,vehicleCondition,type_id,location_id,isAvailable) values (?,?,?,?,?,?,?,?,?,1)", Statement.RETURN_GENERATED_KEYS);
+					"serviceDate,vehicleCondition,type_id,location_id) values (?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			readVehicleStatement = conn.prepareStatement("select * from vehicles where id=?");
 			updateVehicleStatement = conn.prepareStatement("update vehicles set make=?,model=?,year=?,tag=?," +
 					"mileage=?,serviceDate=?,vehicleCondition=?,type_id=?,location_id=? where id=?");
@@ -194,13 +192,11 @@ public class YouDriveDAO {
 			getAllVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=?");
 			getAllVehiclesOfTypeAtLocationStatement = conn.prepareStatement("select * from vehicles" +
 					" where location_id=? and type_id=?");
-			getAllAvailableVehiclesStatement = conn.prepareStatement("select * from vehicles where isAvailable=1");
-			getAllAvailableVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=? and isAvailable=1");
+			getAllAvailableVehiclesStatement = conn.prepareStatement("select * from vehicles");
+			getAllAvailableVehiclesAtLocationStatement = conn.prepareStatement("select * from vehicles where location_id=?");
 			//getAllAvailableVehiclesOfTypeAtLocationStatement = conn.prepareStatement("select * from vehicles" +
 				//	" where location_id=? and type_id=? and isAvailable=1 and ");
 			getAllAvailableVehiclesOfTypeAtLocationStatement = conn.prepareStatement(availableVehiclesString);
-			markVehicleAvailableStatement = conn.prepareStatement("update vehicles set isAvailable=1 where id=?");
-			markVehicleUnavailableStatement = conn.prepareStatement("update vehicles set isAvailable=0 where id=?");
 			getVehicleNotConflictingWithTimesStatement = conn.prepareStatement(isVehicleAvailableString);
 			
 			insertRentalLocationStatement = conn.prepareStatement("insert into locations (name,capacity) values " +
@@ -218,8 +214,8 @@ public class YouDriveDAO {
 					"isHourly,timeDue,vehicle_id,location_id,customer_id) values (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			readReservationStatement = conn.prepareStatement("select * from reservations where id=?");
 			closeReservationStatement = conn.prepareStatement("update reservations set timeReturned=NOW() where id=?");
-			getAllReservationsStatement = conn.prepareStatement("select * from reservations where user_id=?");
-			getAllActiveReservationsStatement = conn.prepareStatement("select * from reservations where user_id=? and (timeReturned IS NULL or timeReturned='')");
+			getAllReservationsStatement = conn.prepareStatement("select * from reservations where customer_id=?");
+			getAllActiveReservationsStatement = conn.prepareStatement("select * from reservations where customer_id=? and (timeReturned IS NULL or timeReturned='')");
 			
 			//addCustomerStatement = conn.prepareStatement("insert into Customer (custName,custAddr,imageURL,creditLimit) values (?,?,?,?)");
 			//updateUnpaidBalanceStatement = conn.prepareStatement("update Customer set unpaidBalance = ? where id=?");
@@ -1261,15 +1257,15 @@ public class YouDriveDAO {
 	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID, int typeID, Date reservationStart, Date reservationEnd){
 		LinkedList<Vehicle> availableVehicles = new LinkedList<Vehicle>();
 		try{
-			getAllVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
-			getAllVehiclesOfTypeAtLocationStatement.setInt(2, typeID);
-			getAllVehiclesOfTypeAtLocationStatement.setDate(3, reservationStart);
-			getAllVehiclesOfTypeAtLocationStatement.setDate(4, reservationStart);
-			getAllVehiclesOfTypeAtLocationStatement.setDate(5, reservationEnd);
-			getAllVehiclesOfTypeAtLocationStatement.setDate(6,  reservationEnd);
-			getAllVehiclesOfTypeAtLocationStatement.setDate(7, reservationStart);
-			getAllVehiclesOfTypeAtLocationStatement.setDate(8, reservationEnd);
-			ResultSet rs = getAllVehiclesOfTypeAtLocationStatement.executeQuery();
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setInt(2, typeID);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(3, reservationStart);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(4, reservationStart);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(5, reservationEnd);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(6,  reservationEnd);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(7, reservationStart);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(8, reservationEnd);
+			ResultSet rs = getAllAvailableVehiclesOfTypeAtLocationStatement.executeQuery();
 			while(rs.next()){
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
 				Vehicle vehicle = new Vehicle(rs.getInt("id"), comments, rs.getString("make"),
@@ -1550,8 +1546,6 @@ public class YouDriveDAO {
 				insertReservationStatement.setInt(7, customer_id);
 				insertReservationStatement.executeUpdate();
 				ResultSet key = insertReservationStatement.getGeneratedKeys();
-				markVehicleUnavailableStatement.setInt(1, vehicle_id);
-				markVehicleUnavailableStatement.executeUpdate();
 				if(key.next()){
 					id = key.getInt(1);
 					RentalLocation location = readRentalLocation(location_id);
@@ -1603,9 +1597,6 @@ public class YouDriveDAO {
 			if(reservation != null){
 				closeReservationStatement.setInt(1, reservationID);
 				closeReservationStatement.executeUpdate();
-				int vehicleID = reservation.getVehicle().getId();
-				markVehicleAvailableStatement.setInt(1, vehicleID);
-				markVehicleAvailableStatement.executeUpdate();
 			}
 		}catch(SQLException e){
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
