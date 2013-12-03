@@ -35,10 +35,10 @@
 					<input type="text" name="serviceday" placeholder="Service Day"> <span class="datedivider">/</span> <input type="text" name="servicemonth" placeholder="Service Month"> <span class="datedivider">/</span> <input type="text" name="serviceyear" placeholder="Service Year">
 					<br />
 					Vehicle Condition: <select name="vehiclecondition">
-						<option value="awesome" selected>Awesome</option>
-						<option value="good">Good</option>
-						<option value="bad">Bad</option>
-						<option value="shit">Shit</option>
+						<option value="Awesome" selected>Awesome</option>
+						<option value="Good">Good</option>
+						<option value="Bad">Bad</option>
+						<option value="Horrible">Horrible</option>
 					</select> 
 					<br />
 					Vehicle Type: <select name="vehicletype">
