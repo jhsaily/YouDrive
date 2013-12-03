@@ -29,3 +29,4 @@ local.properties
 #Miscellaneous system files
 *.DS_Store
 *._*.java
+*._*.png
