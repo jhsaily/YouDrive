@@ -1271,17 +1271,17 @@ public class YouDriveDAO {
 	 * @param reservationEnd	The proposed end timestamp for the reservation
 	 * @return					A list of vehicles available for the given time span, of the given type, at the given location
 	 */
-	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID, int typeID, Timestamp reservationStart, Timestamp reservationEnd){
+	public LinkedList<Vehicle> getAllAvailableVehicles(int locationID, int typeID, Date reservationStart, Date reservationEnd){
 		LinkedList<Vehicle> availableVehicles = new LinkedList<Vehicle>();
 		try{
 			getAllAvailableVehiclesOfTypeAtLocationStatement.setInt(1, locationID);
 			getAllAvailableVehiclesOfTypeAtLocationStatement.setInt(2, typeID);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(3, reservationStart);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(4, reservationStart);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(5, reservationEnd);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(6,  reservationEnd);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(7, reservationStart);
-			getAllAvailableVehiclesOfTypeAtLocationStatement.setTimestamp(8, reservationEnd);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(3, reservationStart);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(4, reservationStart);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(5, reservationEnd);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(6,  reservationEnd);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(7, reservationStart);
+			getAllAvailableVehiclesOfTypeAtLocationStatement.setDate(8, reservationEnd);
 			ResultSet rs = getAllAvailableVehiclesOfTypeAtLocationStatement.executeQuery();
 			while(rs.next()){
 				LinkedList<Comment> comments = getComments(rs.getInt("id"));
