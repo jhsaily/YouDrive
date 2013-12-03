@@ -21,29 +21,29 @@
 				<br /><br />
 				<c:forEach items="${locations}" var="location">
 					Location:
-					<br />
+					<i><br />
 					${location.name}
 					<br /><br />
-					${location.locationAddress.streetAddrLine1}
+					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.streetAddrLine1}
 					<br />
-					${location.locationAddress.streetAddrLine2}
+					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.streetAddrLine2}
 					<br />
-					${location.locationAddress.city}, ${location.locationAddress.state} ${location.locationAddress.zipCode}
+					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.city}, ${location.locationAddress.state} ${location.locationAddress.zipCode}
 					<br />
-					${location.locationAddress.country}
+					&nbsp;&nbsp;&nbsp;&nbsp;${location.locationAddress.country}</i>
 					<br /><br />
 					
 					<c:forEach items="${location.vehicles}" var="vehicle">
 						<div class="sublist">
-							Vehicle:
+							Vehicle Type:
 							<br />
-							${vehicle.vehicleType.description}
+							<i>&nbsp;&nbsp;&nbsp;&nbsp;${vehicle.vehicleType.description}</i>
 							<br />
 							<br />
 							Make:
-							<br />${vehicle.year}
-							<br />${vehicle.make}
-							<br />${vehicle.model}
+							<i><br />&nbsp;&nbsp;&nbsp;&nbsp;${vehicle.year}
+							<br />&nbsp;&nbsp;&nbsp;&nbsp;${vehicle.make}
+							<br />&nbsp;&nbsp;&nbsp;&nbsp;${vehicle.model}</i>
 							<br />
 						</div>
 					</c:forEach>
