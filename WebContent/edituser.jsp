@@ -50,7 +50,7 @@
 					<br />
 					<input type="checkbox" name="removeprofile" value="yes">Remove Profile from system?
 					<br /><br />
-					<input type="submit" name="updateprofile" value="Submit">
+					<input type="submit" name="updateProfile" value="Submit">
 				</form>
 			</div>
 		</div>

@@ -322,7 +322,7 @@ public class UserManager extends HttpServlet {
 				else if(admin!=null){
 
 					//If the user hits submit after editing a user's information, update it in the db
-					if(req.getParameter("updateprofile")!=null){
+					if(req.getParameter("updateProfile")!=null){
 
 						//Remove membership if it is checked
 						if(req.getParameter("revokemembership")!=null){
