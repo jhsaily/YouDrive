@@ -38,10 +38,10 @@
 					<br />
 					<input type="text" name="city" placeholder="Billing City" value="${city}" required>
 					<br />
+					<input type="text" name="state" placeholder="Billing State" value="${state}" required>
+                    <br />
 					<input type="text" name="zip" placeholder="Billing Zip Code" value="${zip}" required>
-					<br />
-					<input type="text" name="state" placeholder="Billing State" value="${state}" required
-					><br />
+                    <br />
 					<input type="text" name="country" placeholder="Billing Country" value="${country}" required>
 					<br /><br />
 					<input type="submit" name="updatepayment" value="Submit">

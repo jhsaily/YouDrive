@@ -32,10 +32,10 @@
 					<br />
 					<input type="text" name="city" placeholder="City" required>
 					<br />
+					<input type="text" name="state" placeholder="State" required>
+                    <br />
 					<input type="text" name="zip" placeholder="Zip Code" required>
-					<br />
-					<input type="text" name="state" placeholder="State" required
-					><br />
+                    <br />
 					<input type="text" name="country" placeholder="Country" required>
 					<br /><br />
 					<input type="submit" name="addLocation" value="Submit">

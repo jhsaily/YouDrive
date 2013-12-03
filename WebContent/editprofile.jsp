@@ -38,10 +38,10 @@
 					<br />
 					<input type="text" name="city" value="${city}" placeholder="City" required>
 					<br />
+					<input type="text" name="state" value="${state}" placeholder="State" required>
+                    <br />
 					<input type="text" name="zip" value="${zip}" placeholder="Zip Code" required>
-					<br />
-					<input type="text" name="state" value="${state}" placeholder="State" required
-					><br />
+                    <br />
 					<input type="text" name="country" value="${country}" placeholder="Country" required>
 					<br />
 					<input type="text" name="licensenum" value="${licenseNumber}" placeholder="Driver's License #" required>

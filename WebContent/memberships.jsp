@@ -17,6 +17,8 @@
 		<div id="mainbody">
 			<%@ include file="resources/html/header.html" %>
 			<div id="infopanel">
+            	<span class="dbpaneltitle">YouDrive.</span>
+                <br /><br />
 				${membershipPrice}
 				${numberOfUsers}
 				${numberOfLocations}
