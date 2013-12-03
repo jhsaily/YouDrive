@@ -117,8 +117,7 @@ public class YouDriveDAO {
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("Instantiated MySQL driver!");
-			//Connection conn = DriverManager.getConnection("jdbc:mysql://uml.cs.uga.edu/team11","team11","virtual");
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/team11","team11","virtual");
+			Connection conn = DriverManager.getConnection("jdbc:mysql://uml.cs.uga.edu/team11","team11","virtual");
 			System.out.println("Connected to MySQL!");
 			insertCustomerStatement = conn.prepareStatement("insert into users (username,password,isAdmin,emailAddress,firstName,lastName)" +
 					" values (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
