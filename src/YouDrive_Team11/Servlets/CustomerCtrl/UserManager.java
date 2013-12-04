@@ -292,9 +292,15 @@ public class UserManager extends HttpServlet {
 
 						//Prevent invalid information from being entered
 						try{
-							//Update payment information in the database
-							updatePaymentInfo(customer.getUsername(), req.getParameter("cardnumber"), Integer.valueOf(req.getParameter("cardexpmonth")), Integer.valueOf(req.getParameter("cardexpyear")), Integer.valueOf(req.getParameter("cardverification")), req.getParameter("addressline1"), req.getParameter("addressline2"), req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"));
-
+							
+							//Check if this is a new customer
+							if(customer.getPaymentInfo()==null){
+								dao.addPaymentInfoForCustomer(Integer.valueOf(customer.getId()), req.getParameter("cardnumber"), Integer.valueOf(req.getParameter("cardexpmonth")), Integer.valueOf(req.getParameter("cardexpyear")), Integer.valueOf(req.getParameter("cardverification")), req.getParameter("addressline1"), req.getParameter("addressline2"), req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"));
+							}
+							else{
+								//Update payment information in the database
+								updatePaymentInfo(customer.getUsername(), req.getParameter("cardnumber"), Integer.valueOf(req.getParameter("cardexpmonth")), Integer.valueOf(req.getParameter("cardexpyear")), Integer.valueOf(req.getParameter("cardverification")), req.getParameter("addressline1"), req.getParameter("addressline2"), req.getParameter("city"), req.getParameter("state"), Integer.valueOf(req.getParameter("zip")), req.getParameter("country"));
+							}
 
 							//Update the session attribute so that the information is fed back to the jsp page when it's clicked on
 							System.out.println("Payment Information Updated!");
